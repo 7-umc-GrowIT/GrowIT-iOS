@@ -1,0 +1,17 @@
+# MacOS 시스템 파일
+.DS_Store
+
+# 로그 파일
+*.log
+
+# 빌드 출력물
+/build/
+*.class
+
+# IDE 설정 파일
+.vscode/
+.idea/
+*.iml
+
+# 환경 파일
+.env
