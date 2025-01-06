@@ -2,7 +2,7 @@
 > (프로젝트 설명)
 ## 🍎 Developers
 
-| [@강희정](깃허브 주소) | [@오현민](깃허브 주소) | [@이수현](https://github.com/JustinLee02) | [@허준호](깃허브 주소) |
+| [@강희정](https://github.com/tansxx) | [@오현민](https://github.com/hyunm1n-o) | [@이수현](https://github.com/JustinLee02) | [@허준호](https://github.com/helljh) |
 |:---:|:---:|:---:|:---:|
 | image | image | image | image |
 | `stack` | `stack` | `stack` | `stack` |
