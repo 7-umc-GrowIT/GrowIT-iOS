@@ -15,6 +15,12 @@ struct AppFontName {
 }
 
 extension UIFont {
+
+    /*
+     메서드명은 Figma에 있는 이름보고 똑같이 만들었습니다. -> TypeStyle명 + 폰트 굵기
+     크기, 자간, 행간 피그마보고 초기세팅 해놓은거라서 따로 설정할 필요 없음
+     ex) .font = UIFont.메서드명
+    */
     
     // Heading 1 Bold Font
     public class func heading1Bold() -> UIFont {
