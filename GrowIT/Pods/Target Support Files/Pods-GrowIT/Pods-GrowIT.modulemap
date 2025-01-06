@@ -1,0 +1,6 @@
+framework module Pods_GrowIT {
+  umbrella header "Pods-GrowIT-umbrella.h"
+
+  export *
+  module * { export * }
+}
