@@ -1,4 +1,5 @@
 # GrowIT-iOS
+![그로우잇 배너](https://ifh.cc/g/PMx0kl.jpg)
 > (프로젝트 설명)
 ## 🍎 Developers
 
@@ -85,7 +86,7 @@
     let userName : String = "Hanni"
     ```
 
-
+### 커밋 컨벤션
 > **1. Commit 메시지 구조**
 > 
 
@@ -207,3 +208,8 @@ Related to: #8
 | [Moya](https://github.com/Moya/Moya) |  `15.0.3`  |
 
 ## 🔥 Trouble Shooting
+- 문제 상황
+- 누가 언제 문제를 제기
+- 해결 되었는지
+- 문제를 어떻게 해결
+- 참고자료(선택)
