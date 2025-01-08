@@ -7,26 +7,28 @@
 
 import UIKit
 import Then
+import SnapKit
 
 class GroView: UIView {
+    var groImageViewTopConstraint: Constraint?
+    
     private lazy var backgroundImageView = UIImageView().then {
         $0.image = UIImage(named: "GrowIT_Background_Star")
         $0.contentMode = .scaleAspectFill
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    // Todo: 애니메이션 추가
-    private lazy var groImageView = UIImageView().then {
+    var groImageView = UIImageView().then {
         $0.image = UIImage(named: "GrowIT_Gro")
-        $0.contentMode = .scaleAspectFill
+        $0.contentMode = .scaleAspectFit
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     // 캐릭터 확대/축소 버튼
-    private lazy var zoomButton = UIButton().then {
+    var zoomButton = UIButton().then {
         var config = UIButton.Configuration.plain()
         config.baseBackgroundColor = .clear
-        config.image = UIImage(named: "GrowIT_ZoomIn") // Todo: 추후 상태 분기처리
+        config.image = UIImage(named: "GrowIT_ZoomIn")
         
         $0.configuration = config
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -41,7 +43,7 @@ class GroView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
 
-    private lazy var buttonStackView = UIStackView().then {
+    var buttonStackView = UIStackView().then {
         $0.axis = .vertical
         $0.alignment = .center
         $0.distribution = .equalSpacing
@@ -74,8 +76,8 @@ class GroView: UIView {
         }
         
         groImageView.snp.makeConstraints {
-            $0.center.equalToSuperview()
-            $0.horizontalEdges.equalToSuperview()
+            $0.centerX.equalToSuperview()
+            self.groImageViewTopConstraint = $0.top.equalToSuperview().inset(168).constraint
         }
         
         buttonStackView.snp.makeConstraints {
