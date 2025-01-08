@@ -13,8 +13,8 @@ class GroViewController: UIViewController {
     private var isZoomIn: Bool = true
     
     private lazy var groView = GroView().then {
-            $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
-        }
+        $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
+    }
     private lazy var itemListModalView = ItemListModalView()
     private lazy var itemShopHeader = ItemShopHeader()
     
@@ -51,28 +51,43 @@ class GroViewController: UIViewController {
     @objc private func didTapZoomButton(_ sender: UIButton) {
         print("클릭")
         sender.isSelected.toggle()
-        if sender.isSelected { // 캐릭터 축소
-            self.itemListBottomConstraint?.update(offset: 0) // 아이템샵 올리기
-            groView.buttonStackView.snp.remakeConstraints {
-                $0.bottom.equalTo(itemListModalView.snp.top).offset(-24)
-                $0.trailing.equalToSuperview().inset(24)
-            }
-            groView.zoomButton.configuration?.image = UIImage(named: "GrowIT_ZoomOut")
-            groView.groImageViewTopConstraint?.update(inset: 40)
-
-            
-        } else { // 캐릭터 확대
-            self.itemListBottomConstraint?.update(offset: 500) // 아이템샵 내리기
-            groView.buttonStackView.snp.remakeConstraints {
-                $0.bottom.equalTo(groView.purchaseButton.snp.top).offset(-24)
-                $0.trailing.equalToSuperview().inset(24)
-            }
-            groView.zoomButton.configuration?.image = UIImage(named: "GrowIT_ZoomIn")
-            groView.groImageViewTopConstraint?.update(inset: 168)
-        }
         
+        // 상태에 따라 동작 분기
+        updateItemListPosition(isZoomedOut: sender.isSelected)
+        updateButtonStackViewPosition(isZoomedOut: sender.isSelected)
+        updateZoomButtonImage(isZoomedOut: sender.isSelected)
+        updateGroImageViewTopConstraint(isZoomedOut: sender.isSelected)
+        
+        // 레이아웃 업데이트 애니메이션
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
     }
+    
+    //MARK: - UI 업데이트 함수
+    private func updateItemListPosition(isZoomedOut: Bool) {
+        let offset = isZoomedOut ? 0 : 500
+        self.itemListBottomConstraint?.update(offset: offset)
+    }
+    
+    private func updateButtonStackViewPosition(isZoomedOut: Bool) {
+        groView.buttonStackView.snp.remakeConstraints {
+            let bottomConstraint = isZoomedOut
+            ? itemListModalView.snp.top
+            : groView.purchaseButton.snp.top
+            $0.bottom.equalTo(bottomConstraint).offset(-24)
+            $0.trailing.equalToSuperview().inset(24)
+        }
+    }
+    
+    private func updateZoomButtonImage(isZoomedOut: Bool) {
+        let imageName = isZoomedOut ? "GrowIT_ZoomOut" : "GrowIT_ZoomIn"
+        groView.zoomButton.configuration?.image = UIImage(named: imageName)
+    }
+    
+    private func updateGroImageViewTopConstraint(isZoomedOut: Bool) {
+        let inset = isZoomedOut ? 40 : 168
+        groView.groImageViewTopConstraint?.update(inset: inset)
+    }
+    
 }
