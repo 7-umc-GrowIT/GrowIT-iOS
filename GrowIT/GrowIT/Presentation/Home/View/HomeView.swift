@@ -37,25 +37,23 @@ class HomeView: UIView {
     // MARK: - add Function & Constraints
     
     private func addComponents(){
-        [characterArea, topNavBar].forEach(self.addSubview)
+        [topNavBar, characterArea].forEach(self.addSubview)
     }
     
     private func constraints(){
-        
-        
-        
-        characterArea.snp.makeConstraints{
-            //$0.top.equalTo(topNavBar.snp.bottom).offset(0)
-            $0.top.equalTo(self.safeAreaLayoutGuide.snp.top)
-            $0.horizontalEdges.bottom.equalToSuperview()
-            //$0.horizontalEdges.equalToSuperview()
-        }
         
         topNavBar.snp.makeConstraints{
             $0.top.equalTo(self.safeAreaLayoutGuide.snp.top)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(60)
         }
+        
+        characterArea.snp.makeConstraints{
+            $0.top.equalTo(topNavBar.snp.bottom)
+            $0.horizontalEdges.bottom.equalToSuperview()
+        }
+        
+       
     }
 
 }
