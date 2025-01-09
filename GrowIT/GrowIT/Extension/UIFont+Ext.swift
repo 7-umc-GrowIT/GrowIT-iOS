@@ -12,6 +12,7 @@ struct AppFontName {
     static let pMedium = "Pretendard-Medium"
     static let pBold = "Pretendard-Bold"
     static let pSemiBold = "Pretendard-SemiBold"
+    static let sExtraBold = "SUITE-ExtraBold"
 }
 
 extension UIFont {
@@ -95,6 +96,26 @@ extension UIFont {
     // Detail 2 Regular Font
     public class func detail2Regular() -> UIFont {
         return createFont(name: AppFontName.pBold, size: 11, lineHeight: 1.5)
+    }
+    
+    // Sub Title 1 Font
+    public class func subTitle1() -> UIFont {
+        return createFont(name: AppFontName.sExtraBold, size: 28, lineHeight: 1.5)
+    }
+    
+    // Sub Heading1 Font
+    public class func subHeading1() -> UIFont {
+        return createFont(name: AppFontName.sExtraBold, size: 24, lineHeight: 1.5)
+    }
+    
+    // Sub Heading2 Font
+    public class func subHeading2() -> UIFont {
+        return createFont(name: AppFontName.sExtraBold, size: 22, lineHeight: 1.5)
+    }
+    
+    // Sub Body 1 Font
+    public class func subBody1() -> UIFont {
+        return createFont(name: AppFontName.sExtraBold, size: 14, lineHeight: 1.5)
     }
     
     
