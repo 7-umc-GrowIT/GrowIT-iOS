@@ -49,6 +49,17 @@ class HomeCharacterView: UIView {
     // 친구보기 버튼 컨테이너
     private lazy var friendContainer = makeContainer()
     
+    // 캐릭터 이미지
+    private lazy var homeCharacter = UIImageView().then{
+        $0.image = UIImage(named: "homeCharacter")
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    // 캐릭터 그림자
+    private lazy var characterShadow = UIImageView().then{
+        $0.image = UIImage(named: "shadow")
+        $0.contentMode = .scaleAspectFit
+    }
     
     // MARK: - Stack
     
@@ -93,7 +104,7 @@ class HomeCharacterView: UIView {
     private func addComponents(){
         creditContainer.addSubview(creditBoxStack)
         friendContainer.addSubview(friendIcon)
-        [backgroundStar, creditContainer, friendContainer].forEach(self.addSubview)
+        [backgroundStar, creditContainer, friendContainer, characterShadow, homeCharacter].forEach(self.addSubview)
         
     }
     
@@ -120,6 +131,16 @@ class HomeCharacterView: UIView {
         friendIcon.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(15)
             $0.height.width.equalTo(28)
+        }
+        
+        
+        homeCharacter.snp.makeConstraints {
+            $0.center.equalToSuperview()
+        }
+        
+        characterShadow.snp.makeConstraints{
+            $0.bottom.equalTo(homeCharacter.snp.bottom)
+            $0.centerX.equalToSuperview()
         }
     }
     
