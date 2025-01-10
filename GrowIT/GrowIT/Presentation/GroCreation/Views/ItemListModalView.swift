@@ -9,7 +9,7 @@ import UIKit
 
 class ItemListModalView: UIView {
     
-    private lazy var itemSegmentedControl = ItemTabSegmentedControl(items: [
+    var itemSegmentedControl = ItemTabSegmentedControl(items: [
         UIImage(named: "GrowIT_Background_Off")!.withRenderingMode(.alwaysOriginal),
         UIImage(named: "GrowIT_Object_Off")!.withRenderingMode(.alwaysOriginal),
         UIImage(named: "GrowIT_FlowerPot_Off")!.withRenderingMode(.alwaysOriginal),
