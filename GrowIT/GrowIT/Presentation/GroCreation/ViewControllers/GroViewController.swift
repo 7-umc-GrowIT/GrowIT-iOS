@@ -15,7 +15,7 @@ class GroViewController: UIViewController {
     private lazy var groView = GroView().then {
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
     }
-    private lazy var itemListModalView = ItemListModalView()
+    private lazy var itemListModalVC = ItemListModalViewController()
     private lazy var itemShopHeader = ItemShopHeader()
     
     //MARK: - init
@@ -29,7 +29,9 @@ class GroViewController: UIViewController {
     
     //MARK: - 컴포넌트추가
     private func setView() {
-        groView.addSubviews([itemShopHeader, itemListModalView])
+        addChild(itemListModalVC)
+        groView.addSubviews([itemShopHeader, itemListModalVC.view])
+        itemListModalVC.didMove(toParent: self)
     }
     
     //MARK: - 레이아웃설정
@@ -40,16 +42,15 @@ class GroViewController: UIViewController {
             $0.height.equalTo(48)
         }
         
-        itemListModalView.snp.makeConstraints {
+        itemListModalVC.view.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview()
-            $0.height.equalToSuperview().multipliedBy(0.4)
+            $0.height.equalToSuperview().multipliedBy(0.45)
             self.itemListBottomConstraint = $0.bottom.equalToSuperview().offset(500).constraint
         }
     }
     
     //MARK: - 기능구현
     @objc private func didTapZoomButton(_ sender: UIButton) {
-        print("클릭")
         sender.isSelected.toggle()
         
         // 상태에 따라 동작 분기
@@ -73,7 +74,7 @@ class GroViewController: UIViewController {
     private func updateButtonStackViewPosition(isZoomedOut: Bool) {
         groView.buttonStackView.snp.remakeConstraints {
             let bottomConstraint = isZoomedOut
-            ? itemListModalView.snp.top
+            ? itemListModalVC.view.snp.top
             : groView.purchaseButton.snp.top
             $0.bottom.equalTo(bottomConstraint).offset(-24)
             $0.trailing.equalToSuperview().inset(24)

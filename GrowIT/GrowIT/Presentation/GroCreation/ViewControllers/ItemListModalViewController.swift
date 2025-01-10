@@ -8,20 +8,25 @@
 import UIKit
 
 class ItemListModalViewController: UIViewController {
-
+    
+    private lazy var itemListModalView = ItemListModalView()
+    
+    //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view = itemListModalView
+        
+        setView()
+        setConstraints()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    //MARK: - 컴포넌트추가
+    private func setView() {
+        
     }
-    */
-
+    
+    //MARK: - 레이아웃설정
+    private func setConstraints() {
+    }
+    
 }

@@ -76,6 +76,8 @@ class GroView: UIView {
         }
         
         groImageView.snp.makeConstraints {
+            $0.width.equalTo(758)
+            $0.height.equalTo(554)
             $0.centerX.equalToSuperview()
             self.groImageViewTopConstraint = $0.top.equalToSuperview().inset(168).constraint
         }
