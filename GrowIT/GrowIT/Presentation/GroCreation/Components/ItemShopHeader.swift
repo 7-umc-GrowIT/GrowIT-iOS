@@ -27,7 +27,7 @@ class ItemShopHeader: UIView {
     var myItemButton = UIButton().then {
         var config = UIButton.Configuration.plain()
         config.baseBackgroundColor = .clear
-        config.image = UIImage(named: "GrowIT_MyItem")
+        config.image = UIImage(named: "GrowIT_MyItem_Off")
         
         $0.configuration = config
         $0.translatesAutoresizingMaskIntoConstraints = false

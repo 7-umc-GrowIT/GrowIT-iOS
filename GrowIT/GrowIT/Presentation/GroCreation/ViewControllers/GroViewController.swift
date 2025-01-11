@@ -91,8 +91,14 @@ class GroViewController: UIViewController {
     }
     
     @objc
-    private func didTapMyItemButton() {
+    private func didTapMyItemButton(_ sender: UIButton) {
+        sender.isSelected.toggle()
+        let imageName = sender.isSelected ? "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
+        itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
         
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
     }
     
     //MARK: - UI 업데이트 함수
