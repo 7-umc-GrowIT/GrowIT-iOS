@@ -44,7 +44,7 @@ class GroViewController: UIViewController {
         
         itemListModalVC.view.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview()
-            $0.height.equalToSuperview().multipliedBy(0.45)
+            $0.height.equalToSuperview().multipliedBy(0.47)
             self.itemListBottomConstraint = $0.bottom.equalToSuperview().offset(500).constraint
         }
     }

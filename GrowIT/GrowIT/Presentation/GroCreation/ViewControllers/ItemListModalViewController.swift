@@ -9,6 +9,19 @@ import UIKit
 
 class ItemListModalViewController: UIViewController {
     
+    private lazy var segmentData: [[ItemDisplayable]] = [
+        ItemBackgroundModel.dummy(),
+        ItemAccModel.dummy(),
+        ItemBackgroundModel.dummy(),
+        ItemAccModel.dummy()
+    ]
+    
+    private lazy var currentSegmentIndex: Int = 0 {
+        didSet {
+            itemListModalView.itemCollectionView.reloadData()
+        }
+    }
+    
     private lazy var itemListModalView = ItemListModalView().then {
         $0.itemSegmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
     }
@@ -18,17 +31,13 @@ class ItemListModalViewController: UIViewController {
         super.viewDidLoad()
         self.view = itemListModalView
         
-        setView()
-        setConstraints()
+        setDelegate()
     }
     
-    //MARK: - 컴포넌트추가
-    private func setView() {
-        
-    }
-    
-    //MARK: - 레이아웃설정
-    private func setConstraints() {
+    //MARK: - UICollectionView
+    private func setDelegate() {
+        itemListModalView.itemCollectionView.dataSource = self
+        itemListModalView.itemCollectionView.delegate = self
     }
     
     //MARK: - 기능
@@ -49,7 +58,6 @@ class ItemListModalViewController: UIViewController {
         case 0:
             segment.setImage(UIImage(named: "GrowIT_Background_On")!
                 .withRenderingMode(.alwaysOriginal), forSegmentAt: 0)
-            
         case 1:
             segment.setImage(UIImage(named: "GrowIT_Object_On")!
                 .withRenderingMode(.alwaysOriginal), forSegmentAt: 1)
@@ -62,5 +70,47 @@ class ItemListModalViewController: UIViewController {
         default:
             break
         }
+        
+        currentSegmentIndex = segment.selectedSegmentIndex
+        
+        UIView.transition(
+            with: itemListModalView.itemCollectionView,
+            duration: 0.1,
+            options: [.transitionCrossDissolve],
+            animations: {
+                self.currentSegmentIndex = segment.selectedSegmentIndex
+            },
+            completion: nil
+        )
     }
 }
+
+//MARK: - UICollectionViewDataSource
+extension ItemListModalViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return segmentData[currentSegmentIndex].count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: ItemCollectionViewCell.identifier,
+            for: indexPath) as? ItemCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        let item = segmentData[currentSegmentIndex][indexPath.row]
+        
+        cell.creditLabel.text = String(item.credit)
+        cell.itemBackGroundView.backgroundColor = item.backgroundColor
+        cell.itemImageView.image = item.Item
+        
+        return cell
+    }
+    
+}
+
+//MARK: - UICollectionViewDelegate
+extension ItemListModalViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    }
+}
+

@@ -50,7 +50,9 @@ class GroView: UIView {
         $0.spacing = 8
     }
     
-    public var purchaseButton = PurchaseButton()
+    public var purchaseButton = PurchaseButton().then {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
     
     //MARK: - init
     override init(frame: CGRect) {
