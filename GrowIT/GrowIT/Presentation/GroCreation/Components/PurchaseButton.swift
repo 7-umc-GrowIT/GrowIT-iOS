@@ -49,7 +49,7 @@ class PurchaseButton: UIButton {
         $0.distribution = .fill
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
-
+    
     private func configure() {
         creditIcon.snp.makeConstraints {
             $0.width.equalTo(23)
@@ -67,6 +67,13 @@ class PurchaseButton: UIButton {
         buttonContentView.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
+        
+        // 버튼과 서브뷰 터치 설정
+        self.isUserInteractionEnabled = true
+        buttonContentView.isUserInteractionEnabled = false // 터치 이벤트 방해하지 않음
+        creditIcon.isUserInteractionEnabled = false
+        creditLabel.isUserInteractionEnabled = false
+        purchaseLabel.isUserInteractionEnabled = false
         
         self.configuration = config
         self.layer.cornerRadius = 16

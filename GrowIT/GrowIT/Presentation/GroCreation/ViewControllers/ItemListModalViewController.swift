@@ -24,6 +24,7 @@ class ItemListModalViewController: UIViewController {
     
     private lazy var itemListModalView = ItemListModalView().then {
         $0.itemSegmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
+        $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
     }
     
     //MARK: - init
@@ -41,7 +42,8 @@ class ItemListModalViewController: UIViewController {
     }
     
     //MARK: - 기능
-    @objc private func segmentChanged(_ segment: UISegmentedControl) {
+    @objc
+    private func segmentChanged(_ segment: UISegmentedControl) {
         // 세그먼트 이미지 초기화
         let defaultImages = [
             UIImage(named: "GrowIT_Background_Off")!.withRenderingMode(.alwaysOriginal),
@@ -83,7 +85,30 @@ class ItemListModalViewController: UIViewController {
             completion: nil
         )
     }
+    
+    @objc
+    private func didTapPurchaseButton() {
+        let purchaseModalVC = PurchaseModalViewController()
+        purchaseModalVC.modalPresentationStyle = .pageSheet
+        
+        if let sheet = purchaseModalVC.sheetPresentationController {
+            //지원할 크기 지정
+            if #available(iOS 16.0, *) {
+                sheet.detents = [
+                    .custom{ context in
+                        0.32 * context.maximumDetentValue
+                    }
+                ]
+            } else {
+                sheet.detents = [.medium()]
+            }
+            sheet.prefersGrabberVisible = true
+        }
+        present(purchaseModalVC, animated: true, completion: nil)
+    }
 }
+
+
 
 //MARK: - UICollectionViewDataSource
 extension ItemListModalViewController: UICollectionViewDataSource {

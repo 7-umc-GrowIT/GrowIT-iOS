@@ -14,9 +14,12 @@ class GroViewController: UIViewController {
     
     private lazy var groView = GroView().then {
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
+        $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
     }
     private lazy var itemListModalVC = ItemListModalViewController()
-    private lazy var itemShopHeader = ItemShopHeader()
+    private lazy var itemShopHeader = ItemShopHeader().then {
+        $0.myItemButton.addTarget(self, action: #selector(didTapMyItemButton), for: .touchUpInside)
+    }
     
     //MARK: - init
     override func viewDidLoad() {
@@ -50,7 +53,8 @@ class GroViewController: UIViewController {
     }
     
     //MARK: - 기능구현
-    @objc private func didTapZoomButton(_ sender: UIButton) {
+    @objc
+    private func didTapZoomButton(_ sender: UIButton) {
         sender.isSelected.toggle()
         
         // 상태에 따라 동작 분기
@@ -63,6 +67,32 @@ class GroViewController: UIViewController {
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
+    }
+    
+    @objc
+    private func didTapPurchaseButton() {
+        let purchaseModalVC = PurchaseModalViewController()
+        purchaseModalVC.modalPresentationStyle = .pageSheet
+        
+        if let sheet = purchaseModalVC.sheetPresentationController {
+            //지원할 크기 지정
+            if #available(iOS 16.0, *) {
+                sheet.detents = [
+                    .custom{ context in
+                        0.32 * context.maximumDetentValue
+                    }
+                ]
+            } else {
+                sheet.detents = [.medium()]
+            }
+            sheet.prefersGrabberVisible = true
+        }
+        present(purchaseModalVC, animated: true, completion: nil)
+    }
+    
+    @objc
+    private func didTapMyItemButton() {
+        
     }
     
     //MARK: - UI 업데이트 함수
