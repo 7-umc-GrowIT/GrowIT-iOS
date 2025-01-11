@@ -36,13 +36,9 @@ class AppButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(title: String, titleColor: UIColor, isEnabled: Bool) {
-        self.setTitle(title, for: .normal)
-        self.setTitleColor(titleColor, for: .normal)
-        self.backgroundColor = isEnabled ? UIColor.primary400 : UIColor.primary50
-    }
     
-    func isEnabled(isEnabled: Bool){
-        self.backgroundColor = isEnabled ? UIColor.primary400 : UIColor.primary50
+    func setButtonState(isEnabled: Bool, enabledColor: UIColor, disabledColor: UIColor) {
+        // isEnabled 값에 따라 배경색을 다르게 설정
+        self.backgroundColor = isEnabled ? enabledColor : disabledColor
     }
 }
