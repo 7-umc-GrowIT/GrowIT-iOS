@@ -14,6 +14,7 @@ class DiaryViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         view.addSubview(button)
+        button.setButtonState(isEnabled: false, enabledColor: .red, disabledColor: .orange)
         button.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(24)
             make.centerY.equalToSuperview()
