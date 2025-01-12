@@ -11,8 +11,6 @@ class TextDiaryLoadingViewController: UIViewController {
     
     let textDiaryLoadingView = TextDiaryLoadingView()
     
-    let navigationBarManager = NavigationManager()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.isNavigationBarHidden = true
