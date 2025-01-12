@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Then
 
 class AppButton: UIButton {
 
@@ -37,8 +38,9 @@ class AppButton: UIButton {
     }
     
     
-    func setButtonState(isEnabled: Bool, enabledColor: UIColor, disabledColor: UIColor) {
+    func setButtonState(isEnabled: Bool, enabledColor: UIColor, disabledColor: UIColor, enabledTitleColor: UIColor, disabledTitleColor: UIColor) {
         // isEnabled 값에 따라 배경색을 다르게 설정
         self.backgroundColor = isEnabled ? enabledColor : disabledColor
+        self.setTitleColor(isEnabled ? enabledTitleColor : disabledTitleColor, for: .normal)
     }
 }
