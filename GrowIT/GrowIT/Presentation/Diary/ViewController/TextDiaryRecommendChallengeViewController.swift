@@ -45,6 +45,11 @@ class TextDiaryRecommendChallengeViewController: UIViewController {
         }
     }
     
+    //MARK: - Setup Actions
+    private func setupActions() {
+        
+    }
+    
     //MARK: - @objc methods
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)

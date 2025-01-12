@@ -36,6 +36,8 @@ class ChallengeStackView: UIStackView {
         $0.textColor = .gray900
     }
     
+    let button1 = CircleCheckButton(isEnabled: false)
+    
     private let rect2 = UIView().then {
         $0.backgroundColor = .primary50
         $0.layer.cornerRadius = 20
@@ -51,6 +53,8 @@ class ChallengeStackView: UIStackView {
         $0.font = .heading3Bold()
         $0.textColor = .gray900
     }
+    
+    let button2 = CircleCheckButton(isEnabled: false)
     
     private let rect3 = UIView().then {
         $0.backgroundColor = .primary50
@@ -68,6 +72,8 @@ class ChallengeStackView: UIStackView {
         $0.textColor = .gray900
     }
     
+    let button3 = CircleCheckButton(isEnabled: false)
+    
     //MARK: - Setup UI
     private func setupUI() {
         rect1.addSubview(icon1)
@@ -83,6 +89,14 @@ class ChallengeStackView: UIStackView {
             make.top.equalToSuperview().offset(24.5)
         }
         
+        rect1.addSubview(button1)
+        button1.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-26.67)
+            make.top.equalToSuperview().offset(36.67)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(26.67)
+        }
+        
         rect2.addSubview(icon2)
         icon2.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(24)
@@ -96,6 +110,14 @@ class ChallengeStackView: UIStackView {
             make.top.equalToSuperview().offset(24.5)
         }
         
+        rect2.addSubview(button2)
+        button2.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-26.67)
+            make.top.equalToSuperview().offset(36.67)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(26.67)
+        }
+        
         rect3.addSubview(icon3)
         icon3.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(24)
@@ -107,6 +129,14 @@ class ChallengeStackView: UIStackView {
         label3.snp.makeConstraints { make in
             make.leading.equalTo(icon3.snp.trailing).offset(12)
             make.top.equalToSuperview().offset(24.5)
+        }
+        
+        rect3.addSubview(button3)
+        button3.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-26.67)
+            make.top.equalToSuperview().offset(36.67)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(26.67)
         }
         
         addArrangedSubview(rect1)
