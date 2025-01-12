@@ -17,8 +17,10 @@ class TextDiaryViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupNavigationBar()
+        setupActions()
     }
     
+    //MARK: - Setup Navigation Bar
     private func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -34,6 +36,7 @@ class TextDiaryViewController: UIViewController {
         )
     }
     
+    //MARK: - Setup UI
     private func setupUI() {
         view.backgroundColor = .white
         view.addSubview(textDiaryView)
@@ -42,8 +45,19 @@ class TextDiaryViewController: UIViewController {
         }
     }
     
+    //MARK: - Setup Button actions
+    private func setupActions() {
+        textDiaryView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+    }
+    
+    //MARK: - @objc methods
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func nextVC() {
+        let nextVC = TextDiaryLoadingViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
     }
     
 }

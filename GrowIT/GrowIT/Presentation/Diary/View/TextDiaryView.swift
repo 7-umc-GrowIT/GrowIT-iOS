@@ -46,7 +46,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
         $0.text = "일기 내용을 입력하세요"
     }
     
-    private let saveButton = AppButton(title: "내가 입력한 일기 저장하기").then {
+    let saveButton = AppButton(title: "내가 입력한 일기 저장하기").then {
         $0.setButtonState(isEnabled: false, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
     }
     
