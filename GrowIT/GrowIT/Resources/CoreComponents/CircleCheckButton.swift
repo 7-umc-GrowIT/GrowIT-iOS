@@ -32,5 +32,8 @@ class CircleCheckButton: UIButton {
         self.setImage(UIImage(systemName: "checkmark.circle.fill")?.withTintColor(tintColor, renderingMode: .alwaysOriginal), for: .normal)
     }
     
+    func isSelectedState() -> Bool {
+        return isEnabledState
+    }
     
 }

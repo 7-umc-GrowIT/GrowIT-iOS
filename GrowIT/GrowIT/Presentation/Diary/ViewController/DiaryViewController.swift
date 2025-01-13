@@ -43,7 +43,7 @@ class DiaryViewController: UIViewController {
     let button = AppButton(title: "확인했어요", titleColor: .black, isEnabled: true)
     
     @objc func nextVC() {
-        let nextVC = TextDiaryViewController()
+        let nextVC = TextDiaryRecommendChallengeViewController()
         navigationController?.pushViewController(nextVC, animated: true)
     }
     

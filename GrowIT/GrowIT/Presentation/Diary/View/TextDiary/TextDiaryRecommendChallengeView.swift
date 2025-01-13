@@ -8,7 +8,7 @@
 import UIKit
 
 class TextDiaryRecommendChallengeView: UIView {
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -39,7 +39,7 @@ class TextDiaryRecommendChallengeView: UIView {
         $0.backgroundColor = .clear
     }
     
-    private let challengeStackView = ChallengeStackView().then {
+    let challengeStackView = ChallengeStackView().then {
         $0.axis = .vertical
         $0.spacing = 12
         $0.distribution = .equalSpacing

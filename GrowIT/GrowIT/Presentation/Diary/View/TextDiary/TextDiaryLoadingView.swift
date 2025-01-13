@@ -34,10 +34,6 @@ class TextDiaryLoadingView: UIView {
         $0.font = .heading3SemiBold()
     }
     
-//    private let loadingIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 200, height: 200), type: .circleStrokeSpin).then {
-//        $0.color = .primary600
-//    }
-    
     var loadingIndicator = LottieAnimationView(name: "loadingIndicator").then {
         $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
     }
@@ -59,10 +55,12 @@ class TextDiaryLoadingView: UIView {
         addSubview(loadingIndicator)
         loadingIndicator.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(waitLabel.snp.bottom).offset(125)
+            make.top.equalTo(waitLabel.snp.bottom).offset(20)
         }
         loadingIndicator.loopMode = .loop
         loadingIndicator.play()
     }
+    
+    
 
 }

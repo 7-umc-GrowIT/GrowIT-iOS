@@ -56,7 +56,7 @@ class TextDiaryViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        let nextVC = TextDiaryRecommendChallengeViewController()
+        let nextVC = TextDiaryLoadingViewController()
         navigationController?.pushViewController(nextVC, animated: true)
     }
     

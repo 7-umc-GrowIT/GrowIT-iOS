@@ -8,16 +8,19 @@
 import UIKit
 
 class TextDiaryRecommendChallengeViewController: UIViewController {
-
+    
     let textDiaryRecommendChallengeView = TextDiaryRecommendChallengeView()
     
     let navigationBarManager = NavigationManager()
     
+    private var buttonCount: Int = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setupUI()
         setupNavigationBar()
+        setupActions()
     }
     
     //MARK: - Setup Navigation Bar
@@ -35,7 +38,7 @@ class TextDiaryRecommendChallengeViewController: UIViewController {
             textColor: .black
         )
     }
-
+    
     //MARK: - Setup UI
     private func setupUI() {
         view.backgroundColor = .white
@@ -47,12 +50,30 @@ class TextDiaryRecommendChallengeViewController: UIViewController {
     
     //MARK: - Setup Actions
     private func setupActions() {
-        
+        textDiaryRecommendChallengeView.challengeStackView.button1.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        textDiaryRecommendChallengeView.challengeStackView.button2.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        textDiaryRecommendChallengeView.challengeStackView.button3.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     
     //MARK: - @objc methods
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
-
+    
+    @objc func buttonTapped(_ sender: CircleCheckButton) {
+        if sender.isSelectedState() {
+            buttonCount += 1
+        } else {
+            buttonCount -= 1
+        }
+        let buttonState = buttonCount > 0
+        
+        textDiaryRecommendChallengeView.saveButton.setButtonState(
+            isEnabled: buttonState,
+            enabledColor: .black,
+            disabledColor: .gray100,
+            enabledTitleColor: .white,
+            disabledTitleColor: .gray400
+        )
+    }
 }
