@@ -9,6 +9,7 @@ import UIKit
 
 class TextDiaryLoadingViewController: UIViewController {
     
+    //MARK: - Properties
     let textDiaryLoadingView = TextDiaryLoadingView()
     
     override func viewDidLoad() {

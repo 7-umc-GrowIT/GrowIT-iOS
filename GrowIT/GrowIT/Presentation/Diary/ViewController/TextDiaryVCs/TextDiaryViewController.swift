@@ -9,8 +9,8 @@ import UIKit
 
 class TextDiaryViewController: UIViewController {
     
+    //MARK: - Properties
     let navigationBarManager = NavigationManager()
-    
     let textDiaryView = TextDiaryView()
     
     override func viewDidLoad() {

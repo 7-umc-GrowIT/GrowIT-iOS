@@ -9,6 +9,7 @@ import UIKit
 
 class TextDiaryRecommendChallengeViewController: UIViewController {
     
+    //MARK: - Properties
     let textDiaryRecommendChallengeView = TextDiaryRecommendChallengeView()
     
     let navigationBarManager = NavigationManager()

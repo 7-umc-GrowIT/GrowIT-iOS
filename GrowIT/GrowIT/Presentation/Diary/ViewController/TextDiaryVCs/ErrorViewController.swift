@@ -9,6 +9,7 @@ import UIKit
 
 class ErrorViewController: UIViewController {
 
+    //MARK: - Properties
     let errorView = ErrorView()
     
     override func viewDidLoad() {
