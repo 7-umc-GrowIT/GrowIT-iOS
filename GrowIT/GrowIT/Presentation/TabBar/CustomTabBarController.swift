@@ -43,6 +43,7 @@ class CustomTabBarController: UIViewController {
         customTabBar.snp.makeConstraints{
             $0.bottom.horizontalEdges.equalToSuperview()
             $0.height.equalToSuperview().multipliedBy(0.1)
+        
         }
         
     }
