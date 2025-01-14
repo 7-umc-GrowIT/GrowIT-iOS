@@ -61,6 +61,12 @@ class HomeCharacterView: UIView {
         $0.contentMode = .scaleAspectFit
     }
     
+    // 하단 그라디언트 뷰
+    private lazy var bottomGradientView = UIImageView().then{
+        $0.image = UIImage(named: "homeGradient")
+        $0.contentMode = .scaleAspectFit
+    }
+    
     // MARK: - Stack
     
     // 크레딧 개수 가로 스택
@@ -104,7 +110,7 @@ class HomeCharacterView: UIView {
     private func addComponents(){
         creditContainer.addSubview(creditBoxStack)
         friendContainer.addSubview(friendIcon)
-        [backgroundStar, creditContainer, friendContainer, characterShadow, homeCharacter].forEach(self.addSubview)
+        [backgroundStar, creditContainer, friendContainer, characterShadow, homeCharacter, bottomGradientView].forEach(self.addSubview)
         
     }
     
@@ -135,12 +141,18 @@ class HomeCharacterView: UIView {
         
         
         homeCharacter.snp.makeConstraints {
-            $0.center.equalToSuperview()
+            $0.top.equalToSuperview().offset(self.frame.height / 3)
+            $0.centerX.equalToSuperview()
         }
         
         characterShadow.snp.makeConstraints{
-            $0.bottom.equalTo(homeCharacter.snp.bottom)
+            $0.bottom.equalTo(homeCharacter.snp.bottom).offset(-30)
             $0.centerX.equalToSuperview()
+        }
+        
+        bottomGradientView.snp.makeConstraints {
+            $0.bottom.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(300)
         }
     }
     

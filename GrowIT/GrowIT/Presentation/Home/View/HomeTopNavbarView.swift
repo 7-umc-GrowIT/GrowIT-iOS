@@ -74,9 +74,9 @@ class HomeTopNavbarView: UIView {
         
         titleLogo.snp.makeConstraints {
             $0.top.equalTo(self.safeAreaLayoutGuide).offset(18)
-            $0.left.equalToSuperview().offset(24)
-            $0.width.equalTo(92)
-            $0.height.equalTo(24)
+            $0.left.equalToSuperview()
+            $0.width.equalToSuperview().multipliedBy(0.2)
+            $0.height.equalToSuperview().multipliedBy(0.4)
         }
         
         itemShopBtn.snp.makeConstraints {
@@ -89,7 +89,7 @@ class HomeTopNavbarView: UIView {
         
         topNavIconsStackView.snp.makeConstraints {
             $0.top.equalTo(self.safeAreaLayoutGuide).offset(13)
-            $0.right.equalToSuperview().offset(-24)
+            $0.right.equalToSuperview()
         }
     }
 }

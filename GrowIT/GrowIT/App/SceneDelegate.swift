@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = HomeViewController() // 본인의 시작 뷰컨트롤러를 넣어서 테스트 하면 됩니다
+        window?.rootViewController = CustomTabBarController() // 본인의 시작 뷰컨트롤러를 넣어서 테스트 하면 됩니다
         window?.makeKeyAndVisible()
     }
 

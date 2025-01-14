@@ -31,6 +31,7 @@ class HomeView: UIView {
     // 하단 캐릭터 영역
     private lazy var characterArea = HomeCharacterView()
     
+    
     // MARK: - Function
     
     
@@ -44,16 +45,28 @@ class HomeView: UIView {
         
         topNavBar.snp.makeConstraints{
             $0.top.equalTo(self.safeAreaLayoutGuide.snp.top)
-            $0.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(60)
+            $0.height.equalToSuperview().multipliedBy(0.07)
         }
         
         characterArea.snp.makeConstraints{
             $0.top.equalTo(topNavBar.snp.bottom)
             $0.horizontalEdges.bottom.equalToSuperview()
         }
-        
        
+    }
+    
+    override func updateConstraints() {
+        super.updateConstraints()
+        
+        topNavBar.snp.makeConstraints{
+            $0.left.equalToSuperview().offset(self.frame.width * 0.05)
+            $0.right.equalToSuperview().inset(self.frame.width * 0.05)
+        }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.setNeedsUpdateConstraints()
     }
 
 }
