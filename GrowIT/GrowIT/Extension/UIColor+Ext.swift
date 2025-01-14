@@ -7,6 +7,9 @@
 import UIKit
 
 extension UIColor{
+
+    // View에서 사용할때는 UIColor.변수명으로 사용하면 되고,
+    // 만약 cgColor 써야되는 속성이면 UIColor.변수명!.cgColor로 써야됩니다. 반드시 ! 붙이세요
     
     ///Primary Colors
     static let primaryColor50 = UIColor(named: "Primary-50")
