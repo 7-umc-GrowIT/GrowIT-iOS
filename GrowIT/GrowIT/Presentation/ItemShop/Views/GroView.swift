@@ -4,6 +4,7 @@
 //
 //  Created by 오현민 on 1/7/25.
 //
+// MARK: - 아이템샵 메인화면 & 그로 초기 배경설정 화면
 
 import UIKit
 import Then
@@ -12,7 +13,7 @@ import SnapKit
 class GroView: UIView {
     var groImageViewTopConstraint: Constraint?
     
-    private lazy var backgroundImageView = UIImageView().then {
+    var backgroundImageView = UIImageView().then {
         $0.image = UIImage(named: "GrowIT_Background_Star")
         $0.contentMode = .scaleAspectFill
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -23,8 +24,7 @@ class GroView: UIView {
         $0.contentMode = .scaleAspectFit
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
-    
-    // 캐릭터 확대/축소 버튼
+
     var zoomButton = UIButton().then {
         var config = UIButton.Configuration.plain()
         config.baseBackgroundColor = .clear
@@ -34,7 +34,7 @@ class GroView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private lazy var eraseButton = UIButton().then {
+    var eraseButton = UIButton().then {
         var config = UIButton.Configuration.plain()
         config.baseBackgroundColor = .clear
         config.image = UIImage(named: "GrowIT_Erase")
@@ -50,7 +50,7 @@ class GroView: UIView {
         $0.spacing = 8
     }
     
-    public var purchaseButton = PurchaseButton().then {
+    public var purchaseButton = PurchaseButton(showCredit: true, title: "구매하기", credit: "120").then {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     

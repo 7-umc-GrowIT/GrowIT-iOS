@@ -1,21 +1,17 @@
 //
-//  ItemListModalView.swift
+//  ItemBackgroundModalView.swift
 //  GrowIT
 //
-//  Created by 오현민 on 1/8/25.
+//  Created by 오현민 on 1/12/25.
 //
+// MARK: - 그로 초기 배경목록 ModalView
 
 import UIKit
 
-class ItemListModalView: UIView {
-    
-    var itemSegmentedControl = ItemTabSegmentedControl(items: [
-        UIImage(named: "GrowIT_Background_On")!.withRenderingMode(.alwaysOriginal),
-        UIImage(named: "GrowIT_Object_Off")!.withRenderingMode(.alwaysOriginal),
-        UIImage(named: "GrowIT_FlowerPot_Off")!.withRenderingMode(.alwaysOriginal),
-        UIImage(named: "GrowIT_Accessories_Off")!.withRenderingMode(.alwaysOriginal)
-    ]).then {
-        $0.selectedSegmentIndex = 0
+class ItemBackgroundModalView: UIView {
+    private lazy var backgroundIcon = UIImageView().then {
+        $0.image = UIImage(named: "GrowIT_Background_On")
+        $0.contentMode = .scaleAspectFill
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -30,7 +26,7 @@ class ItemListModalView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    public var purchaseButton = PurchaseButton().then {
+    public var purchaseButton = PurchaseButton(showCredit: false, title: "다음으로", credit: "").then {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -38,13 +34,8 @@ class ItemListModalView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
-        self.layer.cornerRadius = 40
-        
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOpacity = 0.15
-        self.layer.shadowRadius = 9
-        self.layer.shadowOffset = CGSize(width: 0, height: 0)
-        
+       
+        configure()
         setView()
         setConstraints()
     }
@@ -53,23 +44,30 @@ class ItemListModalView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - 컴포넌트추가
-    private func setView() {
-        self.addSubviews([itemSegmentedControl, itemCollectionView, purchaseButton])
+    private func configure() {
+        self.layer.cornerRadius = 40
+        
+        self.layer.shadowColor = UIColor.black.cgColor
+        self.layer.shadowOpacity = 0.15
+        self.layer.shadowRadius = 9
+        self.layer.shadowOffset = CGSize(width: 0, height: 0)
     }
     
-    //MARK: - 레이아웃설정
+    //MARK: - 컴포넌트 추가
+    private func setView() {
+        self.addSubviews([backgroundIcon, itemCollectionView, purchaseButton])
+    }
+    
+    //MARK: - 레이아웃 설정
     private func setConstraints() {
-        itemSegmentedControl.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.left.equalToSuperview().offset(30)
-            $0.right.equalToSuperview().inset(30)
-            $0.horizontalEdges.equalToSuperview().inset(30)
-            $0.height.equalTo(92)
+        backgroundIcon.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(28)
+            $0.centerX.equalToSuperview()
+            $0.width.height.equalTo(40)
         }
         
         itemCollectionView.snp.makeConstraints {
-            $0.top.equalTo(itemSegmentedControl.snp.bottom)
+            $0.top.equalTo(backgroundIcon.snp.bottom).offset(24)
             $0.bottom.equalTo(purchaseButton.snp.top).offset(-16)
             $0.horizontalEdges.equalToSuperview().inset(24)
         }
@@ -80,5 +78,5 @@ class ItemListModalView: UIView {
             $0.height.equalTo(60)
         }
     }
-}
 
+}

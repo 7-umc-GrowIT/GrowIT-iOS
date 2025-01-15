@@ -1,26 +1,25 @@
 //
-//  GroViewController.swift
+//  GroSetBackgroundViewController.swift
 //  GrowIT
 //
-//  Created by 오현민 on 1/8/25.
+//  Created by 오현민 on 1/12/25.
 //
 
 import UIKit
 import SnapKit
 
-class GroViewController: UIViewController {
+class GroSetBackgroundViewController: UIViewController {
     private var itemListBottomConstraint: Constraint?
     private var isZoomIn: Bool = true
     
     //MARK: - Views
     private lazy var groView = GroView().then {
+        $0.eraseButton.isHidden = true
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
         $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
     }
-    private lazy var itemListModalVC = ItemListModalViewController()
-    private lazy var itemShopHeader = ItemShopHeader().then {
-        $0.myItemButton.addTarget(self, action: #selector(didTapMyItemButton), for: .touchUpInside)
-    }
+    
+    private lazy var itemBackgroundModalVC = ItemBackgroundModalViewController()
     
     //MARK: - init
     override func viewDidLoad() {
@@ -29,31 +28,26 @@ class GroViewController: UIViewController {
         
         setView()
         setConstraints()
+        setButtonUI()
     }
-    
     //MARK: - 컴포넌트추가
     private func setView() {
-        addChild(itemListModalVC)
-        groView.addSubviews([itemShopHeader, itemListModalVC.view])
-        itemListModalVC.didMove(toParent: self)
+        addChild(itemBackgroundModalVC)
+        groView.addSubview(itemBackgroundModalVC.view)
+        itemBackgroundModalVC.didMove(toParent: self)
+        itemBackgroundModalVC.setParentController(self)
     }
     
     //MARK: - 레이아웃설정
     private func setConstraints() {
-        itemShopHeader.snp.makeConstraints {
-            $0.top.equalTo(groView.safeAreaLayoutGuide).inset(12)
-            $0.horizontalEdges.equalToSuperview().inset(24)
-            $0.height.equalTo(48)
-        }
-        
-        itemListModalVC.view.snp.makeConstraints {
+        itemBackgroundModalVC.view.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalToSuperview().multipliedBy(0.47)
             self.itemListBottomConstraint = $0.bottom.equalToSuperview().offset(500).constraint
         }
     }
     
-    //MARK: - 기능
+    //MARK: - 기능구현
     @objc private func didTapZoomButton(_ sender: UIButton) {
         sender.isSelected.toggle()
         
@@ -70,36 +64,29 @@ class GroViewController: UIViewController {
     }
     
     @objc private func didTapPurchaseButton() {
-        let purchaseModalVC = PurchaseModalViewController()
-        purchaseModalVC.modalPresentationStyle = .pageSheet
-        
-        if let sheet = purchaseModalVC.sheetPresentationController {
-            //지원할 크기 지정
-            if #available(iOS 16.0, *) {
-                sheet.detents = [
-                    .custom{ context in
-                        0.32 * context.maximumDetentValue
-                    }
-                ]
-            } else {
-                sheet.detents = [.medium()]
-            }
-            sheet.prefersGrabberVisible = true
-        }
-        present(purchaseModalVC, animated: true, completion: nil)
+        // 다음으로
     }
     
-    @objc private func didTapMyItemButton(_ sender: UIButton) {
-        sender.isSelected.toggle()
-        let imageName = sender.isSelected ? "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
-        itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
-        
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
+    func changeBackgroundImageView(_ num: Int) {
+        switch num {
+        case 0:
+            groView.backgroundImageView.image = UIImage.growITBackgroundStar
+        case 1:
+            groView.backgroundImageView.image = UIImage.growITBackgroundTree
+        case 2:
+            groView.backgroundImageView.image = UIImage.growITBackgroundHeart
+        default:
+            break
         }
     }
     
     //MARK: - UI 업데이트 함수
+    private func setButtonUI() {
+        groView.purchaseButton.showCredit = false
+        groView.purchaseButton.title = "다음으로"
+        groView.purchaseButton.updateUI()
+    }
+    
     private func updateItemListPosition(isZoomedOut: Bool) {
         let offset = isZoomedOut ? 0 : 500
         self.itemListBottomConstraint?.update(offset: offset)
@@ -108,7 +95,7 @@ class GroViewController: UIViewController {
     private func updateButtonStackViewPosition(isZoomedOut: Bool) {
         groView.buttonStackView.snp.remakeConstraints {
             let bottomConstraint = isZoomedOut
-            ? itemListModalVC.view.snp.top
+            ? itemBackgroundModalVC.view.snp.top
             : groView.purchaseButton.snp.top
             $0.bottom.equalTo(bottomConstraint).offset(-24)
             $0.trailing.equalToSuperview().inset(24)

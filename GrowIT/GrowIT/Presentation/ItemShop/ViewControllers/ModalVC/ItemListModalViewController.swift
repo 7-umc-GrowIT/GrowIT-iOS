@@ -8,7 +8,6 @@
 import UIKit
 
 class ItemListModalViewController: UIViewController {
-    
     private lazy var segmentData: [[ItemDisplayable]] = [
         ItemBackgroundModel.dummy(),
         ItemAccModel.dummy(),
@@ -22,6 +21,7 @@ class ItemListModalViewController: UIViewController {
         }
     }
     
+    //MARK: - Views
     private lazy var itemListModalView = ItemListModalView().then {
         $0.itemSegmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
         $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
@@ -42,8 +42,7 @@ class ItemListModalViewController: UIViewController {
     }
     
     //MARK: - 기능
-    @objc
-    private func segmentChanged(_ segment: UISegmentedControl) {
+    @objc private func segmentChanged(_ segment: UISegmentedControl) {
         // 세그먼트 이미지 초기화
         let defaultImages = [
             UIImage(named: "GrowIT_Background_Off")!.withRenderingMode(.alwaysOriginal),
@@ -86,8 +85,7 @@ class ItemListModalViewController: UIViewController {
         )
     }
     
-    @objc
-    private func didTapPurchaseButton() {
+    @objc private func didTapPurchaseButton() {
         let purchaseModalVC = PurchaseModalViewController()
         purchaseModalVC.modalPresentationStyle = .pageSheet
         

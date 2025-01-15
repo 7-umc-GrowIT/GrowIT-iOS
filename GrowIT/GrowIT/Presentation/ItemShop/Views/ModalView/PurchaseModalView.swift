@@ -4,6 +4,7 @@
 //
 //  Created by 오현민 on 1/12/25.
 //
+// MARK: - 구매하기 버튼 누르면 나오는 ModalView
 
 import UIKit
 
@@ -44,7 +45,7 @@ class PurchaseModalView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    var purchaseButton = PurchaseButton().then {
+    var purchaseButton = PurchaseButton(showCredit: true, title: "구매하기", credit: "120").then {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -52,14 +53,18 @@ class PurchaseModalView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
-        self.layer.cornerRadius = 40
         
+        configure()
         setView()
         setConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configure() {
+        self.layer.cornerRadius = 40
     }
     
     //MARK: - 컴포넌트 추가
