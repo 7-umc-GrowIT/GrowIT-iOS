@@ -19,18 +19,18 @@ class ErrorView: UIView {
     }
     
     //MARK: - UI Components
-    private let diaryIcon = UIImageView().then {
+    private lazy var diaryIcon = UIImageView().then {
         $0.image = UIImage(named: "diaryIcon")
         $0.backgroundColor = .clear
     }
     
-    private let label1 = UILabel().then {
+    private lazy var label1 = UILabel().then {
         $0.text = "나가면 기록된 일기와 챌린지가 사라져요"
         $0.font = .heading2Bold()
         $0.textColor = .gray900
     }
     
-    private let label2 = UILabel().then {
+    private lazy var label2 = UILabel().then {
         let allText = "페이지를 이탈하면 현재 기록된 일기가 사라져요\n그래도 처음 화면으로 돌아갈까요?"
         $0.text = allText
         $0.font = .heading3SemiBold()
@@ -81,5 +81,23 @@ class ErrorView: UIView {
             make.trailing.equalToSuperview().offset(-24)
             make.top.equalTo(exitButton.snp.top)
         }
+    }
+    
+    // MARK: Configure
+    func configure(icon: String,
+                   fisrtLabel: String, secondLabel: String,
+                   title1: String, title1Color1: UIColor, title1Background: UIColor,
+                   title2: String, title1Color2: UIColor, title2Background: UIColor
+    ) {
+        diaryIcon.image = UIImage(named: icon)
+        
+        label1.text = fisrtLabel
+        label2.text = secondLabel
+        
+        exitButton.titleLabel?.textColor = title1Color1
+        exitButton.backgroundColor = title1Background
+        
+        continueButton.titleLabel?.textColor = title1Color2
+        continueButton.backgroundColor = title2Background
     }
 }
