@@ -23,7 +23,7 @@ class EmoStackView: UIStackView {
         $0.backgroundColor = .primary100
         $0.layer.cornerRadius = 6
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        $0.layer.borderColor = UIColor(hex: "#0000001A")?.cgColor
     }
     
     private let label1 = UILabel().then {
@@ -36,7 +36,7 @@ class EmoStackView: UIStackView {
         $0.backgroundColor = .primary100
         $0.layer.cornerRadius = 6
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        $0.layer.borderColor = UIColor(hex: "#0000001A")?.cgColor
     }
     
     private let label2 = UILabel().then {
@@ -49,7 +49,7 @@ class EmoStackView: UIStackView {
         $0.backgroundColor = .primary100
         $0.layer.cornerRadius = 6
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        $0.layer.borderColor = UIColor(hex: "#0000001A")?.cgColor
     }
     
     private let label3 = UILabel().then {

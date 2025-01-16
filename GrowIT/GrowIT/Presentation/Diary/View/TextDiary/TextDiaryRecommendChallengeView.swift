@@ -56,6 +56,8 @@ class TextDiaryRecommendChallengeView: UIView {
         $0.textColor = .gray400
     }
     
+    private let toolTip = ToolTipView()
+    
     //MARK: - Setup UI
     private func setupUI() {
         addSubview(recommendLabel)
@@ -76,16 +78,23 @@ class TextDiaryRecommendChallengeView: UIView {
             make.top.equalTo(emoLabel.snp.bottom).offset(8)
         }
         
+        addSubview(toolTip)
+        toolTip.snp.makeConstraints { make in
+            make.top.equalTo(emoStackView.snp.bottom).offset(24)
+            make.height.equalTo(47)
+            make.centerX.equalToSuperview()
+        }
+        
         addSubview(challengeStackView)
         challengeStackView.snp.makeConstraints { make in
             make.leading.equalTo(emoStackView.snp.leading)
-            make.top.equalTo(emoStackView.snp.bottom).offset(70)
+            make.top.equalTo(toolTip.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
         }
         
         addSubview(saveButton)
         saveButton.snp.makeConstraints { make in
-            make.top.equalTo(challengeStackView.snp.bottom).offset(65)
+            make.top.equalTo(challengeStackView.snp.bottom).offset(58)
             make.leading.equalToSuperview().offset(24)
             make.centerX.equalToSuperview()
         }

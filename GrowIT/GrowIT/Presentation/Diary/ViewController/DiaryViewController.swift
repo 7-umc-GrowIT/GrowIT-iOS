@@ -7,6 +7,7 @@
 
 import Foundation
 import SnapKit
+import SwiftyToaster
 
 class DiaryViewController: UIViewController {
     
@@ -23,6 +24,8 @@ class DiaryViewController: UIViewController {
         }
         setupNavigationBar()
         button.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        
+        Toast.show(image: UIImage(named: "bath") ?? UIImage(), message: "asdfasdfa", font: .heading3SemiBold(), in: self.view)
     }
     
     private func setupNavigationBar() {
