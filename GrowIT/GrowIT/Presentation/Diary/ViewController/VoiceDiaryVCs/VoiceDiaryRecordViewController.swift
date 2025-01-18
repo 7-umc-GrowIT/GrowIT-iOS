@@ -9,21 +9,54 @@ import UIKit
 
 class VoiceDiaryRecordViewController: ViewController {
 
+    // MARK: Properties
+    let voiceDiaryRecordView = VoiceDiaryRecordView()
+    let navigationBarManager = NavigationManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupUI()
+        setupActions()
+        setupNavigationBar()
+    }
 
-        // Do any additional setup after loading the view.
+    // MARK: Setup Navigation Bar
+    private func setupNavigationBar() {
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(prevVC),
+            tintColor: .white
+        )
+        
+        navigationBarManager.setTitle(
+            to: navigationItem,
+            title: "",
+            textColor: .black
+        )
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    // MARK: Setup UI
+    private func setupUI() {
+        view.addSubview(voiceDiaryRecordView)
+        voiceDiaryRecordView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
-    */
 
+    // MARK: Setup Actions
+    private func setupActions() {
+        voiceDiaryRecordView.endButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+    }
+    
+    // MARK: @objc methods
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func nextVC() {
+        let nextVC = VoiceDiaryLoadingViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
 }
