@@ -39,9 +39,7 @@ class VoiceDiaryEntryView: UIView {
         $0.textColor = .white
     }
     
-    let recordButton = AppButton(title: " 오늘의 일기 기록하기", titleColor: .white, icon: "whiteDiary").then {
-        $0.tag = 0
-    }
+    let recordButton = AppButton(title: " 오늘의 일기 기록하기", titleColor: .white, icon: "whiteDiary")
     
     private let tooltipView = ToolTipView().then {
         $0.configure(text: "처음이라면 크레딧 100 증정!")
@@ -52,7 +50,6 @@ class VoiceDiaryEntryView: UIView {
         $0.font = .body2Medium()
         $0.textColor = .gray400
         $0.isUserInteractionEnabled = true
-        $0.tag = 1
     }
     
     // MARK: Setup UI

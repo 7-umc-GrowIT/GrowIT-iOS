@@ -27,7 +27,7 @@ class VoiceDiaryEntryViewController: ViewController {
             to: navigationItem,
             target: self,
             action: #selector(prevVC),
-            tintColor: .black
+            tintColor: .white
         )
         
         navigationBarManager.setTitle(
@@ -59,10 +59,27 @@ class VoiceDiaryEntryViewController: ViewController {
     }
     
     @objc func nextVC() {
-        print("Button Tapped")
+        let nextVC = VoiceDiaryDateSelectViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
     }
     
     @objc func labeledTapped() {
-        print("Label Tapped")
+        let nextVC = VoiceDiaryTipViewController()
+        nextVC.modalPresentationStyle = .pageSheet
+        
+        if let sheet = nextVC.sheetPresentationController {
+        //지원할 크기 지정
+        if #available(iOS 16.0, *) {
+        sheet.detents = [
+        .custom{ context in
+        0.37 * context.maximumDetentValue
+        }
+        ]
+        } else {
+        sheet.detents = [.medium()]
+        }
+        sheet.prefersGrabberVisible = true
+        }
+        present(nextVC, animated: true, completion: nil)
     }
 }
