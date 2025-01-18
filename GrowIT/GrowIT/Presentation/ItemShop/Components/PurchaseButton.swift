@@ -9,25 +9,55 @@ import Foundation
 import UIKit
 import SnapKit
 
-
 class PurchaseButton: UIButton {
+    // MARK: - Properties
     var showCredit: Bool = true {
-        didSet {
-            updateUI()
-        }
+        didSet { updateUI() }
     }
     var title: String = "구매하기" {
-        didSet {
-            updateUI()
-        }
+        didSet { updateUI() }
     }
     var credit: String = "0" {
-        didSet {
-            updateUI()
-        }
+        didSet { updateUI() }
     }
-    
-    // MARK: - Init
+
+    // MARK: - UI Components
+    private lazy var creditIcon: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "GrowIT_Credit_Glow")
+        imageView.contentMode = .scaleAspectFill
+        imageView.snp.makeConstraints {
+            $0.size.equalTo(CGSize(width: 23, height: 24))
+        }
+        return imageView
+    }()
+
+    private lazy var creditLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.primaryColor400!
+        label.font = UIFont.heading2Bold()
+        label.textAlignment = .center
+        return label
+    }()
+
+    private lazy var purchaseLabel: UILabel = {
+        let label = UILabel()
+        label.text = title
+        label.textColor = .white
+        label.font = UIFont.heading2Bold()
+        label.textAlignment = .center
+        return label
+    }()
+
+    private lazy var buttonContentView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 5
+        return stackView
+    }()
+
+    // MARK: - init
     init(showCredit: Bool = true, title: String = "구매하기", credit: String = "0") {
         self.showCredit = showCredit
         self.title = title
@@ -35,88 +65,52 @@ class PurchaseButton: UIButton {
         super.init(frame: .zero)
         configure()
     }
-    
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private lazy var creditIcon = UIImageView().then {
-        $0.image = UIImage(named: "GrowIT_Credit_Glow")
-        $0.contentMode = .scaleAspectFill
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.snp.makeConstraints {
-            $0.width.equalTo(23)
-            $0.height.equalTo(24)
-        }
-    }
-    
-    private lazy var creditLabel = UILabel().then {
-        $0.textColor = UIColor.primaryColor400!
-        $0.font = UIFont.heading2Bold()
-        $0.textAlignment = .center
-        $0.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
-    private lazy var purchaseLabel = UILabel().then {
-        $0.text = title
-        $0.textColor = UIColor.white
-        $0.font = UIFont.heading2Bold()
-        $0.textAlignment = .center
-        $0.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
-    private lazy var buttonContentView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.alignment = .center
-        $0.spacing = 5
-        $0.distribution = .fill
-        $0.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
+
+    // MARK: - Configuration
     private func configure() {
+        // Add subviews
         if showCredit {
-            buttonContentView.addArrangedSubViews([creditIcon, creditLabel])
+            buttonContentView.addArrangedSubview(creditIcon)
+            buttonContentView.addArrangedSubview(creditLabel)
             buttonContentView.setCustomSpacing(10, after: creditLabel)
         }
         buttonContentView.addArrangedSubview(purchaseLabel)
-        
-        
-        
-        self.addSubview(buttonContentView)
+        addSubview(buttonContentView)
+
+        // Layout
         buttonContentView.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
-        
-        //버튼 설정
+
+        // Button configuration
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .black
         self.configuration = config
-        self.layer.cornerRadius = 16
-        self.clipsToBounds = true
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        // 버튼과 서브뷰 터치 설정
-        self.isUserInteractionEnabled = true
-        buttonContentView.isUserInteractionEnabled = false
-        creditIcon.isUserInteractionEnabled = false
-        creditLabel.isUserInteractionEnabled = false
-        purchaseLabel.isUserInteractionEnabled = false
-        
+
+        layer.cornerRadius = 16
+        clipsToBounds = true
+        translatesAutoresizingMaskIntoConstraints = false
+
+        // 버튼 터치인식 설정
+        isUserInteractionEnabled = true
+        [buttonContentView, creditIcon, creditLabel, purchaseLabel].forEach {
+            $0.isUserInteractionEnabled = false
+        }
+
         updateUI()
     }
-    
-    // MARK: - UI 업데이트
-    func updateUI() {
-        creditLabel.text = "\(credit)"
+
+    // MARK: - UI Update
+    private func updateUI() {
+        creditLabel.text = credit
         purchaseLabel.text = title
-        
-        if showCredit {
-            creditIcon.isHidden = false
-            creditLabel.isHidden = false
-        } else {
-            creditIcon.isHidden = true
-            creditLabel.isHidden = true
-        }
+
+        let shouldShowCredit = showCredit
+        creditIcon.isHidden = !shouldShowCredit
+        creditLabel.isHidden = !shouldShowCredit
     }
 }
