@@ -33,7 +33,7 @@ class ToolTipView: UIView {
     
     private let tipView = TipView()
     
-    //MARK: - Setup UI
+    // MARK: - Setup UI
     private func setupUI() {
         addSubview(circleView)
         circleView.snp.makeConstraints { make in
@@ -54,5 +54,10 @@ class ToolTipView: UIView {
             make.centerX.equalTo(circleView)
         }
     
+    }
+    
+    // MARK: Configure
+    func configure(text: String) {
+        textLabel.text = text
     }
 }
