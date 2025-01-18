@@ -9,21 +9,42 @@ import UIKit
 
 class VoiceDiaryLoadingViewController: ViewController {
 
+    //MARK: - Properties
+    let voiceDiaryLoadingView = VoiceDiaryLoadingView()
+    let navigationBarManager = NavigationManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        setupUI()
+        setupNavigationBar()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    // MARK: Setup Navigation Bar
+    private func setupNavigationBar() {
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(prevVC),
+            tintColor: .clear
+        )
+        
+        navigationBarManager.setTitle(
+            to: navigationItem,
+            title: "",
+            textColor: .black
+        )
     }
-    */
 
+    //MARK: - Setup UI
+    private func setupUI() {
+        view.addSubview(voiceDiaryLoadingView)
+        voiceDiaryLoadingView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    //MARK: - @objc methods
+    @objc func prevVC() {
+        // navigationController?.popViewController(animated: true)
+    }
 }

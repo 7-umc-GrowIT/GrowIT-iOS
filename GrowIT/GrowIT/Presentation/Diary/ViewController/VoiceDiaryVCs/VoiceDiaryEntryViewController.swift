@@ -9,21 +9,77 @@ import UIKit
 
 class VoiceDiaryEntryViewController: ViewController {
 
+    // MARK: Properties
+    let navigationBarManager = NavigationManager()
+    
+    let voiceDiaryEntryView = VoiceDiaryEntryView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        setupUI()
+        setupNavigationBar()
+        setupActions()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    // MARK: Setup Navigation Bar
+    private func setupNavigationBar() {
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(prevVC),
+            tintColor: .white
+        )
+        
+        navigationBarManager.setTitle(
+            to: navigationItem,
+            title: "",
+            textColor: .black
+        )
     }
-    */
+    
+    // MARK: Setup UI
+    private func setupUI() {
+        view.addSubview(voiceDiaryEntryView)
+        voiceDiaryEntryView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    // MARK: Setup Actions
+    private func setupActions() {
+        voiceDiaryEntryView.recordButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        
+        let labelAction = UITapGestureRecognizer(target: self, action: #selector(labeledTapped))
+        voiceDiaryEntryView.helpLabel.addGestureRecognizer(labelAction)
+    }
 
+    //MARK: - @objc methods
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func nextVC() {
+        let nextVC = VoiceDiaryDateSelectViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func labeledTapped() {
+        let nextVC = VoiceDiaryTipViewController()
+        nextVC.modalPresentationStyle = .pageSheet
+        
+        if let sheet = nextVC.sheetPresentationController {
+        //지원할 크기 지정
+        if #available(iOS 16.0, *) {
+        sheet.detents = [
+        .custom{ context in
+        0.37 * context.maximumDetentValue
+        }
+        ]
+        } else {
+        sheet.detents = [.medium()]
+        }
+        sheet.prefersGrabberVisible = true
+        }
+        present(nextVC, animated: true, completion: nil)
+    }
 }
