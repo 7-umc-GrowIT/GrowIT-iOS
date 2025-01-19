@@ -7,3 +7,9 @@
 
 import Foundation
 import Moya
+
+enum DiaryEndpoint {
+    case getDiary(diaryId: Int)
+    case getAllDiary(year: Int, month: Int)
+    case postVoiceDiary(
+}

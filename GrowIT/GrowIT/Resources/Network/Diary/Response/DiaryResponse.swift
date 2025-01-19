@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct DiaryResponseDTO: Decodable {
+    let content: String
+    let date: String
+}
