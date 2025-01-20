@@ -8,22 +8,42 @@
 import UIKit
 
 class TextDiaryErrorViewController: UIViewController {
-
-    //MARK: - Properties
+    
+    // MARK: - Properties
     let errorView = ErrorView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
+        setupActions()
     }
     
-    //MARK: - Setup UI
+    // MARK: - Setup UI
     private func setupUI() {
         view.addSubview(errorView)
         errorView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
-
+    
+    // MARK: Setup Actions
+    private func setupActions() {
+        errorView.exitButton.addTarget(self, action: #selector(mainVC), for: .touchUpInside)
+        errorView.continueButton.addTarget(self, action: #selector(prevVC), for: .touchUpInside)
+    }
+    
+    // MARK: @objc methods
+    @objc func prevVC() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func mainVC() {
+        if let presentingVC = presentingViewController as? UINavigationController {
+            dismiss(animated: true) {
+                presentingVC.popToRootViewController(animated: true)
+            }
+        }
+    }
+    
 }

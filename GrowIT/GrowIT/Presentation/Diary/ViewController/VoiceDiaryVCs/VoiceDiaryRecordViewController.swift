@@ -51,7 +51,10 @@ class VoiceDiaryRecordViewController: ViewController {
     
     // MARK: @objc methods
     @objc func prevVC() {
-        navigationController?.popViewController(animated: true)
+        let prevVC = VoiceDiaryRecordErrorViewController()
+        let navController = UINavigationController(rootViewController: prevVC)
+        navController.modalPresentationStyle = .fullScreen
+        presentPageSheet(viewController: navController, detentFraction: 0.37)
     }
     
     @objc func nextVC() {

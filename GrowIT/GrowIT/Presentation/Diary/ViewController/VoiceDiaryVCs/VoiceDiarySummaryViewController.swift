@@ -54,7 +54,10 @@ class VoiceDiarySummaryViewController: ViewController {
     
     //MARK: - @objc methods
     @objc func prevVC() {
-        navigationController?.popViewController(animated: true)
+        let prevVC = VoiceDiarySummaryErrorViewController()
+        let navController = UINavigationController(rootViewController: prevVC)
+        navController.modalPresentationStyle = .fullScreen
+        presentPageSheet(viewController: navController, detentFraction: 0.37)
     }
     
     @objc func nextVC() {
@@ -62,7 +65,6 @@ class VoiceDiarySummaryViewController: ViewController {
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
-    // 일기 요약 이탈 시 오류 modal 뷰
     @objc func labelTapped() {
         let nextVC = VoiceDiaryFixViewController(text: voiceDiarySummaryView.diaryLabel.text ?? "")
         let navController = UINavigationController(rootViewController: nextVC)
