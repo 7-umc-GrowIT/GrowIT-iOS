@@ -30,7 +30,7 @@ class GroSetNameView: UIView {
     
     private lazy var titleLabel = UILabel().then {
         $0.text = "당신의 그로 이름을 알려 주세요"
-        $0.font = UIFont.body1Medium()
+        $0.font = UIFont.subHeading2()
         $0.textColor = UIColor.grayColor900
         $0.textAlignment = .left
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -57,7 +57,7 @@ class GroSetNameView: UIView {
     }
     
     private lazy var startButton = UIButton().then {
-        // core 가져오기
+        // 만들어야함
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     

@@ -105,7 +105,7 @@ class PurchaseButton: UIButton {
     }
 
     // MARK: - UI Update
-    private func updateUI() {
+    func updateUI() {
         creditLabel.text = credit
         purchaseLabel.text = title
 
