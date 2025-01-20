@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct DiaryRequestDTO: Codable {
+    let content: String
+    let date: String
+}
+
