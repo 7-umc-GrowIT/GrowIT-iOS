@@ -49,16 +49,11 @@ class CustomTabBarView: UIView {
     
     // 첫번째 아이템 라벨
     private lazy var firstTabLabel = makeLabel(name:"일기", color: UIColor.grayColor400!)
+
     
-    // 두번째 아이템 아이콘
-    private lazy var secondTabIcon = makeTabItem(image: "home", color: .white)
-    
-    // 두번째 아이템 라벨
-    private lazy var secondTabLabel = makeLabel(name:"홈", color: .white)
-    
-    // 홈 탭 컨테이너
-    private lazy var secondTabContainer = UIView().then{
-        setupTabContainer($0)
+    private lazy var secondTabItem = UIImageView().then{
+        $0.image = UIImage(named: "homeSelected")
+        $0.contentMode = .scaleAspectFit
     }
     
     // 세번째 아이템 아이콘
@@ -71,9 +66,6 @@ class CustomTabBarView: UIView {
     
     // 첫번째 탭바 아이템
     private lazy var firstTabItem = makeStackView(2)
-    
-    // 두번째 탭바 아이템
-    private lazy var secondTabItem = makeStackView(4)
     
     // 세번째 탭바 아이템
     private lazy var thirdTabItem = makeStackView(2)
@@ -107,29 +99,30 @@ class CustomTabBarView: UIView {
         return stackView
     }
     
-    private func setupTabContainer(_ container: UIView) {
-        container.layer.cornerRadius = 54
-        container.layer.borderWidth = 4
-        container.layer.borderColor = UIColor.primaryColor500?.withAlphaComponent(0.5).cgColor
-        container.layer.shadowColor = UIColor.primaryColor500?.cgColor
-        container.layer.shadowRadius = 8
-        container.layer.shadowOffset = CGSize(width: 0, height: 0)
-        container.layer.shadowOpacity = 0.5
-        container.layer.masksToBounds = false
-        container.layer.shouldRasterize = true
-        container.layer.rasterizationScale = UIScreen.main.scale
-
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [UIColor.primaryColor400!.cgColor, UIColor.primaryColor600!.cgColor]
-        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
-        gradientLayer.cornerRadius = container.layer.cornerRadius
-        container.layer.insertSublayer(gradientLayer, at: 0)
-        
-        // 초기에 그라디언트 레이어의 크기를 설정
-        gradientLayer.frame = container.bounds
-        container.layoutIfNeeded() // 필요하면 레이아웃을 즉시 업데이트
-    }
+    // 그라데이션 만드는 함수
+//    private func setupTabContainer(_ container: UIView) {
+//        container.layer.cornerRadius = 54
+//        container.layer.borderWidth = 4
+//        container.layer.borderColor = UIColor.primaryColor500?.withAlphaComponent(0.5).cgColor
+//        container.layer.shadowColor = UIColor.primaryColor500?.cgColor
+//        container.layer.shadowRadius = 8
+//        container.layer.shadowOffset = CGSize(width: 0, height: 0)
+//        container.layer.shadowOpacity = 0.5
+//        container.layer.masksToBounds = false
+//        container.layer.shouldRasterize = true
+//        container.layer.rasterizationScale = UIScreen.main.scale
+//
+//        let gradientLayer = CAGradientLayer()
+//        gradientLayer.colors = [UIColor.primaryColor400!.cgColor, UIColor.primaryColor600!.cgColor]
+//        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+//        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+//        gradientLayer.cornerRadius = container.layer.cornerRadius
+//        container.layer.insertSublayer(gradientLayer, at: 0)
+//        
+//        // 초기에 그라디언트 레이어의 크기를 설정
+//        gradientLayer.frame = container.bounds
+//        container.layoutIfNeeded() // 필요하면 레이아웃을 즉시 업데이트
+//    }
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -139,6 +132,8 @@ class CustomTabBarView: UIView {
                 gradientLayer.frame = subview.bounds
             }
         }
+        
+        self.setNeedsUpdateConstraints()
     }
 
     
@@ -146,13 +141,13 @@ class CustomTabBarView: UIView {
     
     private func addStackView(){
         [firstTabIcon, firstTabLabel].forEach(firstTabItem.addArrangedSubview)
-        [secondTabIcon, secondTabLabel].forEach(secondTabItem.addArrangedSubview)
+        //[secondTabIcon, secondTabLabel].forEach(secondTabItem.addArrangedSubview)
         [thirdTabIcon, thirdTabLabel].forEach(thirdTabItem.addArrangedSubview)
     }
     
     private func addComponent(){
-        secondTabContainer.addSubview(secondTabItem)
-        [tabBarBg, firstTabItem, secondTabContainer, thirdTabItem].forEach(self.addSubview)
+        //secondTabContainer.addSubview(secondTabItem)
+        [tabBarBg, firstTabItem, secondTabItem, thirdTabItem].forEach(self.addSubview)
     }
     
     private func constraints(){
@@ -171,22 +166,6 @@ class CustomTabBarView: UIView {
             $0.centerY.equalToSuperview()
         }
         
-        secondTabIcon.snp.makeConstraints{
-            $0.height.width.equalTo(40)
-        }
-        
-        secondTabItem.snp.makeConstraints {
-            $0.center.equalToSuperview()
-        }
-        
-        secondTabContainer.snp.makeConstraints {
-            $0.top.equalTo(tabBarBg.snp.top).offset(-44)
-            //$0.centerY.equalTo(tabBarBg.snp.top)
-            $0.centerX.equalToSuperview()
-            $0.height.equalTo(108)
-            $0.width.equalTo(108)
-        }
-        
         thirdTabIcon.snp.makeConstraints{
             $0.height.width.equalTo(40)
         }
@@ -197,13 +176,24 @@ class CustomTabBarView: UIView {
         }
     }
     
+    override func updateConstraints() {
+        super.updateConstraints()
+        
+        secondTabItem.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            //$0.top.equalTo(tabBarBg.snp.top).offset(self.frame.height * 0.54 * -1)
+            $0.top.equalTo(tabBarBg.snp.top).offset(-54)
+            $0.width.equalToSuperview().multipliedBy(0.3)
+        }
+    }
+    
     private func configureTapGestures() {
         let firstItemGesture = UITapGestureRecognizer(target: self, action: #selector(didTapFirstItem))
         let secondItemGesture = UITapGestureRecognizer(target: self, action: #selector(didTapSecondItem))
         let thirdItemGesture = UITapGestureRecognizer(target: self, action: #selector(didTapThirdItem))
         firstTabItem.addGestureRecognizer(firstItemGesture)
-        secondTabContainer.isUserInteractionEnabled = true
-        secondTabContainer.addGestureRecognizer(secondItemGesture)
+        secondTabItem.isUserInteractionEnabled = true
+        secondTabItem.addGestureRecognizer(secondItemGesture)
         thirdTabItem.addGestureRecognizer(thirdItemGesture)
     }
     
@@ -215,8 +205,7 @@ class CustomTabBarView: UIView {
         firstTabIcon.tintColor = (index == 0) ? .primaryColor600 : .grayColor300
         firstTabLabel.textColor = (index == 0) ? .grayColor900 : .grayColor400
         
-        secondTabIcon.tintColor = (index == 1) ? .white : .grayColor300
-        secondTabLabel.textColor = (index == 1) ? .white : .grayColor400
+        secondTabItem.image = (index == 1) ? UIImage(named: "homeSelected") : UIImage(named: "homedeSelected")
         
         thirdTabIcon.tintColor = (index == 2) ? .primaryColor600 : .grayColor300
         thirdTabLabel.textColor = (index == 2) ? .grayColor900 : .grayColor400

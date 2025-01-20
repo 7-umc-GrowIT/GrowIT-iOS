@@ -64,7 +64,7 @@ class HomeCharacterView: UIView {
     // 하단 그라디언트 뷰
     private lazy var bottomGradientView = UIImageView().then{
         $0.image = UIImage(named: "homeGradient")
-        $0.contentMode = .scaleAspectFit
+        $0.contentMode = .scaleAspectFill
     }
     
     // MARK: - Stack
@@ -152,7 +152,8 @@ class HomeCharacterView: UIView {
         
         bottomGradientView.snp.makeConstraints {
             $0.bottom.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(300)
+            $0.height.equalToSuperview().multipliedBy(0.35)
+            $0.width.equalToSuperview().multipliedBy(1)
         }
     }
     
