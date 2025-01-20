@@ -64,8 +64,31 @@ class TextDiaryRecommendChallengeViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        let nextVC = TextDiaryEndViewController()
-        navigationController?.pushViewController(nextVC, animated: true)
+        /*
+         let nextVC = ErrorViewController()
+         nextVC.modalPresentationStyle = .pageSheet
+         
+         if let sheet = nextVC.sheetPresentationController {
+         //지원할 크기 지정
+         if #available(iOS 16.0, *) {
+         sheet.detents = [
+         .custom{ context in
+         0.37 * context.maximumDetentValue
+         }
+         ]
+         } else {
+         sheet.detents = [.medium()]
+         }
+         sheet.prefersGrabberVisible = true
+         }
+         present(nextVC, animated: true, completion: nil)
+         */
+        if buttonCount == 0 {
+            Toast.show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "한 개 이상의 챌린지를 선택해 주세요", font: .heading3SemiBold(), in: self.view)
+        } else {
+            let nextVC = TextDiaryEndViewController()
+            navigationController?.pushViewController(nextVC, animated: true)
+        }
     }
     
     @objc func buttonTapped(_ sender: CircleCheckButton) {

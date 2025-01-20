@@ -72,6 +72,11 @@
 			<key>orderHint</key>
 			<integer>9</integer>
 		</dict>
+		<key>SwiftyToaster.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>14</integer>
+		</dict>
 		<key>Then.xcscheme</key>
 		<dict>
 			<key>isShown</key>

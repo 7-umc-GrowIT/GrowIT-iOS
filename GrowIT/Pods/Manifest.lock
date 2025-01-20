@@ -16,6 +16,7 @@ PODS:
     - NVActivityIndicatorView/Base (= 5.2.0)
   - NVActivityIndicatorView/Base (5.2.0)
   - SnapKit (5.7.1)
+  - SwiftyToaster (1.0.2)
   - Then (3.0.0)
 
 DEPENDENCIES:
@@ -26,6 +27,7 @@ DEPENDENCIES:
   - lottie-ios
   - NVActivityIndicatorView
   - SnapKit (~> 5.7.0)
+  - SwiftyToaster
   - Then
 
 SPEC REPOS:
@@ -37,6 +39,7 @@ SPEC REPOS:
     - lottie-ios
     - NVActivityIndicatorView
     - SnapKit
+    - SwiftyToaster
     - Then
 
 SPEC CHECKSUMS:
@@ -47,8 +50,9 @@ SPEC CHECKSUMS:
   lottie-ios: 248b380fa1b97d18e792c37d90da7ab2aa0d6562
   NVActivityIndicatorView: fe52a6a68664c2df8991d7d9e3d86d8d19453c53
   SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
+  SwiftyToaster: 316479401103eb231e69c89fb8727d173c2df001
   Then: 844265ae87834bbe1147d91d5d41a404da2ec27d
 
-PODFILE CHECKSUM: 74f86d856941dbdf8293dd2903ccdbaf9a4808ef
+PODFILE CHECKSUM: a187d197032613e7aef1db1f9a39f8fa8589ab7b
 
 COCOAPODS: 1.16.2

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ErrorViewController: UIViewController {
+class TextDiaryErrorViewController: UIViewController {
 
     //MARK: - Properties
     let errorView = ErrorView()
