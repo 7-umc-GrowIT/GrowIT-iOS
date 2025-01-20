@@ -21,7 +21,7 @@ class CustomTabBarController: UIViewController {
     }
     
     private func setupViewControllers() {
-        let firstVC = FirstViewController()
+        let firstVC = JDiaryHomeViewController()
         let secondVC = HomeViewController()
         let thirdVC = ThirdViewController()
         
@@ -42,8 +42,7 @@ class CustomTabBarController: UIViewController {
         
         customTabBar.snp.makeConstraints{
             $0.bottom.horizontalEdges.equalToSuperview()
-            $0.height.equalToSuperview().multipliedBy(0.1)
-        
+            $0.height.equalTo(100)
         }
         
     }
