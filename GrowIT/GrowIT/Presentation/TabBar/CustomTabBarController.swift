@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class CustomTabBarController: UIViewController {
+class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
     
     var customTabBar: CustomTabBarView!
     private var viewControllers: [UIViewController] = []
@@ -24,11 +24,22 @@ class CustomTabBarController: UIViewController {
         let firstVC = UINavigationController(rootViewController: JDiaryHomeViewController())
         let secondVC = UINavigationController(rootViewController: HomeViewController())
         let thirdVC = UINavigationController(rootViewController: ThirdViewController())
+        [firstVC, secondVC, thirdVC].forEach { vc in
+            vc.delegate = self
+        }
         
         viewControllers = [firstVC, secondVC, thirdVC]
         
         // 초기 뷰 컨트롤러 설정
         add(asChildViewController: viewControllers[1])
+    }
+    
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if viewController.hidesBottomBarWhenPushed {
+            self.customTabBar.isHidden = true
+        } else {
+            self.customTabBar.isHidden = false
+        }
     }
     
     private func setupCustomTabBar() {
