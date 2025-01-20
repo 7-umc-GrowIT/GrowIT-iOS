@@ -28,6 +28,7 @@ class JDiaryHomeBanner: UIView {
     private lazy var bannerBg = UIImageView().then{
         $0.image = UIImage(named: "jDiaryHomeBanner")
         $0.contentMode = .scaleAspectFit
+        $0.isUserInteractionEnabled = true
     }
     
     private lazy var title = makeLabel(title: "오늘의 일기 작성하기", font: .subHeading1(), color: .gray900)
@@ -41,15 +42,24 @@ class JDiaryHomeBanner: UIView {
     
     private lazy var diaryWriteLabel = makeLabel(title: "오늘의 일기 기록하기", font: .heading2Bold(), color: .white)
     
-    private lazy var diaryWriteButton = UIView().then{
+    lazy var diaryWriteButton = UIView().then{
         $0.backgroundColor = .black
         $0.layer.cornerRadius =  16
+        $0.isUserInteractionEnabled = true
     }
     
-    public lazy var diaryDirectWriteButton = UIButton().then{
-        $0.setTitle("오늘은 직접 작성할게요", for: .normal)
-        $0.setTitleColor(.primary600, for: .normal)
-        $0.titleLabel?.font = .body2Medium()
+//    public lazy var diaryDirectWriteButton = UIButton().then{
+//        $0.setTitle("오늘은 직접 작성할게요", for: .normal)
+//        $0.setTitleColor(.primary600, for: .normal)
+//        $0.titleLabel?.font = .body2Medium()
+//        $0.isUserInteractionEnabled = true
+//        $0.backgroundColor = .red
+//    }
+    public lazy var diaryDirectWriteButton = UILabel().then {
+        $0.text = "오늘은 직접 작성할게요"
+        $0.font = .body2Medium()
+        $0.textColor = .primary600
+        $0.isUserInteractionEnabled = true
     }
     
     // MARK: - Stack

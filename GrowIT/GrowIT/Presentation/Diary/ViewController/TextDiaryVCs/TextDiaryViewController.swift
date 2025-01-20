@@ -18,8 +18,9 @@ class TextDiaryViewController: UIViewController {
         setupUI()
         setupNavigationBar()
         setupActions()
+        navigationController?.navigationBar.isHidden = false
     }
-    
+
     //MARK: - Setup Navigation Bar
     private func setupNavigationBar() {
         navigationBarManager.addBackButton(

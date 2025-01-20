@@ -10,7 +10,7 @@ import SnapKit
 
 class CustomTabBarController: UIViewController {
     
-    private var customTabBar: CustomTabBarView!
+    var customTabBar: CustomTabBarView!
     private var viewControllers: [UIViewController] = []
     
     override func viewDidLoad() {
@@ -21,9 +21,9 @@ class CustomTabBarController: UIViewController {
     }
     
     private func setupViewControllers() {
-        let firstVC = JDiaryHomeViewController()
-        let secondVC = HomeViewController()
-        let thirdVC = ThirdViewController()
+        let firstVC = UINavigationController(rootViewController: JDiaryHomeViewController())
+        let secondVC = UINavigationController(rootViewController: HomeViewController())
+        let thirdVC = UINavigationController(rootViewController: ThirdViewController())
         
         viewControllers = [firstVC, secondVC, thirdVC]
         

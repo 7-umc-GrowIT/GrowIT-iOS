@@ -17,8 +17,9 @@ class JDiaryHomeViewController: UIViewController {
         super.viewDidLoad()
         self.view = jDiaryHomeView
         view.backgroundColor = .white
-        
+        navigationController?.navigationBar.isHidden = true
         setupCalendarView()
+        setupActions()
     }
     
     private func setupCalendarView() {
@@ -39,6 +40,28 @@ class JDiaryHomeViewController: UIViewController {
             $0.bottom.equalToSuperview().inset(100)
             $0.height.equalTo(366)
         }
+    }
+    
+    private func setupActions() {
+        // Diary 뷰 관련 액션
+        let voiceAction = UITapGestureRecognizer(target: self, action: #selector(voiceVC))
+        let textAction = UITapGestureRecognizer(target: self, action: #selector(textVC))
+        
+        jDiaryHomeView.diaryHomeBanner.diaryDirectWriteButton.addGestureRecognizer(textAction)
+        jDiaryHomeView.diaryHomeBanner.diaryWriteButton.addGestureRecognizer(voiceAction)
+    }
+    
+    // MARK: Diary View
+    @objc func textVC() {
+        let nextVC = TextDiaryViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func voiceVC() {
+        let nextVC = VoiceDiaryEntryViewController()
+        let navigationController = UINavigationController(rootViewController: nextVC) // 감싸기
+        navigationController.modalPresentationStyle = .fullScreen // 화면 전환 스타일 설정
+        present(navigationController, animated: true, completion: nil) // 모달로 표시
     }
 }
 

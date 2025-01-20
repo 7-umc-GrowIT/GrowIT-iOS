@@ -27,11 +27,6 @@ extension UIFont {
         return createFont(name: AppFontName.pBold, size: 28, lineHeight: 1.2)
     }
     
-    // Title 1 Font
-    public class func title1Bold() -> UIFont {
-        return createFont(name: AppFontName.pBold, size: 28, lineHeight: 1.2)
-    }
-    
     // Heading 1 Bold Font
     public class func heading1Bold() -> UIFont {
         return createFont(name: AppFontName.pBold, size: 24, lineHeight: 1.2)
