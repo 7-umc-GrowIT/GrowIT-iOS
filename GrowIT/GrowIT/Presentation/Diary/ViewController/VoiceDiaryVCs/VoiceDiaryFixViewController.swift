@@ -57,8 +57,12 @@ class VoiceDiaryFixViewController: ViewController {
     }
     
     @objc func nextVC() {
-        let nextVC = VoiceDiaryRecommendChallengeViewController()
-        navigationController?.pushViewController(nextVC, animated: true)
+        if let presentingVC = presentingViewController as? UINavigationController {
+            dismiss(animated: true) {
+                let nextVC = VoiceDiaryRecommendChallengeViewController()
+                presentingVC.pushViewController(nextVC, animated: true)
+            }
+        }
     }
 }
 

@@ -44,7 +44,7 @@ class VoiceDiarySummaryView: UIView {
         $0.spacing = 8
         $0.distribution = .equalSpacing
         $0.backgroundColor = .clear
-        $0.configure(rectColor: UIColor(hex: "#CC00B277")!, titleColor: .primary200)
+        $0.configure(rectColor: UIColor(hex: "00B277")!.withAlphaComponent(0.2), titleColor: .primary200)
     }
     
     private let todayDiaryLabel = UILabel().then {

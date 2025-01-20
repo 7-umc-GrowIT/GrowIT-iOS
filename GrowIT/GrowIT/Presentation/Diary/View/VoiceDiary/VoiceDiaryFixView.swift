@@ -44,6 +44,13 @@ class VoiceDiaryFixView: UIView {
         $0.textContainer.lineFragmentPadding = 12
     }
     
+    private let errorLabel = UILabel().then {
+        $0.text = "감정 분석을 위해 100자 이내로 작성한 경우 수정이 불가합니다"
+        $0.font = .detail2Regular()
+        $0.textColor = .negative400
+        $0.isHidden = true
+    }
+    
     let cancelButton = AppButton(title: "취소", titleColor: .gray400).then {
         $0.backgroundColor = .gray700
     }
@@ -81,6 +88,12 @@ class VoiceDiaryFixView: UIView {
             make.height.equalTo(200)
         }
         
+        addSubview(errorLabel)
+        errorLabel.snp.makeConstraints { make in
+            make.leading.equalTo(textView.snp.leading)
+            make.top.equalTo(textView.snp.bottom).offset(4)
+        }
+        
         addSubview(cancelButton)
         cancelButton.snp.makeConstraints { make in
             make.leading.equalTo(textView.snp.leading)
@@ -106,6 +119,7 @@ class VoiceDiaryFixView: UIView {
         textView.textColor = isEnabled ? .negative400 : .white
         textView.layer.borderColor =  isEnabled ? UIColor.negative400.cgColor : UIColor.clear.cgColor
         textView.layer.borderWidth = isEnabled ? 1 : 0
+        errorLabel.isHidden = !isEnabled
     }
 
 }

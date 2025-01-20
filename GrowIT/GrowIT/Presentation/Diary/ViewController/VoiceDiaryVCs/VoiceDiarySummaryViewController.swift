@@ -65,6 +65,8 @@ class VoiceDiarySummaryViewController: ViewController {
     // 일기 요약 이탈 시 오류 modal 뷰
     @objc func labelTapped() {
         let nextVC = VoiceDiaryFixViewController(text: voiceDiarySummaryView.diaryLabel.text ?? "")
-        presentPageSheet(viewController: nextVC, detentFraction: 0.6)
+        let navController = UINavigationController(rootViewController: nextVC)
+        navController.modalPresentationStyle = .fullScreen
+        presentPageSheet(viewController: navController, detentFraction: 0.6)
     }
 }
