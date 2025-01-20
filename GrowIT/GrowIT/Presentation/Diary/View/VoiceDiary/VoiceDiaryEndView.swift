@@ -18,6 +18,13 @@ class VoiceDiaryEndView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // 그라데이션 적용
+        setGradient(color1: .gray700, color2: .gray900)
+    }
+    
     //MARK: - UI Components
     private let endLabel = UILabel().then {
         $0.text = "일기 작성을 완료했어요\n크레딧을 지급할게요!"
