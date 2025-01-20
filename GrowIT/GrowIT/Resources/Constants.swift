@@ -9,8 +9,8 @@ import Foundation
 
 struct Constants {
     
-    struct API {
-        static let baseURL = ""
+    public struct API {
+        static let baseURL = "https://13.125.97.8:8080/"
         static let diaryURL = "\(baseURL)/diaries"
     }
 }
