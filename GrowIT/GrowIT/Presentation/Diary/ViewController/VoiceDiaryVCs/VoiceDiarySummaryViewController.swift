@@ -48,6 +48,8 @@ class VoiceDiarySummaryViewController: ViewController {
     private func setupActions() {
         voiceDiarySummaryView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         
+        let labelAction = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
+        voiceDiarySummaryView.descriptionLabel.addGestureRecognizer(labelAction)
     }
     
     //MARK: - @objc methods
@@ -62,23 +64,7 @@ class VoiceDiarySummaryViewController: ViewController {
     
     // 일기 요약 이탈 시 오류 modal 뷰
     @objc func labelTapped() {
-        let nextVC = VoiceDiarySummaryErrorViewController()
-        nextVC.modalPresentationStyle = .pageSheet
-        
-        if let sheet = nextVC.sheetPresentationController {
-            //지원할 크기 지정
-            if #available(iOS 16.0, *) {
-                sheet.detents = [
-                    .custom{ context in
-                        0.37 * context.maximumDetentValue
-                    }
-                ]
-            } else {
-                sheet.detents = [.medium()]
-            }
-            sheet.prefersGrabberVisible = true
-        }
-        present(nextVC, animated: true, completion: nil)
+        let nextVC = VoiceDiaryFixViewController(text: voiceDiarySummaryView.diaryLabel.text ?? "")
+        presentPageSheet(viewController: nextVC, detentFraction: 0.6)
     }
-    
 }
