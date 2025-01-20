@@ -8,22 +8,78 @@
 import UIKit
 
 class VoiceDiaryFixViewController: ViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+    
+    // MARK: Properties
+    let text: String
+    let voiceDiaryFixView = VoiceDiaryFixView()
+    
+    
+    init(text: String) {
+        self.text = text
+        super.init(nibName: nil, bundle: nil)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    */
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+        setupDelegate()
+        setupActions()
+    }
+    
+    // MARK: Setup UI
+    private func setupUI() {
+        view.addSubview(voiceDiaryFixView)
+        voiceDiaryFixView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        voiceDiaryFixView.configure(text: text)
+    }
+    
+    // MARK: Setup Actions
+    private func setupActions() {
+        voiceDiaryFixView.cancelButton.addTarget(self, action: #selector(prevVC), for: .touchUpInside)
+        voiceDiaryFixView.fixButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+    }
+    
+    // MARK: Setup Delegate
+    private func setupDelegate() {
+        voiceDiaryFixView.textView.delegate = self
+    }
+    
+    // MARK: @objc methods
+    @objc func prevVC() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func nextVC() {
+        if let presentingVC = presentingViewController as? UINavigationController {
+            dismiss(animated: true) {
+                let nextVC = VoiceDiaryRecommendChallengeViewController()
+                presentingVC.pushViewController(nextVC, animated: true)
+            }
+        }
+    }
+}
 
+extension VoiceDiaryFixViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        let textLength = textView.text.count
+        if textLength < 100 {
+            voiceDiaryFixView.lessThanHundred(isEnabled: true)
+        } else {
+            voiceDiaryFixView.lessThanHundred(isEnabled: false)
+            let changedState = textView.text == self.text ? false : true
+            voiceDiaryFixView.fixButton.setButtonState(
+                isEnabled: changedState,
+                enabledColor: .primary400,
+                disabledColor: .gray700,
+                enabledTitleColor: .black,
+                disabledTitleColor: .gray400)
+        }
+    }
 }

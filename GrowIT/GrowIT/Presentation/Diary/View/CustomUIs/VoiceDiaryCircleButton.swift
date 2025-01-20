@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CircleCheckButton: UIButton {
+class VoiceDiaryCircleButton: UIButton {
     
     private var isEnabledState: Bool
     
@@ -28,7 +28,7 @@ class CircleCheckButton: UIButton {
     }
     
     private func updateButtonColor() {
-        let tintColor: UIColor = isEnabledState ? .primary600 : .gray300
+        let tintColor: UIColor = isEnabledState ? .primary400 : .gray500
         self.setImage(UIImage(systemName: "checkmark.circle.fill")?.withTintColor(tintColor, renderingMode: .alwaysOriginal), for: .normal)
     }
     

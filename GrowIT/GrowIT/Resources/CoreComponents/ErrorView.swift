@@ -86,18 +86,26 @@ class ErrorView: UIView {
     // MARK: Configure
     func configure(icon: String,
                    fisrtLabel: String, secondLabel: String,
+                   firstColor: UIColor, secondColor: UIColor,
                    title1: String, title1Color1: UIColor, title1Background: UIColor,
-                   title2: String, title1Color2: UIColor, title2Background: UIColor
+                   title2: String, title1Color2: UIColor, title2Background: UIColor, targetText: String, viewColor: UIColor
     ) {
         diaryIcon.image = UIImage(named: icon)
         
         label1.text = fisrtLabel
+        label1.textColor = firstColor
         label2.text = secondLabel
+        label2.textColor = secondColor
+        label2.setPartialTextStyle(text: secondLabel, targetText: targetText, color: .primary400, font: .heading3SemiBold())
         
-        exitButton.titleLabel?.textColor = title1Color1
+        exitButton.setTitle(title1, for: .normal)
+        exitButton.setTitleColor(title1Color1, for: .normal)
         exitButton.backgroundColor = title1Background
         
-        continueButton.titleLabel?.textColor = title1Color2
+        continueButton.setTitle(title2, for: .normal)
+        continueButton.setTitleColor(title1Color2, for: .normal)
         continueButton.backgroundColor = title2Background
+        
+        backgroundColor = viewColor
     }
 }
