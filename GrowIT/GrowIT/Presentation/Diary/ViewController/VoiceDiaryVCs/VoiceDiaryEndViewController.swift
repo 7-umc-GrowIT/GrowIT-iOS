@@ -9,21 +9,56 @@ import UIKit
 
 class VoiceDiaryEndViewController: ViewController {
 
+    //MARK: - Properties
+    let voiceDiaryEndView =  VoiceDiaryEndView()
+    let navigationBarManager = NavigationManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        setupUI()
+        setupActions()
+        setupNavigationBar()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    //MARK: - Setup Navigation Bar
+    private func setupNavigationBar() {
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(prevVC),
+            tintColor: .white
+        )
+        
+        navigationBarManager.setTitle(
+            to: navigationItem,
+            title: "",
+            textColor: .white
+        )
     }
-    */
+    
+    //MARK: - Setup UI
+    private func setupUI() {
+        view.backgroundColor = .white
+        view.addSubview(voiceDiaryEndView)
+        voiceDiaryEndView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    //MARK: - Setup Actions
+    private func setupActions() {
+        voiceDiaryEndView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+    }
+    
+    //MARK: - @objc methods
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func nextVC() {
+        
+    }
 
+    
 }

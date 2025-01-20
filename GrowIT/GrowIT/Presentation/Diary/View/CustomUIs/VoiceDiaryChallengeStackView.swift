@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ChallengeStackView: UIStackView {
+class VoiceDiaryhallengeStackView: UIStackView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -17,15 +17,6 @@ class ChallengeStackView: UIStackView {
     
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // 그라데이션 적용
-        rect1.setGradient(color1: .white, color2: .primary50)
-        rect2.setGradient(color1: .white, color2: .primary50)
-        rect3.setGradient(color1: .white, color2: .primary50)
     }
     
     //MARK: - UI Components
@@ -47,7 +38,7 @@ class ChallengeStackView: UIStackView {
         $0.textColor = .gray900
     }
     
-    let button1 = CircleCheckButton(isEnabled: false)
+    let button1 = VoiceDiaryCircleButton(isEnabled: false)
     
     private let clockIcon1 = UIImageView().then {
         $0.image = UIImage(named: "clock")
@@ -78,7 +69,7 @@ class ChallengeStackView: UIStackView {
         $0.textColor = .gray900
     }
     
-    let button2 = CircleCheckButton(isEnabled: false)
+    let button2 = VoiceDiaryCircleButton(isEnabled: false)
     
     private let clockIcon2 = UIImageView().then {
         $0.image = UIImage(named: "clock")
@@ -109,7 +100,7 @@ class ChallengeStackView: UIStackView {
         $0.textColor = .gray900
     }
     
-    let button3 = CircleCheckButton(isEnabled: false)
+    let button3 = VoiceDiaryCircleButton(isEnabled: false)
     
     private let clockIcon3 = UIImageView().then {
         $0.image = UIImage(named: "clock")
@@ -230,6 +221,20 @@ class ChallengeStackView: UIStackView {
         addArrangedSubview(rect2)
         addArrangedSubview(rect3)
         
+    }
+    
+    func configure(rectColor: UIColor, textColor: UIColor, clockColor: UIColor) {
+        [rect1, rect2, rect3].forEach { rect in
+            rect.backgroundColor = rectColor
+        }
+        
+        [label1, label2, label3].forEach { label in
+            label.textColor = textColor
+        }
+        
+        [clockLabel1, clockLabel2, clockLabel3].forEach { clock in
+            clock.textColor = clockColor
+        }
     }
     
 }

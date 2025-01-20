@@ -49,7 +49,7 @@ class VoiceDiaryDateSelectViewController: ViewController {
     private func setupActions() {
         voiceDiaryDateSelectView.startButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         
-        let labelAction = UITapGestureRecognizer(target: self, action: #selector(labeledTapped))
+        let labelAction = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
         voiceDiaryDateSelectView.helpLabel.addGestureRecognizer(labelAction)
     }
     
@@ -64,7 +64,7 @@ class VoiceDiaryDateSelectViewController: ViewController {
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
-    @objc func labeledTapped() {
+    @objc func labelTapped() {
         let nextVC = VoiceDiaryTipViewController()
         nextVC.modalPresentationStyle = .pageSheet
         

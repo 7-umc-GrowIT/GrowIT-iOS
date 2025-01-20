@@ -85,4 +85,14 @@ class EmoStackView: UIStackView {
         addArrangedSubview(rect3)
     }
     
+    func configure(rectColor: UIColor, titleColor: UIColor) {
+        [rect1, rect2, rect3].forEach { rect in
+            rect.backgroundColor = rectColor
+        }
+        
+        [label1, label2, label3].forEach { label in
+            label.textColor = titleColor
+        }
+    }
+    
 }
