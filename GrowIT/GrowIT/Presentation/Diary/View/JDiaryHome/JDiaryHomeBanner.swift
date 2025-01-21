@@ -48,13 +48,6 @@ class JDiaryHomeBanner: UIView {
         $0.isUserInteractionEnabled = true
     }
     
-//    public lazy var diaryDirectWriteButton = UIButton().then{
-//        $0.setTitle("오늘은 직접 작성할게요", for: .normal)
-//        $0.setTitleColor(.primary600, for: .normal)
-//        $0.titleLabel?.font = .body2Medium()
-//        $0.isUserInteractionEnabled = true
-//        $0.backgroundColor = .red
-//    }
     public lazy var diaryDirectWriteButton = UILabel().then {
         $0.text = "오늘은 직접 작성할게요"
         $0.font = .body2Medium()

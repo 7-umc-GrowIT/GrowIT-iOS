@@ -28,9 +28,19 @@ class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
             vc.delegate = self
         }
         
-        viewControllers = [firstVC, secondVC, thirdVC]
+        // 각 뷰 컨트롤러를 UINavigationController에 포함시킵니다.
+        let firstNavController = UINavigationController(rootViewController: firstVC)
+        let secondNavController = UINavigationController(rootViewController: secondVC)
+        let thirdNavController = UINavigationController(rootViewController: thirdVC)
         
-        // 초기 뷰 컨트롤러 설정
+        firstNavController.delegate = self
+        secondNavController.delegate = self
+        thirdNavController.delegate = self
+
+           // 네비게이션 컨트롤러 배열을 viewControllers에 할당
+        viewControllers = [firstNavController, secondNavController, thirdNavController]
+
+           // 초기 뷰 컨트롤러 설정
         add(asChildViewController: viewControllers[1])
     }
     

@@ -46,10 +46,15 @@
 			<key>orderHint</key>
 			<integer>5</integer>
 		</dict>
-		<key>NVActivityIndicatorView.xcscheme_^#shared#^_</key>
+		<key>Moya.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>13</integer>
+		</dict>
+		<key>NVActivityIndicatorView.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>14</integer>
 		</dict>
 		<key>Pods-GrowIT.xcscheme</key>
 		<dict>
@@ -75,7 +80,7 @@
 		<key>SwiftyToaster.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>14</integer>
+			<integer>15</integer>
 		</dict>
 		<key>Then.xcscheme</key>
 		<dict>
