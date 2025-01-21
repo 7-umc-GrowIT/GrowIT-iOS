@@ -69,11 +69,13 @@ class JDiaryHomeViewController: UIViewController {
     // MARK: Diary View
     @objc func textVC() {
         let nextVC = TextDiaryViewController()
+        nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
     @objc func voiceVC() {
         let nextVC = VoiceDiaryEntryViewController()
+        nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
 }

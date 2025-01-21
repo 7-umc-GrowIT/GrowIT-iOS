@@ -21,12 +21,10 @@ class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
     }
     
     private func setupViewControllers() {
-        let firstVC = UINavigationController(rootViewController: JDiaryHomeViewController())
-        let secondVC = UINavigationController(rootViewController: HomeViewController())
-        let thirdVC = UINavigationController(rootViewController: ThirdViewController())
-        [firstVC, secondVC, thirdVC].forEach { vc in
-            vc.delegate = self
-        }
+        let firstVC = JDiaryHomeViewController()
+        let secondVC = HomeViewController()
+        let thirdVC = ThirdViewController()
+        
         
         // 각 뷰 컨트롤러를 UINavigationController에 포함시킵니다.
         let firstNavController = UINavigationController(rootViewController: firstVC)
