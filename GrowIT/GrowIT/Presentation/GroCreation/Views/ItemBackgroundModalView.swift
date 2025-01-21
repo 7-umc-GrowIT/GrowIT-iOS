@@ -4,7 +4,6 @@
 //
 //  Created by 오현민 on 1/12/25.
 //
-// MARK: - 그로 초기 배경목록 ModalView
 
 import UIKit
 

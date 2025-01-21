@@ -8,14 +8,10 @@
 import UIKit
 
 class GroSetNameView: UIView {
-    private lazy var backgroundImage = UIImageView().then {
-        $0.image = UIImage() /// 수정
-        $0.contentMode = .scaleAspectFill
-        $0.translatesAutoresizingMaskIntoConstraints = false
-    }
+    private var gradientColors: [CGColor]
+    private var iconImage: UIImage
     
     private lazy var shapeIcon = UIImageView().then {
-        $0.image = UIImage() /// 수정
         $0.contentMode = .scaleAspectFill
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -58,19 +54,53 @@ class GroSetNameView: UIView {
     
     private lazy var startButton = UIButton().then {
         // 만들어야함
+        $0.setTitle("시작하기", for: .normal)
+        $0.backgroundColor = .black
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     //MARK: - init
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(gradientColors: [CGColor], iconImage: UIImage) {
+        self.gradientColors = gradientColors
+        self.iconImage = iconImage
+        super.init(frame: .zero) 
         self.backgroundColor = .white
-        setView()
-        setConstraints()
+        configureView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Configure View
+    private func configureView() {
+        setView()
+        setConstraints()
+        configureGradientLayer()
+        configureIconImage()
+    }
+    
+    private func configureGradientLayer() {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = self.bounds
+        // 그라데이션 될 색 지정
+        gradientLayer.colors = gradientColors
+        // 뷰에 gradientLayer추가
+        self.layer.insertSublayer(gradientLayer, at: 0) // 레이어를 가장 뒤에 삽입
+    }
+    
+    private func configureIconImage() {
+        shapeIcon.image = iconImage
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // 레이아웃 변경 시 gradientLayer 크기 업데이트
+        self.layer.sublayers?.forEach { layer in
+            if let gradientLayer = layer as? CAGradientLayer {
+                gradientLayer.frame = self.bounds
+            }
+        }
     }
     
     //MARK: - 컴포넌트 추가
@@ -82,7 +112,7 @@ class GroSetNameView: UIView {
     private func setConstraints() {
         shapeIcon.snp.makeConstraints {
             $0.width.height.equalTo(32)
-            $0.top.equalTo(safeAreaLayoutGuide).offset(60)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(60)
             $0.leading.equalToSuperview().inset(24)
         }
         
@@ -90,30 +120,30 @@ class GroSetNameView: UIView {
             $0.top.equalTo(shapeIcon.snp.bottom).offset(8)
             $0.leading.equalToSuperview().inset(24)
         }
-         
+        
         titleLabel.snp.makeConstraints {
-            $0.top.equalTo(subtitleLabel)
+            $0.top.equalTo(subtitleLabel.snp.bottom)
             $0.leading.equalToSuperview().inset(24)
         }
-         
+        
         nickNameLabel.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(32)
             $0.leading.equalToSuperview().inset(24)
         }
-         
+        
         nickNameTextField.snp.makeConstraints {
             $0.top.equalTo(nickNameLabel.snp.bottom).offset(8)
             $0.leading.equalToSuperview().inset(24)
         }
-         
+        
         groImageView.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide).offset(164)
             $0.centerX.equalToSuperview()
             $0.size.equalTo(CGSize(width: 778, height: 584))
         }
-         
+        
         startButton.snp.makeConstraints {
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-20)
+            $0.bottom.equalTo(safeAreaLayoutGuide).inset(20)
             $0.horizontalEdges.equalToSuperview().inset(24)
             $0.height.equalTo(60)
         }
