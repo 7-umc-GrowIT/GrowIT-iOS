@@ -82,8 +82,6 @@ class GroSetBackgroundViewController: UIViewController {
     
     //MARK: - UI 업데이트 함수
     private func setButtonUI() {
-        groView.purchaseButton.showCredit = false
-        groView.purchaseButton.title = "다음으로"
         groView.purchaseButton.updateUI()
     }
     

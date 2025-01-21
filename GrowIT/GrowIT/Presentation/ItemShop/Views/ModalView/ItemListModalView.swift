@@ -31,7 +31,7 @@ class ItemListModalView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    public var purchaseButton = PurchaseButton(showCredit: true, title: "구매하기", credit: "120").then {
+    public var purchaseButton = PurchaseButton(credit: 0).then {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     

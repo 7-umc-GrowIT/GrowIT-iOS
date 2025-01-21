@@ -25,7 +25,7 @@ class ItemBackgroundModalView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    public var purchaseButton = PurchaseButton(showCredit: false, title: "다음으로", credit: "").then {
+    public var purchaseButton = PurchaseButton(credit: 0).then {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     

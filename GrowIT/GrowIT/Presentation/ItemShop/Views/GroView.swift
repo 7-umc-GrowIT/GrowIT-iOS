@@ -50,7 +50,7 @@ class GroView: UIView {
         $0.spacing = 8
     }
     
-    public var purchaseButton = PurchaseButton(showCredit: true, title: "구매하기", credit: "120").then {
+    public var purchaseButton = PurchaseButton(credit: 0).then {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
