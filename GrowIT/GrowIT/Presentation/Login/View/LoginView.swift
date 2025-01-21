@@ -1,5 +1,5 @@
 //
-//  MainView.swift
+//  LoginView.swift
 //  GrowIT
 //
 //  Created by 강희정 on 1/12/25.
@@ -9,7 +9,7 @@ import UIKit
 import Then
 import SnapKit
 
-class MainView: UIView {
+class LoginView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)

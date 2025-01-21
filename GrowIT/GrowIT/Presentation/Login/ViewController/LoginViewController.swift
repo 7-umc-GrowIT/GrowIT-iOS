@@ -1,5 +1,5 @@
 //
-//  MainViewController.swift
+//  LoginViewController.swift
 //  GrowIT
 //
 //  Created by 강희정 on 1/13/25.
@@ -9,17 +9,17 @@ import UIKit
 import Foundation
 import SnapKit
 
-class MainViewController: UIViewController {
+class LoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view = mainView
+        self.view = loginView
         
-        mainView.emailLoginButton.addTarget(self, action: #selector(emailLoginBtnTap), for: .touchUpInside)
+        loginView.emailLoginButton.addTarget(self, action: #selector(emailLoginBtnTap), for: .touchUpInside)
 
     }
     
-    private lazy var mainView = MainView()
+    private lazy var loginView = LoginView()
     
     
     //MARK: - Action
