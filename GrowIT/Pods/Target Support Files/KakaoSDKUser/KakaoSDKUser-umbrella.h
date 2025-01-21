@@ -10,7 +10,7 @@
 #endif
 #endif
 
-#import "KakaoSDKUser.h"
+#import <KakaoSDKUser/KakaoSDKUser.h>
 
 FOUNDATION_EXPORT double KakaoSDKUserVersionNumber;
 FOUNDATION_EXPORT const unsigned char KakaoSDKUserVersionString[];
