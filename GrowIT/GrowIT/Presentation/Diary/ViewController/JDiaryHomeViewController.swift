@@ -25,11 +25,9 @@ class JDiaryHomeViewController: UIViewController {
         super.viewDidLoad()
         self.view = jDiaryHomeView
         view.backgroundColor = .white
-        
-        
-        jDiaryHomeView.diaryHomeBanner.diaryDirectWriteButton.addTarget(self, action: #selector(diaryDirectWriteButtonTapped), for: .touchUpInside)
-        
+        navigationController?.navigationBar.isHidden = true
         setupCalendarView()
+        setupActions()
     }
     
     @objc private func diaryDirectWriteButtonTapped() {
@@ -57,6 +55,28 @@ class JDiaryHomeViewController: UIViewController {
             $0.bottom.equalToSuperview().inset(100)
             $0.height.equalTo(366)
         }
+    }
+    
+    private func setupActions() {
+        // Diary 뷰 관련 액션
+        let voiceAction = UITapGestureRecognizer(target: self, action: #selector(voiceVC))
+        let textAction = UITapGestureRecognizer(target: self, action: #selector(textVC))
+        
+        jDiaryHomeView.diaryHomeBanner.diaryDirectWriteButton.addGestureRecognizer(textAction)
+        jDiaryHomeView.diaryHomeBanner.diaryWriteButton.addGestureRecognizer(voiceAction)
+    }
+    
+    // MARK: Diary View
+    @objc func textVC() {
+        let nextVC = TextDiaryViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func voiceVC() {
+        let nextVC = VoiceDiaryEntryViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(nextVC, animated: true)
     }
 }
 

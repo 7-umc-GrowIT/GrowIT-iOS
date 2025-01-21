@@ -61,6 +61,7 @@ class VoiceDiaryDateSelectViewController: ViewController {
     
     @objc func nextVC() {
         let nextVC = VoiceDiaryRecordViewController()
+        nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
     

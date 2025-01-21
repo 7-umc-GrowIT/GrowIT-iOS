@@ -73,6 +73,7 @@ class VoiceDiaryRecommendChallengeViewController: ViewController {
             Toast.show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "한 개 이상의 챌린지를 선택해 주세요", font: .heading3SemiBold(), in: self.view)
         } else {
             let nextVC = VoiceDiaryEndViewController()
+            nextVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(nextVC, animated: true)
         }
     }

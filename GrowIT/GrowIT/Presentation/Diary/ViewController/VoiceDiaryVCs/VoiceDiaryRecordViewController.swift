@@ -59,6 +59,7 @@ class VoiceDiaryRecordViewController: ViewController {
     
     @objc func nextVC() {
         let nextVC = VoiceDiaryLoadingViewController()
+        nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
