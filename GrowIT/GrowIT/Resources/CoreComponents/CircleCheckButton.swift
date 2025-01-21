@@ -35,5 +35,4 @@ class CircleCheckButton: UIButton {
     func isSelectedState() -> Bool {
         return isEnabledState
     }
-    
 }

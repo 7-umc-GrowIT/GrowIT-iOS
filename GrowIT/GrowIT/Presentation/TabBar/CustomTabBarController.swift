@@ -10,7 +10,7 @@ import SnapKit
 
 class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
     
-    private var customTabBar: CustomTabBarView!
+    var customTabBar: CustomTabBarView!
     private var viewControllers: [UIViewController] = []
     
     override func viewDidLoad() {
@@ -24,6 +24,7 @@ class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
         let firstVC = JDiaryHomeViewController()
         let secondVC = HomeViewController()
         let thirdVC = ThirdViewController()
+        
         
         // 각 뷰 컨트롤러를 UINavigationController에 포함시킵니다.
         let firstNavController = UINavigationController(rootViewController: firstVC)

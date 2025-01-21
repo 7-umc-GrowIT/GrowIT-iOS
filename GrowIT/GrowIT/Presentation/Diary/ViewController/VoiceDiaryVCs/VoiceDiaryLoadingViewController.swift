@@ -17,6 +17,10 @@ class VoiceDiaryLoadingViewController: ViewController {
         super.viewDidLoad()
         setupUI()
         setupNavigationBar()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            self.navigateToNextScreen()
+        }
     }
     
     // MARK: Setup Navigation Bar
@@ -46,5 +50,11 @@ class VoiceDiaryLoadingViewController: ViewController {
     //MARK: - @objc methods
     @objc func prevVC() {
         // navigationController?.popViewController(animated: true)
+    }
+
+    private func navigateToNextScreen() {
+        let nextVC = VoiceDiarySummaryViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(nextVC, animated: true)
     }
 }
