@@ -28,6 +28,7 @@ class JDiaryHomeBanner: UIView {
     private lazy var bannerBg = UIImageView().then{
         $0.image = UIImage(named: "jDiaryHomeBanner")
         $0.contentMode = .scaleAspectFit
+        $0.isUserInteractionEnabled = true
     }
     
     private lazy var title = makeLabel(title: "오늘의 일기 작성하기", font: .subHeading1(), color: .gray900)
@@ -50,6 +51,7 @@ class JDiaryHomeBanner: UIView {
         $0.setTitle("오늘은 직접 작성할게요", for: .normal)
         $0.setTitleColor(.primary600, for: .normal)
         $0.titleLabel?.font = .body2Medium()
+        $0.clipsToBounds = true
     }
     
     // MARK: - Stack

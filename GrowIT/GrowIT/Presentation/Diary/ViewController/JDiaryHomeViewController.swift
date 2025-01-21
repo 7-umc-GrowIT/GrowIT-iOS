@@ -13,12 +13,30 @@ class JDiaryHomeViewController: UIViewController {
     private lazy var jDiaryHomeView = JDiaryHomeView()
     private lazy var jDiaryCalendarVC = JDiaryCalendarController()
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = jDiaryHomeView
         view.backgroundColor = .white
         
+        
+        jDiaryHomeView.diaryHomeBanner.diaryDirectWriteButton.addTarget(self, action: #selector(diaryDirectWriteButtonTapped), for: .touchUpInside)
+        
         setupCalendarView()
+    }
+    
+    @objc private func diaryDirectWriteButtonTapped() {
+        let textDiaryVC = TextDiaryViewController()
+        
+        //textDiaryVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(textDiaryVC, animated: false)
     }
     
     private func setupCalendarView() {
