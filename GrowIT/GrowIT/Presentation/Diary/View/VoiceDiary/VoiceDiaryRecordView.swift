@@ -18,6 +18,13 @@ class VoiceDiaryRecordView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // 그라데이션 적용
+        setGradient(color1: .gray700, color2: .gray900)
+    }
+    
     // MARK: UI Components
     private let label1 = UILabel().then {
         $0.text = "편하게 말해보세요\n당신의 이야기를 듣고 있어요"

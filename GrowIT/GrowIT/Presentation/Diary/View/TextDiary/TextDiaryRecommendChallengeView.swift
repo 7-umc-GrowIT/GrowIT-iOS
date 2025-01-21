@@ -39,7 +39,7 @@ class TextDiaryRecommendChallengeView: UIView {
         $0.backgroundColor = .clear
     }
     
-    let challengeStackView = ChallengeStackView().then {
+    let challengeStackView = TextDiaryChallengeStackView().then {
         $0.axis = .vertical
         $0.spacing = 12
         $0.distribution = .equalSpacing
