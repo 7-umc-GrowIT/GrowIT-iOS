@@ -46,10 +46,8 @@ class VoiceDiaryRecordErrorViewController: UIViewController {
     }
     
     @objc func mainVC() {
-        if let presentingVC = presentingViewController as? UINavigationController {
-            dismiss(animated: true) {
-                presentingVC.popToRootViewController(animated: true)
-            }
+        dismiss(animated: true) { [weak self] in
+            self?.navigationController?.popToRootViewController(animated: true)
         }
     }
 }

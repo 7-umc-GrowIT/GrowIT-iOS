@@ -54,6 +54,7 @@ class VoiceDiaryLoadingViewController: ViewController {
 
     private func navigateToNextScreen() {
         let nextVC = VoiceDiarySummaryViewController()
+        nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
 }

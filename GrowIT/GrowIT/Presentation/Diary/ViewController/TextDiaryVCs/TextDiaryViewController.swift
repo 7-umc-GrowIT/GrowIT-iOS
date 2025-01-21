@@ -58,6 +58,7 @@ class TextDiaryViewController: UIViewController {
     
     @objc func nextVC() {
         let nextVC = TextDiaryLoadingViewController()
+        nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
     

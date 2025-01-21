@@ -54,15 +54,12 @@ class JDiaryHomeViewController: UIViewController {
     // MARK: Diary View
     @objc func textVC() {
         let nextVC = TextDiaryViewController()
-        nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
     @objc func voiceVC() {
         let nextVC = VoiceDiaryEntryViewController()
-        let navigationController = UINavigationController(rootViewController: nextVC) // 감싸기
-        navigationController.modalPresentationStyle = .fullScreen // 화면 전환 스타일 설정
-        present(navigationController, animated: true, completion: nil) // 모달로 표시
+        navigationController?.pushViewController(nextVC, animated: true)
     }
 }
 

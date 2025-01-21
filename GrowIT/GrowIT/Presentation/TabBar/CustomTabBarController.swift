@@ -35,10 +35,10 @@ class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
     }
     
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        if viewController.hidesBottomBarWhenPushed {
-            self.customTabBar.isHidden = true
+        if navigationController.viewControllers.count > 1 {
+            viewController.hidesBottomBarWhenPushed = true
         } else {
-            self.customTabBar.isHidden = false
+            viewController.hidesBottomBarWhenPushed = false
         }
     }
     

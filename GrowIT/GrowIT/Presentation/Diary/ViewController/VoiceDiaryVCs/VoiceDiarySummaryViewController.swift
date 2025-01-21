@@ -62,6 +62,7 @@ class VoiceDiarySummaryViewController: ViewController {
     
     @objc func nextVC() {
         let nextVC = VoiceDiaryRecommendChallengeViewController()
+        nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
     

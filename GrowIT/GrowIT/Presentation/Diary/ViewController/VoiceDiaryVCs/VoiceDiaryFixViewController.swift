@@ -71,6 +71,7 @@ extension VoiceDiaryFixViewController: UITextViewDelegate {
         let textLength = textView.text.count
         if textLength < 100 {
             voiceDiaryFixView.lessThanHundred(isEnabled: true)
+            voiceDiaryFixView.fixButton.setButtonState(isEnabled: false, enabledColor: .primary400, disabledColor: .gray700, enabledTitleColor: .black, disabledTitleColor: .gray400)
         } else {
             voiceDiaryFixView.lessThanHundred(isEnabled: false)
             let changedState = textView.text == self.text ? false : true
