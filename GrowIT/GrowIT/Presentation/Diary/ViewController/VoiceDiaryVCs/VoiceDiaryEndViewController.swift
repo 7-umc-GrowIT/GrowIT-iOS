@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VoiceDiaryEndViewController: ViewController {
+class VoiceDiaryEndViewController: UIViewController {
 
     //MARK: - Properties
     let voiceDiaryEndView =  VoiceDiaryEndView()
