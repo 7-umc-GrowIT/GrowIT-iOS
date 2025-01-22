@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TextDiaryRecommendChallengeViewController: UIViewController {
+class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErrorDelegate {
     
     //MARK: - Properties
     let textDiaryRecommendChallengeView = TextDiaryRecommendChallengeView()
@@ -18,7 +18,7 @@ class TextDiaryRecommendChallengeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        navigationController?.isNavigationBarHidden = false
         setupUI()
         setupNavigationBar()
         setupActions()
@@ -60,12 +60,21 @@ class TextDiaryRecommendChallengeViewController: UIViewController {
     
     //MARK: - @objc methods
     @objc func prevVC() {
-        navigationController?.popViewController(animated: true)
+        let prevVC = TextDiaryErrorViewController()
+        prevVC.delegate = self
+        let navController = UINavigationController(rootViewController: prevVC)
+        navController.modalPresentationStyle = .fullScreen
+        presentPageSheet(viewController: navController, detentFraction: 0.37)
     }
     
     @objc func nextVC() {
-        let nextVC = TextDiaryEndViewController()
-        navigationController?.pushViewController(nextVC, animated: true)
+        if buttonCount == 0 {
+            Toast.show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "한 개 이상의 챌린지를 선택해 주세요", font: .heading3SemiBold(), in: self.view)
+        } else {
+            let nextVC = TextDiaryEndViewController()
+            nextVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(nextVC, animated: true)
+        }
     }
     
     @objc func buttonTapped(_ sender: CircleCheckButton) {
@@ -84,4 +93,9 @@ class TextDiaryRecommendChallengeViewController: UIViewController {
             disabledTitleColor: .gray400
         )
     }
+    
+    func didTapExitButton() {
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
 }

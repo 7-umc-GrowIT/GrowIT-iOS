@@ -14,5 +14,7 @@ target 'GrowIT' do
   pod 'KakaoSDKUser'
   pod 'lottie-ios'
   pod 'NVActivityIndicatorView'
-
+  pod 'SwiftyToaster'
+  pod 'Moya'
+  
 end

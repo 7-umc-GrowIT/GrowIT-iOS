@@ -45,7 +45,7 @@ class HomeView: UIView {
         
         topNavBar.snp.makeConstraints{
             $0.top.equalTo(self.safeAreaLayoutGuide.snp.top)
-            $0.height.equalToSuperview().multipliedBy(0.07)
+            $0.height.equalToSuperview().multipliedBy(0.065)
         }
         
         characterArea.snp.makeConstraints{

@@ -16,6 +16,10 @@ class TextDiaryLoadingViewController: UIViewController {
         super.viewDidLoad()
         navigationController?.isNavigationBarHidden = true
         setupUI()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            self.navigateToNextScreen()
+        }
     }
     
     
@@ -28,6 +32,11 @@ class TextDiaryLoadingViewController: UIViewController {
         }
     }
     
+    private func navigateToNextScreen() {
+        let nextVC = TextDiaryRecommendChallengeViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
     //MARK: - @objc methods
-
 }

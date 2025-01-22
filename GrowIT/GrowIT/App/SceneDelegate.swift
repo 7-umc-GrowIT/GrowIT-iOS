@@ -13,9 +13,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        // 화면을 구성하는 UIWindow 인스턴스 생성
+        let window = UIWindow(windowScene: windowScene)
+        // 실제 첫 화면이 되는 MainViewController 인스턴스 생성
+        let vc = CustomTabBarController()
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
@@ -40,6 +43,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //        window.makeKeyAndVisible()
         
     }
+
+      
     
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
@@ -71,4 +76,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     
 }
-
