@@ -48,6 +48,11 @@ extension UIColor{
     static let positiveColor100 = UIColor(named: "Positive-100")
     static let positiveColor400 = UIColor(named: "Positive-400")
     
+    ///Item Colors
+    static let itemColorYellow = UIColor(named: "Item-Yellow")
+    static let itemColorGreen = UIColor(named: "Item-Green")
+    static let itemColorPink = UIColor(named: "Item-Pink")
+
     ///Stroke Colors
     static let stroke2 = UIColor(named: "border-2")
     
@@ -79,5 +84,4 @@ extension UIColor{
         
         self.init(red: r, green: g, blue: b, alpha: a)
     }
-    
 }
