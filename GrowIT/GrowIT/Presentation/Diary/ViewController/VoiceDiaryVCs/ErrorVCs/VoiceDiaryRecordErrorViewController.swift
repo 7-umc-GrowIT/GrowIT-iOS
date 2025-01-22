@@ -9,6 +9,8 @@ import UIKit
 
 class VoiceDiaryRecordErrorViewController: UIViewController {
     
+    weak var delegate: VoiceDiaryErrorDelegate?
+    
     let errorView = ErrorView().then {
         $0.configure(
             icon: "diaryIcon",
@@ -47,7 +49,7 @@ class VoiceDiaryRecordErrorViewController: UIViewController {
     
     @objc func mainVC() {
         dismiss(animated: true) { [weak self] in
-            self?.navigationController?.popToRootViewController(animated: true)
+            self?.delegate?.didTapExitButton()
         }
     }
 }
