@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VoiceDiaryRecommendChallengeViewController: ViewController, VoiceDiaryErrorDelegate {
+class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErrorDelegate {
     
     // MARK: Properties
     let voiceDiaryRecommendChallengeView = VoiceDiaryRecommendChallengeView()

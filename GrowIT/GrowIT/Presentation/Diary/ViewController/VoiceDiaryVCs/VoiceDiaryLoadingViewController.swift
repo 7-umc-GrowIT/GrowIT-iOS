@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VoiceDiaryLoadingViewController: ViewController {
+class VoiceDiaryLoadingViewController: UIViewController {
 
     //MARK: - Properties
     let voiceDiaryLoadingView = VoiceDiaryLoadingView()
