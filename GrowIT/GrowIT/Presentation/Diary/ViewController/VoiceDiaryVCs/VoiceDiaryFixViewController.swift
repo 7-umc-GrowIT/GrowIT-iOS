@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VoiceDiaryFixViewController: ViewController {
+class VoiceDiaryFixViewController: UIViewController {
     
     // MARK: Properties
     let text: String

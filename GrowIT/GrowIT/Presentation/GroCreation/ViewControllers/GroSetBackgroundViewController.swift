@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class GroSetBackgroundViewController: UIViewController {
+class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDelegate {
     private var itemListBottomConstraint: Constraint?
     private var isZoomIn: Bool = true
     
@@ -16,7 +16,7 @@ class GroSetBackgroundViewController: UIViewController {
     private lazy var groView = GroView().then {
         $0.eraseButton.isHidden = true
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
-        $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
+        $0.purchaseButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
     private lazy var itemBackgroundModalVC = ItemBackgroundModalViewController()
@@ -29,13 +29,14 @@ class GroSetBackgroundViewController: UIViewController {
         setView()
         setConstraints()
         setButtonUI()
+        
+        itemBackgroundModalVC.delegate = self
     }
     //MARK: - 컴포넌트추가
     private func setView() {
         addChild(itemBackgroundModalVC)
         groView.addSubview(itemBackgroundModalVC.view)
         itemBackgroundModalVC.didMove(toParent: self)
-        itemBackgroundModalVC.setParentController(self)
     }
     
     //MARK: - 레이아웃설정
@@ -63,8 +64,9 @@ class GroSetBackgroundViewController: UIViewController {
         }
     }
     
-    @objc private func didTapPurchaseButton() {
-        // 다음으로
+    @objc private func nextVC() {
+        let nextVC = GroSetNameViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
     }
     
     func changeBackgroundImageView(_ num: Int) {
@@ -110,4 +112,14 @@ class GroSetBackgroundViewController: UIViewController {
         groView.groImageViewTopConstraint?.update(inset: inset)
     }
     
+    // MARK: - ItemBackgroundModalDelegate 구현
+    func updateBackgroundImage(to index: Int) {
+        let images: [UIImage?] = [
+            UIImage.growITBackgroundStar,
+            UIImage.growITBackgroundTree,
+            UIImage.growITBackgroundHeart
+        ]
+        groView.backgroundImageView.image = images[index]
+    }
 }
+

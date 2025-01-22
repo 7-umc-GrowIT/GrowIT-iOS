@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VoiceDiarySummaryViewController: ViewController, VoiceDiaryErrorDelegate {
+class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate {
     
     // MARK: Properties
     let voiceDiarySummaryView = VoiceDiarySummaryView()

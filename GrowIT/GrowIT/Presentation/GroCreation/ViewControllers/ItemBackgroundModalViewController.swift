@@ -8,15 +8,11 @@
 import UIKit
 
 class ItemBackgroundModalViewController: UIViewController {
-    private weak var parentController: GroSetBackgroundViewController?
-
-    func setParentController(_ controller: GroSetBackgroundViewController) {
-        self.parentController = controller
-    }
+    weak var delegate: ItemBackgroundModalDelegate?
 
     //MARK: - Views
     private lazy var itemBackgroundModalView = ItemBackgroundModalView().then {
-        $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
+        $0.purchaseButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
     //MARK: - init
@@ -35,9 +31,9 @@ class ItemBackgroundModalViewController: UIViewController {
     
     //MARK: - 기능
     @objc
-    private func didTapPurchaseButton() {
-        //다음으로
-        
+    private func nextVC() {
+        let nextVC = GroSetNameViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
     }
 }
 
@@ -67,7 +63,7 @@ extension ItemBackgroundModalViewController: UICollectionViewDataSource {
 //MARK: - UICollectionViewDelegate
 extension ItemBackgroundModalViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        parentController?.changeBackgroundImageView(indexPath.item)
+        delegate?.updateBackgroundImage(to: indexPath.row)
     }
 }
 
