@@ -17,6 +17,7 @@ class ChallengeHomeArea: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+        addStacdk()
         addComponents()
         constraints()
     }
@@ -26,16 +27,17 @@ class ChallengeHomeArea: UIView {
     }
     
     // MARK: - Property
+    
+    private lazy var bg = UIView().then{
+        $0.backgroundColor = .red
+    }
+  
     private lazy var title = makeLabel(title: "오늘의 챌린지 추천", color: .black, font: .heading1Bold())
 
     private lazy var subTitle = makeLabel(title: "나의 심리 정보를 기반으로 챌린지를 추천해요", color: .gray500, font: .body2Medium())
 
-    private lazy var todayChallengeBox = UIView().then{
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 20
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
-    }
+    private lazy var todayChallengeBox = makeContainer()
+        
     
     private lazy var challengeListIcon = UIImageView().then{
         $0.image = UIImage(named: "challengeListIcon")
@@ -54,27 +56,50 @@ class ChallengeHomeArea: UIView {
     private lazy var todayChallengeVerifyBtn = UIButton().then{
         var configuration = UIButton.Configuration.plain()
         
-//        $0.setTitle("인증하기", for: .normal)
-//        $0.setTitleColor(.white, for: .normal)
-//        $0.titleLabel?.font = .detail1Medium()
-//        $0.layer.cornerRadius = 12
-//        $0.clipsToBounds = true
-//        $0.backgroundColor = .black
-        var attributeContainer: AttributeContainer = {
-            var container = AttributeContainer()
-            container.font = .detail1Medium()
-            container.foregroundColor = .white
-            return container
-        }()
-        
-        configuration.attributedTitle = AttributedString("인증하기", attributes: attributeContainer)
-        configuration.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 16, bottom: 7, trailing: 16)
+        $0.setTitle("인증하기", for: .normal)
+        $0.setTitleColor(.white, for: .normal)
+        $0.titleLabel?.font = .body2Medium()
+        $0.layer.cornerRadius = 18
+        $0.clipsToBounds = true
         $0.backgroundColor = .black
-        $0.layer.cornerRadius = 12
+
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 16, bottom: 7, trailing: 16)
         
         $0.configuration = configuration
         $0.clipsToBounds = true
     }
+    
+    private lazy var challengeReportTitle = makeLabel(title: "그로의 챌린지 리포트", color: .black, font: .heading1Bold())
+    
+    private lazy var challengeReportSubTitle = makeLabel(title: "그로우잇과 얼마나 성장했는지 확인해 보세요!", color: .gray500, font: .body2Medium())
+    
+    private lazy var creditNumberContainer = makeContainer()
+    
+    private lazy var creditNumLabel = makeLabel(title: "총 크레딧 수", color: .gray500, font: .body2Medium()).then{
+        $0.textAlignment = .center
+    }
+    
+    private lazy var creditNumIcon = UIImageView().then{
+        $0.image = UIImage(named: "creditNumIcon")
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    private lazy var creditNum = makeLabel(title: "1200", color: .gray900, font: .heading2Bold())
+    
+    private lazy var writtenDiaryLabel = makeLabel(title: "작성된 일기 수", color: .gray500, font: .body2Medium()).then{
+        $0.textAlignment = .center
+    }
+    
+    private lazy var writtenDiaryIcon = UIImageView().then{
+        $0.image = UIImage(named: "challengeListIcon")
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    private lazy var writtenDiaryNumContainer = makeContainer()
+    
+    private lazy var writtenDiaryNum = makeLabel(title: "15", color: .gray900, font: .heading2Bold())
+    
+    private lazy var dayPlusLabel = makeLabel(title: "(D+15)", color: .gray400, font: .body2Medium())
     
     // MARK: - Stack
     private lazy var titleStack = makeStack(axis: .vertical, spacing: 4)
@@ -83,7 +108,20 @@ class ChallengeHomeArea: UIView {
     
     private lazy var todayChallengeTimeStack = makeStack(axis: .horizontal, spacing: 4)
     
-    //private lazy var todayChallengeContent = makeStack(axis: .vertical, spacing: 8)
+    private lazy var challengeReportTitleStack = makeStack(axis: .vertical, spacing: 4)
+    
+    private lazy var creditNumStack1 = makeStack(axis: .horizontal, spacing: 4)
+    
+    private lazy var creditNumStack2 = makeStack(axis: .vertical, spacing: 8)
+    
+    private lazy var writtenDiaryStack1 = makeStack(axis: .horizontal, spacing: 4)
+    
+    private lazy var writtenDiaryStack2 = makeStack(axis: .vertical, spacing: 8)
+    
+    private lazy var challengeReportContainerStack = makeStack(axis: .horizontal, spacing: 8).then{
+        $0.distribution = .fillEqually
+    }
+    
     // MARK: - Func
     
     private func makeLabel(title:String, color: UIColor, font: UIFont) -> UILabel {
@@ -93,6 +131,7 @@ class ChallengeHomeArea: UIView {
         label.font = font
         return label
     }
+    
     private func makeStack(axis: NSLayoutConstraint.Axis, spacing: CGFloat) -> UIStackView {
         let stackView = UIStackView()
         stackView.axis = axis
@@ -100,6 +139,14 @@ class ChallengeHomeArea: UIView {
         return stackView
     }
     
+    private func makeContainer() -> UIView {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 20
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        return view
+    }
     private func makeChallengeHashTagButton(title: String) -> UIButton {
         let button = UIButton()
         
@@ -122,16 +169,28 @@ class ChallengeHomeArea: UIView {
     
     // MARK: - addFunction & Constraints
     
-    private func addComponents(){
-        [titleStack, hashTagStack, todayChallengeBox].forEach(self.addSubview)
+    private func addStacdk(){
         [title, subTitle].forEach(titleStack.addArrangedSubview)
         hashTagNames.forEach{
             let button = makeChallengeHashTagButton(title: $0)
             hashTagStack.addArrangedSubview(button)
         }
-        [challengeListIcon, todayChallengeTitle, todayChallengeTimeStack, todayChallengeVerifyBtn].forEach(todayChallengeBox.addSubview)
         [todayChallengeTimeIcon, todayChallengeTimeLabel].forEach(todayChallengeTimeStack.addArrangedSubview)
-        //[todayChallengeTitle, todayChallengeTimeStack].forEach(todayChallengeContent.addArrangedSubview)
+        [challengeReportTitle, challengeReportSubTitle].forEach(challengeReportTitleStack.addArrangedSubview)
+        [creditNumIcon, creditNum].forEach(creditNumStack1.addArrangedSubview)
+        [creditNumLabel, creditNumStack1].forEach(creditNumStack2.addArrangedSubview)
+        [writtenDiaryIcon, writtenDiaryNum, dayPlusLabel].forEach(writtenDiaryStack1.addArrangedSubview)
+        [writtenDiaryLabel, writtenDiaryStack1].forEach(writtenDiaryStack2.addArrangedSubview)
+        [creditNumberContainer, writtenDiaryNumContainer].forEach(challengeReportContainerStack.addArrangedSubview)
+    }
+    
+    private func addComponents(){
+        [titleStack, hashTagStack, todayChallengeBox, challengeReportTitleStack, challengeReportContainerStack].forEach(self.addSubview)
+        
+        [challengeListIcon, todayChallengeTitle, todayChallengeTimeStack, todayChallengeVerifyBtn].forEach(todayChallengeBox.addSubview)
+        
+        creditNumberContainer.addSubview(creditNumStack2)
+        writtenDiaryNumContainer.addSubview(writtenDiaryStack2)
     }
     
     private func constraints(){
@@ -172,6 +231,33 @@ class ChallengeHomeArea: UIView {
             $0.right.equalToSuperview().inset(24)
 //            $0.width.equalTo(todayChallengeBox.snp.width).multipliedBy(0.2)
 //            $0.height.equalTo(todayChallengeBox.snp.height).multipliedBy(0.73)
+        }
+        
+        challengeReportTitleStack.snp.makeConstraints{
+            $0.top.equalTo(todayChallengeBox.snp.bottom).offset(32)
+            $0.left.equalToSuperview().offset(24)
+        }
+        creditNumIcon.snp.makeConstraints{
+            $0.height.width.equalTo(28)
+        }
+        
+        writtenDiaryIcon.snp.makeConstraints{
+            $0.height.width.equalTo(28)
+        }
+        
+        creditNumStack2.snp.makeConstraints{
+            $0.verticalEdges.equalToSuperview().inset(20)
+            $0.centerX.equalToSuperview()
+        }
+        
+        writtenDiaryStack2.snp.makeConstraints {
+            $0.verticalEdges.equalToSuperview().inset(20)
+            $0.centerX.equalToSuperview()
+        }
+        
+        challengeReportContainerStack.snp.makeConstraints {
+            $0.top.equalTo(challengeReportTitleStack.snp.bottom).offset(20)
+            $0.horizontalEdges.equalToSuperview().inset(24)
         }
     }
 

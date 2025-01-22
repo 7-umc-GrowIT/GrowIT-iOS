@@ -11,7 +11,7 @@ import SnapKit
 class ChallengHomeViewController: UIViewController {
 
     private lazy var challengeHomeView = ChallengHomeView()
-    private lazy var challengeHomeArea = ChallengeHomeArea()
+    private lazy var challengeHomeAreaVC = ChallengeHomeAreaController()
     private lazy var challengeStatusArea = ChallengeStatusArea()
     
     override func viewDidLoad() {
@@ -20,23 +20,27 @@ class ChallengHomeViewController: UIViewController {
         view.backgroundColor = .white
         
         setCustomSegment()
-        view.addSubview(challengeHomeArea)
-        view.addSubview(challengeStatusArea)
-        
-        challengeHomeArea.backgroundColor = .gray50
-        
-        challengeHomeArea.snp.makeConstraints{
-            $0.top.equalTo(challengeHomeView.challengeSegmentUnderline.snp.bottom)
-            $0.horizontalEdges.equalToSuperview()
-        }
+        setupChallengeHomeArea()
+        challengeHomeView.addSubview(challengeStatusArea)
         
         challengeStatusArea.snp.makeConstraints{
             $0.top.equalTo(challengeHomeView.challengeSegmentUnderline.snp.bottom)
             $0.horizontalEdges.equalToSuperview()
         }
         
-        challengeHomeArea.isHidden = false
+        challengeHomeAreaVC.view.isHidden = false
         challengeStatusArea.isHidden = true
+    }
+    
+    private func setupChallengeHomeArea(){
+        addChild(challengeHomeAreaVC)
+        challengeHomeAreaVC.didMove(toParent: self)
+        challengeHomeView.addSubview(challengeHomeAreaVC.view)
+        challengeHomeAreaVC.view.snp.makeConstraints{
+            $0.top.equalTo(challengeHomeView.challengeSegmentUnderline.snp.bottom)
+            $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
     }
     
     private func setCustomSegment(){
@@ -52,7 +56,7 @@ class ChallengHomeViewController: UIViewController {
         challengeHomeView.challengeHomeBtn.setTitleColor(.primary600, for: .normal)
         challengeHomeView.challengeStatusBtn.setTitleColor(.gray300, for: .normal)
         
-        challengeHomeArea.isHidden = false
+        challengeHomeAreaVC.view.isHidden = false
         challengeStatusArea.isHidden = true
     }
     
@@ -61,7 +65,7 @@ class ChallengHomeViewController: UIViewController {
         challengeHomeView.challengeHomeBtn.setTitleColor(.gray300, for: .normal)
         challengeHomeView.challengeStatusBtn.setTitleColor(.primary600, for: .normal)
         
-        challengeHomeArea.isHidden = true
+        challengeHomeAreaVC.view.isHidden = true
         challengeStatusArea.isHidden = false
     }
 }
