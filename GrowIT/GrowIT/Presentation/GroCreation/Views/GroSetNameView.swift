@@ -40,22 +40,19 @@ class GroSetNameView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private lazy var nickNameTextField = UITextField().then {
-        // core 가져오기
-        $0.placeholder = "닉네임을 입력해주세요"
+    private lazy var nickNameTextField = CustomTextField().then {
+        $0.setPlaceholder("닉네임을 입력해주세요")
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private lazy var groImageView = UIImageView().then {
         $0.image = UIImage(named: "GrowIT_Gro")
         $0.contentMode = .scaleAspectFit
+        $0.isUserInteractionEnabled = false
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private lazy var startButton = UIButton().then {
-        // 만들어야함
-        $0.setTitle("시작하기", for: .normal)
-        $0.backgroundColor = .black
+    private lazy var startButton = GradientButton().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -63,7 +60,7 @@ class GroSetNameView: UIView {
     init(gradientColors: [CGColor], iconImage: UIImage) {
         self.gradientColors = gradientColors
         self.iconImage = iconImage
-        super.init(frame: .zero) 
+        super.init(frame: .zero)
         self.backgroundColor = .white
         configureView()
     }
@@ -133,7 +130,7 @@ class GroSetNameView: UIView {
         
         nickNameTextField.snp.makeConstraints {
             $0.top.equalTo(nickNameLabel.snp.bottom).offset(8)
-            $0.leading.equalToSuperview().inset(24)
+            $0.horizontalEdges.equalToSuperview().inset(24)
         }
         
         groImageView.snp.makeConstraints {
