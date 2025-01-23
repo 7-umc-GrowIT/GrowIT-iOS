@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>&quot;음성을 텍스트로 변환하기 위해 음성 인식 권한이 필요합니다.&quot;</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>&quot;이 앱은 음성을 녹음하기 위해 마이크를 사용합니다.&quot;</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pretendard-Bold.otf</string>
