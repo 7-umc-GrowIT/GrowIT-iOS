@@ -12,7 +12,8 @@ extension UIViewController {
         viewController: UIViewController,
         detentFraction: CGFloat = 0.5,
         grabberVisible: Bool = true,
-        animated: Bool = true
+        animated: Bool = true,
+        completion: (() -> Void)? = nil
     ) {
         viewController.modalPresentationStyle = .pageSheet
         
@@ -29,6 +30,6 @@ extension UIViewController {
             sheet.prefersGrabberVisible = grabberVisible
         }
         
-        present(viewController, animated: animated, completion: nil)
+        present(viewController, animated: animated, completion: completion)
     }
 }

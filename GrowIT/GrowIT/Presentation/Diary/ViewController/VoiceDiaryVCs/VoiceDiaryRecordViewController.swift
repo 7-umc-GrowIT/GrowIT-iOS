@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VoiceDiaryRecordViewController: ViewController {
+class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate {
 
     // MARK: Properties
     let voiceDiaryRecordView = VoiceDiaryRecordView()
@@ -52,8 +52,10 @@ class VoiceDiaryRecordViewController: ViewController {
     // MARK: @objc methods
     @objc func prevVC() {
         let prevVC = VoiceDiaryRecordErrorViewController()
+        prevVC.delegate = self
         let navController = UINavigationController(rootViewController: prevVC)
         navController.modalPresentationStyle = .fullScreen
+        
         presentPageSheet(viewController: navController, detentFraction: 0.37)
     }
     
@@ -61,6 +63,10 @@ class VoiceDiaryRecordViewController: ViewController {
         let nextVC = VoiceDiaryLoadingViewController()
         nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    func didTapExitButton() {
+        navigationController?.popToRootViewController(animated: true)
     }
     
 }

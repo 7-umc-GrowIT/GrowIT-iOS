@@ -13,6 +13,8 @@ class TextDiaryViewController: UIViewController {
     let navigationBarManager = NavigationManager()
     let textDiaryView = TextDiaryView()
     
+    let calVC = JDiaryCalendarController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -49,6 +51,7 @@ class TextDiaryViewController: UIViewController {
     //MARK: - Setup Button actions
     private func setupActions() {
         textDiaryView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        textDiaryView.dropDownButton.addTarget(self, action: #selector(calenderVC), for: .touchUpInside)
     }
     
     //MARK: - @objc methods
@@ -60,6 +63,13 @@ class TextDiaryViewController: UIViewController {
         let nextVC = TextDiaryLoadingViewController()
         nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func calenderVC() {
+        
+        
+        calVC.modalPresentationStyle = .formSheet
+        present(calVC, animated: true)
     }
     
 }

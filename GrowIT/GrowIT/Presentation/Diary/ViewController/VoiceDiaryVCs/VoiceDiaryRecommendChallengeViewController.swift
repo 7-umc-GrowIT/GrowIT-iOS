@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VoiceDiaryRecommendChallengeViewController: ViewController {
+class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErrorDelegate {
     
     // MARK: Properties
     let voiceDiaryRecommendChallengeView = VoiceDiaryRecommendChallengeView()
@@ -63,6 +63,7 @@ class VoiceDiaryRecommendChallengeViewController: ViewController {
     //MARK: - @objc methods
     @objc func prevVC() {
         let prevVC = VoiceDiaryRecommendErrorViewController()
+        prevVC.delegate = self
         let navController = UINavigationController(rootViewController: prevVC)
         navController.modalPresentationStyle = .fullScreen
         presentPageSheet(viewController: navController, detentFraction: 0.37)
@@ -93,6 +94,10 @@ class VoiceDiaryRecommendChallengeViewController: ViewController {
             enabledTitleColor: .black,
             disabledTitleColor: .gray400
         )
+    }
+    
+    func didTapExitButton() {
+        navigationController?.popToRootViewController(animated: true)
     }
     
 }

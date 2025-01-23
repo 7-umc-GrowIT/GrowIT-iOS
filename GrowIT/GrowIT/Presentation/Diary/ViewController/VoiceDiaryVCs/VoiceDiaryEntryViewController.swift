@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VoiceDiaryEntryViewController: ViewController {
+class VoiceDiaryEntryViewController: UIViewController {
     
     // MARK: Properties
     let navigationBarManager = NavigationManager()
