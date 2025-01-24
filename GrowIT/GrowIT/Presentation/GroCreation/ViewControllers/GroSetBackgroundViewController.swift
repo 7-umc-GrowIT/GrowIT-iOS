@@ -10,7 +10,8 @@ import SnapKit
 
 class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDelegate {
     private var itemListBottomConstraint: Constraint?
-    private var isZoomIn: Bool = true
+    private var isZoomIn: Bool = false
+    var selectedBackground: Int = 0
     
     //MARK: - Views
     private lazy var groView = GroView().then {
@@ -18,7 +19,6 @@ class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDeleg
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
         $0.purchaseButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
-    
     private lazy var itemBackgroundModalVC = ItemBackgroundModalViewController()
     
     //MARK: - init
@@ -32,6 +32,12 @@ class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDeleg
         
         itemBackgroundModalVC.delegate = self
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        setInitialState()
+    }
+    
     //MARK: - 컴포넌트추가
     private func setView() {
         addChild(itemBackgroundModalVC)
@@ -51,35 +57,21 @@ class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDeleg
     //MARK: - 기능구현
     @objc private func didTapZoomButton(_ sender: UIButton) {
         sender.isSelected.toggle()
+        isZoomIn.toggle()
         
-        // 상태에 따라 동작 분기
         updateItemListPosition(isZoomedOut: sender.isSelected)
         updateButtonStackViewPosition(isZoomedOut: sender.isSelected)
         updateZoomButtonImage(isZoomedOut: sender.isSelected)
         updateGroImageViewTopConstraint(isZoomedOut: sender.isSelected)
         
-        // 레이아웃 업데이트 애니메이션
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
     }
     
     @objc private func nextVC() {
-        let nextVC = GroSetNameViewController()
+        let nextVC = GroSetNameViewController(selectedBackground: selectedBackground)
         navigationController?.pushViewController(nextVC, animated: true)
-    }
-    
-    func changeBackgroundImageView(_ num: Int) {
-        switch num {
-        case 0:
-            groView.backgroundImageView.image = UIImage.growITBackgroundStar
-        case 1:
-            groView.backgroundImageView.image = UIImage.growITBackgroundTree
-        case 2:
-            groView.backgroundImageView.image = UIImage.growITBackgroundHeart
-        default:
-            break
-        }
     }
     
     //MARK: - UI 업데이트 함수
@@ -112,6 +104,17 @@ class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDeleg
         groView.groImageViewTopConstraint?.update(inset: inset)
     }
     
+    // 처음에 모달이 열려있게
+    private func setInitialState() {
+        groView.zoomButton.isSelected = !isZoomIn
+        
+        updateItemListPosition(isZoomedOut: !isZoomIn)
+        updateButtonStackViewPosition(isZoomedOut: !isZoomIn)
+        updateZoomButtonImage(isZoomedOut: !isZoomIn)
+        updateGroImageViewTopConstraint(isZoomedOut: !isZoomIn)
+        self.view.layoutIfNeeded()
+    }
+    
     // MARK: - ItemBackgroundModalDelegate 구현
     func updateBackgroundImage(to index: Int) {
         let images: [UIImage?] = [
@@ -120,6 +123,6 @@ class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDeleg
             UIImage.growITBackgroundHeart
         ]
         groView.backgroundImageView.image = images[index]
+        selectedBackground = index
     }
 }
-
