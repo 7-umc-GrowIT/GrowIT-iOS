@@ -8,7 +8,9 @@
 import UIKit
 
 class DiaryAllViewController: UIViewController, UITableViewDelegate {
-
+    
+    
+    
     // MARK: Properties
     private let diaryAllView = DiaryAllView()
     
@@ -33,13 +35,7 @@ class DiaryAllViewController: UIViewController, UITableViewDelegate {
         diaryAllView.diaryTableView.delegate = self
     }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-            return 6 // 원하는 간격 (단위: 포인트)
-        }
-        
-        func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-            return UIView() // 빈 뷰 반환 (간격만 추가)
-        }
+    // MARK: Setup Actions
 }
 
 extension DiaryAllViewController: UITableViewDataSource {
@@ -56,6 +52,17 @@ extension DiaryAllViewController: UITableViewDataSource {
         let diary = DiaryModel.dummy()[indexPath.row]
         cell.contentLabel.text = diary.content
         cell.dateLabel.text = diary.date
+        cell.delegate = self
         return cell
+    }
+}
+
+extension DiaryAllViewController: DiaryAllViewCellDelegate {
+    func didTapButton(in cell: DiaryAllViewTableViewCell) {
+        print("Tapped")
+        let fixVC = DiaryPostFixViewController(text: "13231")
+        let navController = UINavigationController(rootViewController: fixVC)
+        navController.modalPresentationStyle = .fullScreen
+        presentPageSheet(viewController: navController, detentFraction: 0.65)
     }
 }

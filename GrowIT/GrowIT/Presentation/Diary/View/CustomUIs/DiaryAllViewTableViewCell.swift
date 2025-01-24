@@ -7,14 +7,21 @@
 
 import UIKit
 
+protocol DiaryAllViewCellDelegate: AnyObject {
+    func didTapButton(in cell: DiaryAllViewTableViewCell)
+}
+
 class DiaryAllViewTableViewCell: UITableViewCell {
     
     static let identifier = "DiaryAllViewTableViewCell"
+    
+    weak var delegate: DiaryAllViewCellDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
         selectionStyle = .none
+        setupActions()
     }
     
     required init?(coder: NSCoder) {
@@ -24,7 +31,7 @@ class DiaryAllViewTableViewCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-
+        
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 6.0, right: 0))
     }
     
@@ -96,5 +103,13 @@ class DiaryAllViewTableViewCell: UITableViewCell {
         contentView.snp.makeConstraints { make in
             make.bottom.equalTo(fixButton.snp.bottom).offset(16)
         }
+    }
+    
+    private func setupActions() {
+        fixButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func buttonTapped() {
+        delegate?.didTapButton(in: self) 
     }
 }

@@ -64,6 +64,7 @@ class JDiaryHomeViewController: UIViewController {
         
         jDiaryHomeView.diaryHomeBanner.diaryDirectWriteButton.addGestureRecognizer(textAction)
         jDiaryHomeView.diaryHomeBanner.diaryWriteButton.addGestureRecognizer(voiceAction)
+        jDiaryHomeView.diaryHomeCalendarHeader.collectBtn.addTarget(self, action: #selector(diaryAllVC), for: .touchUpInside)
     }
     
     // MARK: Diary View
@@ -75,6 +76,12 @@ class JDiaryHomeViewController: UIViewController {
     
     @objc func voiceVC() {
         let nextVC = VoiceDiaryEntryViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func diaryAllVC() {
+        let nextVC = DiaryAllViewController()
         nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
