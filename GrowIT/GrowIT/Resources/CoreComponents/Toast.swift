@@ -40,20 +40,20 @@ class Toast {
         containerView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-136)
-            make.width.equalTo(316)
+            make.width.equalTo(320)
             make.height.equalTo(56)
         }
         
         containerView.addSubview(imageView)
         imageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(22)
+            make.leading.equalTo(20)
             make.width.height.equalTo(24)
         }
         
         containerView.addSubview(label)
         label.snp.makeConstraints { make in
-            make.leading.equalTo(imageView.snp.trailing).offset(10)
+            make.leading.equalTo(imageView.snp.trailing).offset(6)
             make.trailing.equalToSuperview().offset(-10)
             make.top.equalTo(imageView.snp.top).offset(1)
             make.centerY.equalTo(imageView.snp.centerY)
