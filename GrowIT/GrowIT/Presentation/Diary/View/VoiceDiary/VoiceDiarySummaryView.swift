@@ -71,6 +71,14 @@ class VoiceDiarySummaryView: UIView {
         $0.numberOfLines = 0
     }
     
+    let diaryTextView = UITextView().then {
+        $0.text = "오늘은 평소보다 조금 더 차분한 하루를 보냈다. 아침에 일어나 창밖을 보니 햇살이 눈부시게 비치고 있었다. 차가운 겨울 공기 속에서도 따뜻한 햇살이 포근하게 느껴졌다. 오후에는 간단히 산책을 나갔다. 겨울 특유의 청량한 공기를 마시며 걷다 보니, 머릿속이 맑아지고 새로운 아이디어도 떠올랐다. 저녁에는 따뜻한 차 한 잔과 함께 하루를 정리하며 감사한 마음으로 마무리했다.오늘은 평소보다 조금 더 차분한 하루를 보냈다. 아침에 일어나 창밖을 보니 햇살이 눈부시게 비치고 있었다. 차가운 겨울 공기 속에서도 따뜻한 햇살이 포근하게 느껴졌다. 오후에는 간단히 산책을 나갔다. 겨울 특유의 청량한 공기를 마시며 걷다 보니, 머릿속이 맑아지고 새로운 아이디어도 떠올랐다. 저녁에는 따뜻한 차 한 잔과 함께 하루를 정리하며 감사한 마음으로 마무리했다.오늘은 평소보다 조금 더 차분한 하루를 보냈다. 아침에 일어나 창밖을 보니 햇살이 눈부시게 비치고 있었다. 차가운 겨울 공기 속에서도 따뜻한 햇살이 포근하게 느껴졌다. 오후에는 간단히 산책을 나갔다. 겨울 특유의 청량한 공기를 마시며 걷다 보니, 머릿속이 맑아지고 새로운 아이디어도 떠올랐다. 저녁에는 따뜻한 차 한 잔과 함께 하루를 정리하며 감사한 마음으로 마무리했다."
+        $0.textColor = .white
+        $0.font = .body1Medium()
+        $0.isEditable = false
+        $0.backgroundColor = .clear
+    }
+    
     private let aiLabel = UILabel().then {
         $0.text = "해당 내용은 AI가 정리한 내용입니다."
         $0.font = .detail1Medium()
@@ -130,24 +138,25 @@ class VoiceDiarySummaryView: UIView {
             make.centerX.equalToSuperview()
         }
         
-        textView.addSubview(diaryLabel)
-        diaryLabel.snp.makeConstraints { make in
+        textView.addSubview(diaryTextView)
+        diaryTextView.snp.makeConstraints { make in
             make.leading.equalTo(dateLabel.snp.leading)
             make.centerX.equalToSuperview()
             make.top.equalTo(dateLabel.snp.bottom).offset(12)
+            make.height.equalTo(216)
         }
         
         textView.addSubview(aiLabel)
         aiLabel.snp.makeConstraints { make in
-            make.leading.equalTo(diaryLabel.snp.leading)
-            make.top.equalTo(diaryLabel.snp.bottom).offset(24)
+            make.leading.equalTo(diaryTextView.snp.leading)
+            make.top.equalTo(diaryTextView.snp.bottom).offset(24)
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-28)
         }
         
         addSubview(saveButton)
         saveButton.snp.makeConstraints { make in
-            make.top.equalTo(textView.snp.bottom).offset(67)
+            make.top.equalTo(textView.snp.bottom).offset(43)
             make.leading.equalToSuperview().offset(24)
             make.centerX.equalToSuperview()
         }

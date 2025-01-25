@@ -19,6 +19,15 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate 
         setupActions()
         setupNavigationBar()
     }
+    
+    private func observeRemainingTime() {
+        voiceDiaryRecordView.onRemainingTimeChanged = { [weak self] remainingTime in
+            guard let self = self else { return }
+            if remainingTime > 120 { // 남은 시간이 1분 이하일 때
+                
+            }
+        }
+    }
 
     // MARK: Setup Navigation Bar
     private func setupNavigationBar() {
