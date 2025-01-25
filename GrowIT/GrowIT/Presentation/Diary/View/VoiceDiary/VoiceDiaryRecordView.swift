@@ -9,9 +9,9 @@ import UIKit
 import Lottie
 
 class VoiceDiaryRecordView: UIView {
-
+    
     private var timer: Timer?
-    private var remainingTime: Int = 180 {
+    var remainingTime: Int = 180 {
         didSet {
             let minutes = remainingTime / 60
             let seconds = remainingTime % 60
