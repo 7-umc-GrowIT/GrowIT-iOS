@@ -16,20 +16,20 @@ class VoiceDiaryEntryViewController: UIViewController {
     
     let diaryService = DiaryService()
     
-//    func callPostTextDiary() {
-//        diaryService.postTextDiary(data: DiaryRequestDTO(
-//            content: "직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트",
-//            date: "2025-01-20"),
-//            completion: { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case.success(let data):
-//                print("Success \(data)")
-//            case.failure(let error):
-//                print("Error: \(error)")
-//            }
-//        })
-//    }
+    func callPostTextDiary() {
+        diaryService.postTextDiary(data: DiaryRequestDTO(
+            content: "직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트직접 작성 일기 테스트",
+            date: "2025-01-20"),
+            completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let data):
+                print("Success \(data)")
+            case.failure(let error):
+                print("Error: \(error)")
+            }
+        })
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +37,7 @@ class VoiceDiaryEntryViewController: UIViewController {
         setupNavigationBar()
         setupActions()
         navigationController?.navigationBar.isHidden = false
+        callPostTextDiary()
     }
     
     // MARK: Setup Navigation Bar
