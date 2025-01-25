@@ -8,7 +8,15 @@
 import UIKit
 
 class Toast {
-    static func show(image: UIImage, message: String, font: UIFont, in view: UIView) {
+    static func show(image: UIImage, message: String, font: UIFont) {
+        
+        guard let keyWindow = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .flatMap({ $0.windows })
+            .first(where: { $0.isKeyWindow }) else {
+            print("Toast Error: No key window available")
+            return
+        }
         
         let containerView = UIView().then {
             $0.backgroundColor = UIColor(hex: "#00000066")
@@ -28,7 +36,7 @@ class Toast {
             $0.textAlignment = .center
         }
         
-        view.addSubview(containerView)
+        keyWindow.addSubview(containerView)
         containerView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-136)
@@ -56,10 +64,12 @@ class Toast {
         UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseIn, animations: {
             containerView.alpha = 1.0
         }) { _ in
-            UIView.animate(withDuration: 4.0, delay: 0.1, options: .curveEaseOut, animations: {
-                containerView.alpha = 0.0
-            }) { _ in
-                containerView.removeFromSuperview()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                UIView.animate(withDuration: 1.0, delay: 0.0, options: .curveEaseOut, animations: {
+                    containerView.alpha = 0.0
+                }) { _ in
+                    containerView.removeFromSuperview()
+                }
             }
         }
     }
