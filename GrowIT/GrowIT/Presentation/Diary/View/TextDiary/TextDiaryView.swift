@@ -74,7 +74,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        if !textView.text.isEmpty && textView.text != placeholder {
+        if !textView.text.isEmpty && textView.text != placeholder && textView.text.count > 100 {
             saveButton.setButtonState(isEnabled: true, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
         } else {
             saveButton.setButtonState(isEnabled: false, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)

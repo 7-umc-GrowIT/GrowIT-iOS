@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Lottie
 
 class VoiceDiaryRecordView: UIView {
 
@@ -39,6 +40,10 @@ class VoiceDiaryRecordView: UIView {
         $0.textColor = .gray100
     }
     
+    var chatImage = LottieAnimationView(name: "Conversation").then {
+        $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+    }
+    
     let endButton = AppButton(title: "대화 마무리하기", titleColor: .black).then {
         $0.backgroundColor = .primary400
     }
@@ -63,6 +68,12 @@ class VoiceDiaryRecordView: UIView {
         label2.snp.makeConstraints { make in
             make.leading.equalTo(label1.snp.leading)
             make.top.equalTo(label1.snp.bottom).offset(12)
+        }
+        
+        addSubview(chatImage)
+        chatImage.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(label2.snp.bottom).offset(30)
         }
         
         addSubview(endButton)

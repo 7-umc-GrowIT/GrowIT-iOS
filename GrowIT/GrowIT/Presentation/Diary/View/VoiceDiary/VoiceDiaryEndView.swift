@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Lottie
 
 class VoiceDiaryEndView: UIView {
 
@@ -33,6 +34,10 @@ class VoiceDiaryEndView: UIView {
         $0.numberOfLines = 0
     }
     
+    var creditView = LottieAnimationView(name: "Credit").then {
+        $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+    }
+    
     let nextButton = AppButton(title: "지금 바로 챌린지하러 가기", titleColor: .white).then {
         $0.setButtonState(isEnabled: true, enabledColor: .primary400, disabledColor: .gray100, enabledTitleColor: .black, disabledTitleColor: .gray400)
     }
@@ -44,6 +49,12 @@ class VoiceDiaryEndView: UIView {
         endLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(24)
             make.top.equalTo(safeAreaLayoutGuide).offset(32)
+        }
+        
+        addSubview(creditView)
+        creditView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(endLabel.snp.bottom).offset(50)
         }
         
         addSubview(nextButton)
