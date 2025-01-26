@@ -12,5 +12,6 @@ struct Constants {
     public struct API {
         static let baseURL = "http://13.125.97.8:8080"
         static let diaryURL = "\(baseURL)/diaries"
+        static let authURL = "\(baseURL)/auth"
     }
 }
