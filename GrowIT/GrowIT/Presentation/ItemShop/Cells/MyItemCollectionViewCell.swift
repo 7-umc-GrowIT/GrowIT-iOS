@@ -1,14 +1,15 @@
 //
-//  ItemCollectionViewCell.swift
+//  MyItemCollectionViewCell.swift
 //  GrowIT
 //
-//  Created by 오현민 on 1/9/25.
+//  Created by 오현민 on 1/26/25.
 //
 
 import UIKit
 
-class ItemCollectionViewCell: UICollectionViewCell {
-    static let identifier = "ItemCollectionViewCell"
+class MyItemCollectionViewCell: UICollectionViewCell {
+
+    static let identifier = "IsOwnedItemCollectionViewCell"
     
     // 아이템 이미지
     var itemImageView = UIImageView().then {
@@ -23,22 +24,10 @@ class ItemCollectionViewCell: UICollectionViewCell {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private lazy var creditStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.alignment = .center
-        $0.spacing = 8
-        $0.distribution = .equalSpacing
-    }
-    
-    private lazy var creditIcon = UIImageView().then {
-        $0.image = UIImage(named: "GrowIT_Credit")
-        $0.contentMode = .scaleAspectFill
-        $0.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
-    var creditLabel = UILabel().then {
-        $0.textColor = .black
-        $0.font = UIFont.body2SemiBold()
+    // 보유 중 라벨
+    var isOwnedLabel = UILabel().then {
+        $0.textColor = .grayColor500
+        $0.font = UIFont.body2Medium()
         $0.textAlignment = .center
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -76,8 +65,7 @@ class ItemCollectionViewCell: UICollectionViewCell {
     //MARK: - 컴포넌트 추가
     private func setView() {
         itemBackGroundView.addSubview(itemImageView)
-        creditStackView.addArrangedSubViews([creditIcon, creditLabel])
-        self.addSubviews([itemBackGroundView, creditStackView])
+        self.addSubviews([itemBackGroundView, isOwnedLabel])
     }
     
     //MARK: - 레이아웃 설정
@@ -93,15 +81,10 @@ class ItemCollectionViewCell: UICollectionViewCell {
             $0.center.equalToSuperview()
         }
         
-        creditStackView.snp.makeConstraints {
+        isOwnedLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.bottom.equalToSuperview().inset(15)
         }
         
-        creditIcon.snp.makeConstraints {
-            $0.width.equalTo(15)
-            $0.height.equalTo(17)
-        }
     }
-    
 }
