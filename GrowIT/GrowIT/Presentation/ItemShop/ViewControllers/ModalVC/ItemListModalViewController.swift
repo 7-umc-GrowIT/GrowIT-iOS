@@ -74,7 +74,7 @@ class ItemListModalViewController: UIViewController {
     
     // 세그먼트 이미지 초기화
     @objc private func segmentChanged(_ segment: UISegmentedControl) {
-                let defaultImages = [
+        let defaultImages = [
             UIImage(named: "GrowIT_Background_Off")!.withRenderingMode(.alwaysOriginal),
             UIImage(named: "GrowIT_Object_Off")!.withRenderingMode(.alwaysOriginal),
             UIImage(named: "GrowIT_FlowerPot_Off")!.withRenderingMode(.alwaysOriginal),
@@ -187,7 +187,24 @@ extension ItemListModalViewController: UICollectionViewDelegate {
         delegate?.didSelectPurchasedItem(item.isPurchased)
         let inset: CGFloat = item.isPurchased ? 100 : -16
         itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
-
+        
     }
 }
 
+extension ItemListModalViewController: UICollectionViewDelegateFlowLayout {
+    // 동적 셀 너비 조정
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let itemRow: CGFloat = 3
+        let itemSpacing: CGFloat = 8
+        let aspectRatio: CGFloat = 140 / 122
+        
+        let availableWidth = collectionView.bounds.width - (itemSpacing * 2)
+        let itemWidth = floor(availableWidth / itemRow)
+        let itemHeight = itemWidth * aspectRatio
+        return CGSize(width: itemWidth, height: itemHeight)
+    }
+}

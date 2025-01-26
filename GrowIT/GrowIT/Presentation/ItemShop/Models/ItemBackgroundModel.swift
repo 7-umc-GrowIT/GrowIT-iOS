@@ -22,6 +22,10 @@ extension ItemBackgroundModel {
         return [
             ItemBackgroundModel(credit: 0, backgroundColor: .itemYellow, Item: .itemBackgroundStar, isPurchased: false),
             ItemBackgroundModel(credit: 0, backgroundColor: .itemGreen, Item: .itemBackgroundTree, isPurchased: true),
+            ItemBackgroundModel(credit: 0, backgroundColor: .itemYellow, Item: .itemBackgroundStar, isPurchased: false),
+            ItemBackgroundModel(credit: 0, backgroundColor: .itemGreen, Item: .itemBackgroundTree, isPurchased: true),
+            ItemBackgroundModel(credit: 0, backgroundColor: .itemGreen, Item: .itemBackgroundTree, isPurchased: true),
+            ItemBackgroundModel(credit: 0, backgroundColor: .itemGreen, Item: .itemBackgroundTree, isPurchased: true),
             ItemBackgroundModel(credit: 0, backgroundColor: .itemPink, Item: .itemBackgroundHeart, isPurchased: false)
         ]
     }

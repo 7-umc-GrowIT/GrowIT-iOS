@@ -39,9 +39,9 @@ class GroViewController: UIViewController, MyItemListDelegate {
     }
     
     //MARK: - MyItemListDelegate
-        func didSelectPurchasedItem(_ isPurchased: Bool) {
-            groView.purchaseButton.isHidden = isPurchased
-        }
+    func didSelectPurchasedItem(_ isPurchased: Bool) {
+        groView.purchaseButton.isHidden = isPurchased
+    }
     
     
     //MARK: - 컴포넌트추가
@@ -67,19 +67,14 @@ class GroViewController: UIViewController, MyItemListDelegate {
     }
     
     //MARK: - 기능
-    @objc private func didTapZoomButton(_ sender: UIButton) {
+    @objc
+    private func didTapZoomButton(_ sender: UIButton) {
         sender.isSelected.toggle()
-        
-        updateItemListPosition(isZoomedOut: sender.isSelected)
-        updateButtonStackViewPosition(isZoomedOut: sender.isSelected)
-        updateZoomButtonImage(isZoomedOut: sender.isSelected)
-        updateGroImageViewTopConstraint(isZoomedOut: sender.isSelected)
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
+        showModalView(isZoomedOut: sender.isSelected)
     }
     
-    @objc private func didTapPurchaseButton() {
+    @objc
+    private func didTapPurchaseButton() {
         let purchaseModalVC = PurchaseModalViewController(isShortage: true)
         purchaseModalVC.modalPresentationStyle = .pageSheet
         
@@ -99,8 +94,12 @@ class GroViewController: UIViewController, MyItemListDelegate {
         present(purchaseModalVC, animated: true, completion: nil)
     }
     
-    @objc private func didTapMyItemButton(_ sender: UIButton) {
+    @objc
+    private func didTapMyItemButton(_ sender: UIButton) {
         sender.isSelected.toggle()
+        if sender.isSelected {
+            showModalView(isZoomedOut: !sender.isSelected)
+        }
         
         let imageName = sender.isSelected ? "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
         itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
@@ -108,13 +107,18 @@ class GroViewController: UIViewController, MyItemListDelegate {
         // 구매하기 버튼
         itemListModalVC.updateToMyItems(sender.isSelected)
         groView.purchaseButton.isHidden = sender.isSelected
-        
+    }
+    
+    //MARK: - UI 업데이트 함수
+    private func showModalView(isZoomedOut: Bool) {
+        updateItemListPosition(isZoomedOut: isZoomedOut)
+        updateButtonStackViewPosition(isZoomedOut: isZoomedOut)
+        updateZoomButtonImage(isZoomedOut: isZoomedOut)
+        updateGroImageViewTopConstraint(isZoomedOut: isZoomedOut)
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
     }
-    
-    //MARK: - UI 업데이트 함수
     private func updateItemListPosition(isZoomedOut: Bool) {
         let offset = isZoomedOut ? 500 : 0
         self.itemListBottomConstraint?.update(offset: offset)
