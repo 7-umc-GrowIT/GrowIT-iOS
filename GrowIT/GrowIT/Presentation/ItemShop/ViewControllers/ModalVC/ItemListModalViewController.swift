@@ -8,11 +8,23 @@
 import UIKit
 
 class ItemListModalViewController: UIViewController {
+    
+    weak var delegate: MyItemListDelegate?
+    
+    // 아이템 목록 더미데이터
     private lazy var segmentData: [[ItemDisplayable]] = [
         ItemBackgroundModel.dummy(),
         ItemAccModel.dummy(),
         ItemBackgroundModel.dummy(),
         ItemAccModel.dummy()
+    ]
+    
+    // 마이아이템 더미데이터
+    private var myItemsData: [[ItemDisplayable]] = [
+        ItemBackgroundModel.myItemsDummy(),
+        ItemAccModel.myItemsDummy(),
+        ItemAccModel.myItemsDummy(),
+        ItemAccModel.myItemsDummy()
     ]
     
     private lazy var currentSegmentIndex: Int = 0 {
@@ -42,9 +54,21 @@ class ItemListModalViewController: UIViewController {
     }
     
     //MARK: - 기능
+    // 마이아이템 진입 시 업데이트
+    func updateToMyItems(_ isMyItems: Bool) {
+        segmentData = isMyItems ? myItemsData : [
+            ItemBackgroundModel.dummy(),
+            ItemAccModel.dummy(),
+            ItemBackgroundModel.dummy(),
+            ItemAccModel.dummy()
+        ]
+        itemListModalView.itemCollectionView.reloadData()
+        itemListModalView.purchaseButton.isHidden = isMyItems
+    }
+    
+    // 세그먼트 이미지 초기화
     @objc private func segmentChanged(_ segment: UISegmentedControl) {
-        // 세그먼트 이미지 초기화
-        let defaultImages = [
+                let defaultImages = [
             UIImage(named: "GrowIT_Background_Off")!.withRenderingMode(.alwaysOriginal),
             UIImage(named: "GrowIT_Object_Off")!.withRenderingMode(.alwaysOriginal),
             UIImage(named: "GrowIT_FlowerPot_Off")!.withRenderingMode(.alwaysOriginal),
@@ -134,6 +158,10 @@ extension ItemListModalViewController: UICollectionViewDataSource {
 //MARK: - UICollectionViewDelegate
 extension ItemListModalViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = segmentData[currentSegmentIndex][indexPath.row]
+        
+        itemListModalView.purchaseButton.isHidden = item.isPurchased
+        delegate?.didSelectPurchasedItem(item.isPurchased)
     }
 }
 

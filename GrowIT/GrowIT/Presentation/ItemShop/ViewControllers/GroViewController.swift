@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class GroViewController: UIViewController {
+class GroViewController: UIViewController, MyItemListDelegate {
     private var itemListBottomConstraint: Constraint?
     private var isZoomIn: Bool = true
     
@@ -31,11 +31,18 @@ class GroViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = groView
+        itemListModalVC.delegate = self
         
         setView()
         setConstraints()
         setInitialState()
     }
+    
+    //MARK: - MyItemListDelegate
+        func didSelectPurchasedItem(_ isPurchased: Bool) {
+            groView.purchaseButton.isHidden = isPurchased
+        }
+    
     
     //MARK: - 컴포넌트추가
     private func setView() {
@@ -94,8 +101,13 @@ class GroViewController: UIViewController {
     
     @objc private func didTapMyItemButton(_ sender: UIButton) {
         sender.isSelected.toggle()
+        
         let imageName = sender.isSelected ? "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
         itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
+        
+        // 구매하기 버튼
+        itemListModalVC.updateToMyItems(sender.isSelected)
+        groView.purchaseButton.isHidden = sender.isSelected
         
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
