@@ -85,5 +85,12 @@ class ItemListModalView: UIView {
             $0.height.equalTo(60)
         }
     }
+    
+    func updateCollectionViewConstraints(forSuperviewInset inset: CGFloat) {
+        itemCollectionView.snp.updateConstraints {
+            $0.bottom.equalTo(purchaseButton.snp.top).offset(inset)
+        }
+        self.layoutIfNeeded()
+    }
 }
 

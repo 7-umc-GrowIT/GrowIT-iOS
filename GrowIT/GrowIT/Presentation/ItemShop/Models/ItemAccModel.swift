@@ -27,6 +27,7 @@ extension ItemAccModel {
     static func myItemsDummy() -> [ItemAccModel] {
         return [
             ItemAccModel(credit: 0, backgroundColor: .itemPink, Item: .itemAccCherry, isPurchased: true),
+            ItemAccModel(credit: 0, backgroundColor: .itemPink, Item: .itemAccCherry, isPurchased: true),
             ItemAccModel(credit: 0, backgroundColor: .itemGreen, Item: .itemAccSprout, isPurchased: true)
         ]
     }

@@ -65,7 +65,11 @@ class ItemListModalViewController: UIViewController {
             ItemAccModel.dummy()
         ]
         itemListModalView.itemCollectionView.reloadData()
+        
+        // 구매 버튼 안 보이게
         itemListModalView.purchaseButton.isHidden = isMyItems
+        let inset: CGFloat = isMyItems ? 100 : -16
+        itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
     }
     
     // 세그먼트 이미지 초기화
@@ -178,8 +182,12 @@ extension ItemListModalViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = segmentData[currentSegmentIndex][indexPath.row]
         
+        // 구매 버튼 안 보이게
         itemListModalView.purchaseButton.isHidden = item.isPurchased
         delegate?.didSelectPurchasedItem(item.isPurchased)
+        let inset: CGFloat = item.isPurchased ? 100 : -16
+        itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
+
     }
 }
 
