@@ -10,6 +10,7 @@ import UIKit
 class ItemListModalViewController: UIViewController {
     
     weak var delegate: MyItemListDelegate?
+    private var isMyItems: Bool = false
     
     // 아이템 목록 더미데이터
     private lazy var segmentData: [[ItemDisplayable]] = [
@@ -56,6 +57,7 @@ class ItemListModalViewController: UIViewController {
     //MARK: - 기능
     // 마이아이템 진입 시 업데이트
     func updateToMyItems(_ isMyItems: Bool) {
+        self.isMyItems = isMyItems
         segmentData = isMyItems ? myItemsData : [
             ItemBackgroundModel.dummy(),
             ItemAccModel.dummy(),
@@ -139,18 +141,34 @@ extension ItemListModalViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: ItemCollectionViewCell.identifier,
-            for: indexPath) as? ItemCollectionViewCell else {
-            return UICollectionViewCell()
+        // 마이 아이템 셀 구분
+        if isMyItems {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: MyItemCollectionViewCell.identifier,
+                for: indexPath) as? MyItemCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            let item = segmentData[currentSegmentIndex][indexPath.row]
+            cell.isOwnedLabel.text = "보유 중"
+            cell.itemBackGroundView.backgroundColor = item.backgroundColor
+            cell.itemImageView.image = item.Item
+            
+            return cell
+            
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: ItemCollectionViewCell.identifier,
+                for: indexPath) as? ItemCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            let item = segmentData[currentSegmentIndex][indexPath.row]
+            
+            cell.creditLabel.text = String(item.credit)
+            cell.itemBackGroundView.backgroundColor = item.backgroundColor
+            cell.itemImageView.image = item.Item
+            
+            return cell
         }
-        let item = segmentData[currentSegmentIndex][indexPath.row]
-        
-        cell.creditLabel.text = String(item.credit)
-        cell.itemBackGroundView.backgroundColor = item.backgroundColor
-        cell.itemImageView.image = item.Item
-        
-        return cell
     }
     
 }
