@@ -80,7 +80,7 @@ class GroViewController: UIViewController, MyItemListDelegate {
     }
     
     @objc private func didTapPurchaseButton() {
-        let purchaseModalVC = PurchaseModalViewController()
+        let purchaseModalVC = PurchaseModalViewController(isShortage: true)
         purchaseModalVC.modalPresentationStyle = .pageSheet
         
         if let sheet = purchaseModalVC.sheetPresentationController {
