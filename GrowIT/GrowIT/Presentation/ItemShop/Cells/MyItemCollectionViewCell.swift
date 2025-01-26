@@ -55,9 +55,11 @@ class MyItemCollectionViewCell: UICollectionViewCell {
                 self.layer.shadowOpacity = 0.2
                 self.layer.shadowRadius = 4
                 self.layer.shadowOffset = CGSize(width: 0, height: 0)
+                self.isOwnedLabel.text = "착용 중"
             } else {
                 self.layer.borderColor = UIColor.clear.cgColor
                 self.layer.shadowColor = UIColor.clear.cgColor
+                self.isOwnedLabel.text = "보유 중"
             }
         }
     }
