@@ -21,6 +21,16 @@ class EmailLoginViewController: UIViewController {
         setupActions()
         loadCheckBoxState()
         updateLoginButtonState()
+        
+        emailLoginView.changePwdButton.addTarget(self, action: #selector(
+            changePwdBtnTap), for: .touchUpInside)
+        
+//        emailLoginView.singUpButton.addTarget(self, action: #selector(
+//            signUpBtnTap), for: .touchUpInside)
+        
+        emailLoginView.findEmailButton.addTarget(self, action: #selector(
+            findEmailBtnTap), for: .touchUpInside
+        )
     }
     
     // MARK: - Setup View
@@ -50,10 +60,13 @@ class EmailLoginViewController: UIViewController {
         emailLoginView.emailTextField.textField.addTarget(
             self, action: #selector(textFieldsDidChange), for: .editingChanged
         )
+        
+        emailLoginView.pwdTextField.textField.isSecureTextEntry = true
         emailLoginView.pwdTextField.textField.addTarget(
             self, action: #selector(textFieldsDidChange), for: .editingChanged
         )
     }
+
     
     //MARK: - Text Fields Change Handler
    @objc private func textFieldsDidChange() {
@@ -92,6 +105,22 @@ class EmailLoginViewController: UIViewController {
         
         // 아이디 저장 상태를 UserDefaults에 저장
         UserDefaults.standard.set(isChecked, forKey: "isCheckBoxChecked")
+    }
+    
+    // 찾기, 변경, 회원가입 버튼 액션
+    @objc func changePwdBtnTap() {
+        let changePwdVC = ChangePasswordViewController()
+        self.navigationController?.pushViewController(changePwdVC, animated: true)
+    }
+    
+//    @objc func signUpBtnTap() {
+//        let signUpVC = SignUpViewController()
+//        self.navigationController?.pushViewController(signUpVC, animated: true)
+//    }
+    
+    @objc func findEmailBtnTap() {
+        let findEmailVC = FindEmailViewController()
+        self.navigationController?.pushViewController(findEmailVC, animated: true)
     }
     
     // MARK: - Load State
