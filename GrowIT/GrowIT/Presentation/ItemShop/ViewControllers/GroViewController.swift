@@ -10,7 +10,6 @@ import SnapKit
 
 class GroViewController: UIViewController, MyItemListDelegate {
     private var itemListBottomConstraint: Constraint?
-    private var isZoomIn: Bool = true
     
     //MARK: - Views
     // 그로 화면
@@ -74,6 +73,22 @@ class GroViewController: UIViewController, MyItemListDelegate {
     }
     
     @objc
+    private func didTapMyItemButton(_ sender: UIButton) {
+        sender.isSelected.toggle()
+        if sender.isSelected {
+            groView.zoomButton.isSelected = false // 줌 버튼 상태 초기화
+            showModalView(isZoomedOut: !sender.isSelected)
+        }
+        
+        let imageName = sender.isSelected ? "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
+        itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
+        
+        // 구매하기 버튼
+        itemListModalVC.updateToMyItems(sender.isSelected)
+        groView.purchaseButton.isHidden = sender.isSelected
+    }
+    
+    @objc
     private func didTapPurchaseButton() {
         let purchaseModalVC = PurchaseModalViewController(isShortage: true)
         purchaseModalVC.modalPresentationStyle = .pageSheet
@@ -92,21 +107,6 @@ class GroViewController: UIViewController, MyItemListDelegate {
             sheet.prefersGrabberVisible = true
         }
         present(purchaseModalVC, animated: true, completion: nil)
-    }
-    
-    @objc
-    private func didTapMyItemButton(_ sender: UIButton) {
-        sender.isSelected.toggle()
-        if sender.isSelected {
-            showModalView(isZoomedOut: !sender.isSelected)
-        }
-        
-        let imageName = sender.isSelected ? "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
-        itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
-        
-        // 구매하기 버튼
-        itemListModalVC.updateToMyItems(sender.isSelected)
-        groView.purchaseButton.isHidden = sender.isSelected
     }
     
     //MARK: - UI 업데이트 함수
