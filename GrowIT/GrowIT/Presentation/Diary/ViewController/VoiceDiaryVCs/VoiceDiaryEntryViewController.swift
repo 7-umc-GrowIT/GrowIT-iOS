@@ -24,7 +24,7 @@ class VoiceDiaryEntryViewController: UIViewController {
             guard let self = self else { return }
             switch result {
             case.success(let data):
-                print("Success \(data)")
+                print("Success!!!!!!! \(data)")
             case.failure(let error):
                 print("Error: \(error)")
             }

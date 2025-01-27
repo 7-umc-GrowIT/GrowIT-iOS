@@ -36,6 +36,7 @@ class DiaryAllViewController: UIViewController, UITableViewDelegate {
     }
     
     // MARK: Setup Actions
+    
 }
 
 extension DiaryAllViewController: UITableViewDataSource {
