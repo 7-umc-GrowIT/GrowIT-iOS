@@ -30,14 +30,24 @@ class JDiaryCell: UICollectionViewCell{
         $0.textColor = .grayColor900
     }
     
+    private lazy var dateImage = UIImageView().then{
+        $0.image = UIImage(named: "diaryIcon")
+        $0.contentMode = .scaleAspectFit
+    }
     private func addComponents(){
-        self.addSubview(dateCell)
+        [dateCell, dateImage].forEach(self.addSubview)
     }
     
     private func constraints(){
         dateCell.snp.makeConstraints{
             $0.top.equalToSuperview()
             $0.centerX.equalToSuperview()
+        }
+        
+        dateImage.snp.makeConstraints{
+            $0.top.equalTo(dateCell.snp.bottom).offset(4)
+            $0.centerX.equalToSuperview()
+            $0.width.height.equalTo(16)
         }
     }
     
