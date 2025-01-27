@@ -9,7 +9,7 @@ import UIKit
 import Then
 import SnapKit
 
-class ChallengHomeView: UIView {
+class ChallengeHomeView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
