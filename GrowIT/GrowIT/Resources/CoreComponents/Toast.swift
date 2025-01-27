@@ -1,10 +1,3 @@
-//
-//  Toast.swift
-//  GrowIT
-//
-//  Created by 이수현 on 1/16/25.
-//
-
 import UIKit
 
 class Toast {
