@@ -6,16 +6,22 @@
 //
 
 import UIKit
+import Lottie
 
 class TextDiaryEndView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        startAnimation()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func startAnimation() {
+        creditView.play()
     }
     
     //MARK: - UI Components
@@ -24,6 +30,11 @@ class TextDiaryEndView: UIView {
         $0.font = .subTitle1()
         $0.textColor = .black
         $0.numberOfLines = 0
+    }
+    
+    var creditView = LottieAnimationView(name: "Credit").then {
+        $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        $0.loopMode = .loop
     }
     
     let nextButton = AppButton(title: "지금 바로 챌린지하러 가기", titleColor: .white).then {
@@ -37,6 +48,12 @@ class TextDiaryEndView: UIView {
         endLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(24)
             make.top.equalTo(safeAreaLayoutGuide).offset(32)
+        }
+        
+        addSubview(creditView)
+        creditView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(endLabel.snp.bottom).offset(50)
         }
         
         addSubview(nextButton)

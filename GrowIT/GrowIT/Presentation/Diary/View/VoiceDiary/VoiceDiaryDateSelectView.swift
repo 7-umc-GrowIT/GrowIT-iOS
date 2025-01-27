@@ -39,6 +39,23 @@ class VoiceDiaryDateSelectView: UIView {
         $0.textColor = .gray300
     }
     
+    private let dateView = UIView().then {
+        $0.backgroundColor = .gray700
+        $0.layer.cornerRadius = 8
+    }
+    
+    private let dateSelectLabel = UILabel().then {
+        $0.text = "일기 날짜를 선택해 주세요"
+        $0.font = .body1Medium()
+        $0.textColor = .gray500
+    }
+    
+    let toggleButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        $0.backgroundColor = .clear
+        $0.tintColor = .gray500
+    }
+    
     let startButton = AppButton(title: "대화 시작하기", titleColor: .black).then {
         $0.backgroundColor = .primary400
     }
@@ -62,6 +79,26 @@ class VoiceDiaryDateSelectView: UIView {
         dateLabel.snp.makeConstraints { make in
             make.leading.equalTo(label1.snp.leading)
             make.top.equalTo(label1.snp.bottom).offset(40)
+        }
+        
+        addSubview(dateView)
+        dateView.snp.makeConstraints { make in
+            make.leading.equalTo(dateLabel.snp.leading)
+            make.centerX.equalToSuperview()
+            make.top.equalTo(dateLabel.snp.bottom).offset(8)
+            make.height.equalTo(48)
+        }
+        
+        dateView.addSubview(dateSelectLabel)
+        dateSelectLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(12)
+            make.centerY.equalToSuperview()
+        }
+        
+        dateView.addSubview(toggleButton)
+        toggleButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-12)
+            make.centerY.equalToSuperview()
         }
         
         addSubview(startButton)

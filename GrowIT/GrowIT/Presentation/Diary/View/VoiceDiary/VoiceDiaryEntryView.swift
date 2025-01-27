@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import Lottie
 
 class VoiceDiaryEntryView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        startAnimation()
     }
     
     required init?(coder: NSCoder) {
@@ -23,6 +25,10 @@ class VoiceDiaryEntryView: UIView {
         
         // 그라데이션 적용
         recordButton.setGradient(color1: .primary400, color2: .primary600)
+    }
+    
+    private func startAnimation() {
+        postImage.play()
     }
     
     // MARK: UI Components
@@ -37,6 +43,11 @@ class VoiceDiaryEntryView: UIView {
         $0.text = "버튼을 누르면 바로 통화가 시작돼요"
         $0.font = .heading3SemiBold()
         $0.textColor = .white
+    }
+    
+    var postImage = LottieAnimationView(name: "Diary").then {
+        $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        $0.loopMode = .loop
     }
     
     let recordButton = AppButton(title: " 오늘의 일기 기록하기", titleColor: .white, icon: "whiteDiary")
@@ -65,6 +76,12 @@ class VoiceDiaryEntryView: UIView {
         label2.snp.makeConstraints { make in
             make.leading.equalTo(label1.snp.leading)
             make.top.equalTo(label1.snp.bottom).offset(12)
+        }
+        
+        addSubview(postImage)
+        postImage.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(label2.snp.bottom).offset(30)
         }
         
         addSubview(recordButton)

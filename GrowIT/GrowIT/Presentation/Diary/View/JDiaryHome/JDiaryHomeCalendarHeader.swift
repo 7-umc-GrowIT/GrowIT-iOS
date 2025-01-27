@@ -27,7 +27,7 @@ class JDiaryHomeCalendarHeader: UIView {
     
     private lazy var subTitle = AppLabel(text: "날짜별로 확인하고 간단하게 확인해요", font: .body2Medium(), textColor: .gray500)
     
-    private lazy var collectBtn = UIButton().then{
+    lazy var collectBtn = UIButton().then{
         $0.setTitle("한 번에 모아보기", for: .normal)
         $0.setTitleColor(.gray500, for: .normal)
         $0.titleLabel?.font = .detail1Medium()
