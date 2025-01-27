@@ -16,6 +16,8 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
     
     private var buttonCount: Int = 0
     
+    let diaryService = DiaryService()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.isNavigationBarHidden = false
@@ -71,6 +73,7 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
         if buttonCount == 0 {
             Toast.show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "한 개 이상의 챌린지를 선택해 주세요", font: .heading3SemiBold())
         } else {
+            callPostTextDiary()
             let nextVC = TextDiaryEndViewController()
             nextVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(nextVC, animated: true)
@@ -96,6 +99,22 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
     
     func didTapExitButton() {
         navigationController?.popToRootViewController(animated: true)
+    }
+    
+    // MARK: API func
+    func callPostTextDiary() {
+        diaryService.postTextDiary(data: DiaryRequestDTO(
+            content: UserDefaults.standard.string(forKey: "TextDiary") ?? "잘못된 전달입니다",
+            date: "2025-01-21"),
+            completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let data):
+                print("Success!!!!!!! \(data)")
+            case.failure(let error):
+                print("Error: \(error)")
+            }
+        })
     }
     
 }

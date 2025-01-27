@@ -10,7 +10,7 @@ import Foundation
 struct DiaryPostResponseDTO: Decodable {
     let diaryId: Int
     let content: String
-    let createdAt: String
+    let date: String
 }
 
 struct DiaryGetDatesResponseDTO: Decodable {

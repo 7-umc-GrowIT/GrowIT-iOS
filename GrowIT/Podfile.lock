@@ -572,6 +572,7 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.24):
     - BoringSSL-GRPC/Interface (= 0.0.24)
   - BoringSSL-GRPC/Interface (0.0.24)
+  - EzPopup (1.2.4)
   - googleapis (0.0.1):
     - "!ProtoCompiler-gRPCPlugin (~> 1.0)"
     - googleapis/Messages (= 0.0.1)
@@ -669,6 +670,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - EzPopup
   - googleapis (from `.`)
   - KakaoSDKAuth
   - KakaoSDKCommon
@@ -687,6 +689,7 @@ SPEC REPOS:
     - abseil
     - Alamofire
     - BoringSSL-GRPC
+    - EzPopup
     - gRPC
     - gRPC-Core
     - gRPC-ProtoRPC
@@ -712,6 +715,7 @@ SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
+  EzPopup: 37f2c40e8ce50412a269bfba365baa7085c28002
   googleapis: af28ab42f5bf87909feedb362dd4218f6bcb7ed7
   gRPC: 64f36d689b2ecd99c4351f74e6f91347cdc65d9f
   gRPC-Core: 3a9fdb5967d42211e875826f3f6fc163ea02c2a1
@@ -728,6 +732,6 @@ SPEC CHECKSUMS:
   SwiftyToaster: 316479401103eb231e69c89fb8727d173c2df001
   Then: 844265ae87834bbe1147d91d5d41a404da2ec27d
 
-PODFILE CHECKSUM: 5a884c0e80356178835df38de7115fde44d9a298
+PODFILE CHECKSUM: eb36becf6887c7230f4e9496370c5ab23ad1869e
 
 COCOAPODS: 1.16.2

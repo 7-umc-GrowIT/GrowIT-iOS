@@ -17,6 +17,7 @@ target 'GrowIT' do
   pod 'SwiftyToaster'
   pod 'Moya'
   pod 'googleapis', :path => '.'
+  pod 'EzPopup'
 	
   
 end

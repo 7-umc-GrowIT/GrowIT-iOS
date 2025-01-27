@@ -47,7 +47,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
     }
     
     private let placeholder: String = "일기 내용을 입력하세요"
-    private let diaryTextField = UITextView().then {
+    let diaryTextField = UITextView().then {
         $0.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         $0.font = UIFont.body1Medium()
         $0.textColor = .gray300
