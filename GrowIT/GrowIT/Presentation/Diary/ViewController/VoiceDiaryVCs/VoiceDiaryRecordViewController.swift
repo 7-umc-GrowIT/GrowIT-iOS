@@ -16,6 +16,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     private var speechAPIProvider = SpeechAPIProvider()
     private var audioRecorder: AVAudioRecorder?
     private var isRecording = false // 녹음 상태 관리
+    private let diaryService = DiaryService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -161,6 +162,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
                 switch result {
                 case .success(let transcript):
                     print("변환된 텍스트: \(transcript)")
+                    self?.callPostVoiceDiary(userVoice: transcript)
                 case .failure(let error):
                     print("변환 실패: \(error.localizedDescription)")
                     print("API 호출 실패: \(error.localizedDescription)")
@@ -180,6 +182,21 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
                 }
             }
         }
+    }
+    
+    // MARK: Setup APIs
+    private func callPostVoiceDiary(userVoice: String) {
+        diaryService.postVoiceDiary(
+            data: DiaryRequestDTO(content: userVoice, date: "2025-1-30"),
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    print("Success: \(data)")
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            })
     }
     
 }
