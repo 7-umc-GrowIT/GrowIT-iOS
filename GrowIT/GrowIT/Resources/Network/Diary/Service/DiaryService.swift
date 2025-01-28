@@ -23,7 +23,7 @@ final class DiaryService: NetworkManager {
     
     /// Post Text Diary API
     func postTextDiary(data: DiaryRequestDTO, completion: @escaping (Result<DiaryPostResponseDTO, NetworkError>) -> Void) {
-        request(target: .postTextDiary(Data: data), decodingType: DiaryPostResponseDTO.self, completion: completion)
+        request(target: .postTextDiary(data: data), decodingType: DiaryPostResponseDTO.self, completion: completion)
     }
     
     /// Post Voice Diary API
