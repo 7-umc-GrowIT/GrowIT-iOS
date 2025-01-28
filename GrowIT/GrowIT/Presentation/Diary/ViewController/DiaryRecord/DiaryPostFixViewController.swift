@@ -12,6 +12,7 @@ class DiaryPostFixViewController: UIViewController {
     // MARK: Properties
     let text: String
     let diaryPostFixView = DiaryPostFixView()
+    private let diaryService = DiaryService()
     
     
     init(text: String) {
@@ -61,6 +62,7 @@ class DiaryPostFixViewController: UIViewController {
     
     @objc func nextVC() {
         // 수정하기 api 추가 필요
+        callPatchFixDiary()
         dismiss(animated: true)
     }
     
@@ -69,6 +71,28 @@ class DiaryPostFixViewController: UIViewController {
         let navController = UINavigationController(rootViewController: nextVC)
         navController.modalPresentationStyle = .fullScreen
         presentPageSheet(viewController: navController, detentFraction: 0.37)
+    }
+    
+    // MARK: Setup APIs
+    private func getUserContent() -> DiaryPatchDTO {
+        let userContent: DiaryPatchDTO = DiaryPatchDTO(content: diaryPostFixView.textView.text)
+        return userContent
+    }
+    
+    
+    private func callPatchFixDiary() {
+        diaryService.patchFixDiary(
+            diaryId: <#T##Int#>,
+            data: getUserContent(),
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    print("Success: \(data)")
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            })
     }
 }
 

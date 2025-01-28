@@ -9,16 +9,19 @@ import UIKit
 
 class DiaryAllViewController: UIViewController, UITableViewDelegate {
     
-    
-    
     // MARK: Properties
     private let diaryAllView = DiaryAllView()
+    private let diaryService = DiaryService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupDelegate()
         print(DiaryModel.dummy().count)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     // MARK: Setup UI
@@ -36,6 +39,22 @@ class DiaryAllViewController: UIViewController, UITableViewDelegate {
     }
     
     // MARK: Setup Actions
+    
+    // MARK: Setup APIs
+    private func callGetAllDiaries() {
+        diaryService.fetchAllDiaries(
+            year: <#T##Int#>,
+            month: <#T##Int#>,
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    print("Success: \(data)")
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            })
+    }
     
 }
 

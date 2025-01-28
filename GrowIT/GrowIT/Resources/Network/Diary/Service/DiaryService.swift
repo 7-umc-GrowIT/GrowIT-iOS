@@ -51,12 +51,16 @@ final class DiaryService: NetworkManager {
     }
     
     /// 월별 일기 작성 날짜 및 일기 Id 조회 API
-    public func fetchDiaryDates(year: Int, month: Int, completion: @escaping (Result<DiaryGetDatesResponseDTO?, NetworkError>) -> Void) {
+    func fetchDiaryDates(year: Int, month: Int, completion: @escaping (Result<DiaryGetDatesResponseDTO?, NetworkError>) -> Void) {
         requestOptional(
             target: .getDiaryDates(year: year, month: month),
             decodingType: DiaryGetDatesResponseDTO.self,
             completion: completion
         )
+    }
+    
+    func patchFixDiary(diaryId: Int, data: DiaryPatchDTO, completion: @escaping (Result<DiaryPatchResponseDTO, NetworkError>) -> Void) {
+        request(target: .patchFixDiary(diaryId: diaryId, data: data), decodingType: DiaryPatchResponseDTO.self, completion: completion)
     }
 }
 

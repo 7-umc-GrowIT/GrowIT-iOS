@@ -10,6 +10,7 @@ import UIKit
 class DiaryDeleteViewController: UIViewController {
     
     var onDismiss: (() -> Void)?
+    private let diaryService = DiaryService()
     
     let deleteView = ErrorView().then {
         $0.configure(icon: "trashIcon", fisrtLabel: "정말 일기를 삭제할까요?", secondLabel: "삭제한 일기는 복구하기 어렵습니다\n 그래도 일기를 삭제할까요?", firstColor: .gray900, secondColor: .gray700, title1: "나가기", title1Color1: .gray400, title1Background: .gray100, title2: "삭제하기", title1Color2: .white, title2Background: .negative400, targetText: "", viewColor: .white)
@@ -38,6 +39,7 @@ class DiaryDeleteViewController: UIViewController {
     // MARK: @objc methods
     @objc func prevVC() {
         // 삭제하기 api 연결 필요
+        callDeleteDiary()
         Toast.show(image: UIImage(named: "toasttrash") ?? UIImage(), message: "일기를 삭제했어요", font: .heading3SemiBold())
         
         self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
@@ -46,4 +48,20 @@ class DiaryDeleteViewController: UIViewController {
     @objc func mainVC() {
         dismiss(animated: true)
     }
+    
+    // MARK: Setup APIs
+    private func callDeleteDiary() {
+        diaryService.deleteDiary(
+            diaryId: <#T##Int#>,
+            completion: {[weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    print("Success: \(data)")
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            })
+    }
+    
 }
