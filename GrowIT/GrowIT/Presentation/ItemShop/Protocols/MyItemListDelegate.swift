@@ -8,5 +8,5 @@
 import Foundation
 
 protocol MyItemListDelegate: AnyObject {
-    func didSelectPurchasedItem(_ isPurchased: Bool)
+    func didSelectPurchasedItem(_ isPurchased: Bool, selectedItem: ItemList?)
 }

@@ -9,16 +9,22 @@ import UIKit
 import Kingfisher
 
 class ItemListModalViewController: UIViewController {
-    // MARK: -Properties
+    // MARK: - Properties
     let itemService = ItemService()
     weak var delegate: MyItemListDelegate?
     
     private var isMyItems: Bool = false
     private var category: String = "BACKGROUND"
+    private var selectedItem: ItemList?
     
     private var myItems: [ItemList] = []
     private var shopItems: [ItemList] = []
     
+    private lazy var currentSegmentIndex: Int = 0 {
+        didSet { itemListModalView.itemCollectionView.reloadData() }
+    }
+    
+    // MARK: - Data
     private let categories: [String] = ["BACKGROUND", "OBJECT", "PLANT", "HEAD_ACCESSORY"]
     
     private let selectedImages: [UIImage] = [
@@ -39,12 +45,6 @@ class ItemListModalViewController: UIViewController {
         "pink": .itemPink,
         "yellow": .itemYellow
     ]
-    
-    private lazy var currentSegmentIndex: Int = 0 {
-        didSet {
-            itemListModalView.itemCollectionView.reloadData()
-        }
-    }
     
     // MARK: - NetWork
     func callGetItems() {
@@ -98,7 +98,6 @@ class ItemListModalViewController: UIViewController {
         itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
     }
     
-    // 세그먼트 이미지 초기화
     @objc private func segmentChanged(_ segment: UISegmentedControl) {
         for index in 0..<segment.numberOfSegments {
             segment.setImage(defaultImages[index].withRenderingMode(.alwaysOriginal), forSegmentAt: index)
@@ -115,14 +114,16 @@ class ItemListModalViewController: UIViewController {
             duration: 0.1,
             options: [.transitionCrossDissolve],
             animations: {
-                self.currentSegmentIndex = segment.selectedSegmentIndex
+                self.currentSegmentIndex = selectedIndex
             },
             completion: nil
         )
     }
     
     @objc private func didTapPurchaseButton() {
-        let purchaseModalVC = PurchaseModalViewController(isShortage: true)
+        guard let item = selectedItem else { return }
+
+        let purchaseModalVC = PurchaseModalViewController(isShortage: false, credit: item.price)
         purchaseModalVC.modalPresentationStyle = .pageSheet
         
         if let sheet = purchaseModalVC.sheetPresentationController {
@@ -186,17 +187,14 @@ extension ItemListModalViewController: UICollectionViewDataSource {
 //MARK: - UICollectionViewDelegate
 extension ItemListModalViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let item: ItemList
-        
-        if isMyItems {
-            item = myItems[indexPath.row]
-        } else {
-            item = shopItems[indexPath.row]
-        }
+        let item = isMyItems ? myItems[indexPath.row] : shopItems[indexPath.row]
+
+        itemListModalView.purchaseButton.updateCredit(item.price)
+        delegate?.didSelectPurchasedItem(item.purchased, selectedItem: item)
+
         
         // 구매한 아이템의 경우
         itemListModalView.purchaseButton.isHidden = item.purchased
-        delegate?.didSelectPurchasedItem(item.purchased)
         let inset: CGFloat = item.purchased ? 100 : -16
         itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
         

@@ -9,10 +9,12 @@ import UIKit
 
 class PurchaseModalViewController: UIViewController {
     private let isShortage: Bool
+    private let credit: Int
     
     //MARK: - Views
     private lazy var purchaseModalView = PurchaseModalView().then {
         $0.cancleButton.addTarget(self, action: #selector(didTapCancleButton), for: .touchUpInside)
+        $0.purchaseButton.updateCredit(credit)
     }
     
     private lazy var shortageModalView = ShortageModalView().then {
@@ -20,8 +22,9 @@ class PurchaseModalViewController: UIViewController {
     }
     
     //MARK: - init
-    init(isShortage: Bool) {
+    init(isShortage: Bool, credit: Int) {
         self.isShortage = isShortage
+        self.credit = credit
         super.init(nibName: nil, bundle: nil)
     }
     
