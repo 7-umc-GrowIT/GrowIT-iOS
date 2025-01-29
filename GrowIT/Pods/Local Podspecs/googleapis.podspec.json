@@ -32,7 +32,9 @@
       "header_mappings_dir": ".",
       "requires_arc": false,
       "dependencies": {
-        "Protobuf": []
+        "Protobuf": [
+
+        ]
       }
     },
     {
@@ -41,8 +43,12 @@
       "header_mappings_dir": ".",
       "requires_arc": true,
       "dependencies": {
-        "gRPC-ProtoRPC": [],
-        "googleapis/Messages": []
+        "gRPC-ProtoRPC": [
+
+        ],
+        "googleapis/Messages": [
+
+        ]
       }
     }
   ]
