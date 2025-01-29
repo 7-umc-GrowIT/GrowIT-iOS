@@ -112,4 +112,5 @@ class DiaryAllViewTableViewCell: UITableViewCell {
     @objc private func buttonTapped() {
         delegate?.didTapButton(in: self) 
     }
+    
 }

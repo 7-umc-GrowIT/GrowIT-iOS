@@ -13,6 +13,7 @@ class VoiceDiaryEntryView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        startAnimation()
     }
     
     required init?(coder: NSCoder) {
@@ -24,6 +25,10 @@ class VoiceDiaryEntryView: UIView {
         
         // 그라데이션 적용
         recordButton.setGradient(color1: .primary400, color2: .primary600)
+    }
+    
+    private func startAnimation() {
+        postImage.play()
     }
     
     // MARK: UI Components
@@ -42,6 +47,7 @@ class VoiceDiaryEntryView: UIView {
     
     var postImage = LottieAnimationView(name: "Diary").then {
         $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        $0.loopMode = .loop
     }
     
     let recordButton = AppButton(title: " 오늘의 일기 기록하기", titleColor: .white, icon: "whiteDiary")

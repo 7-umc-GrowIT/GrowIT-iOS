@@ -9,7 +9,7 @@ import UIKit
 
 class CircleCheckButton: UIButton {
     
-    private var isEnabledState: Bool
+    var isEnabledState: Bool
     
     init(isEnabled: Bool) {
         self.isEnabledState = isEnabled
@@ -27,7 +27,7 @@ class CircleCheckButton: UIButton {
         updateButtonColor()
     }
     
-    private func updateButtonColor() {
+    func updateButtonColor() {
         let tintColor: UIColor = isEnabledState ? .primary600 : .gray300
         self.setImage(UIImage(systemName: "checkmark.circle.fill")?.withTintColor(tintColor, renderingMode: .alwaysOriginal), for: .normal)
     }

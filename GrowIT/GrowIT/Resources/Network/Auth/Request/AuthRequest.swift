@@ -1,0 +1,43 @@
+//
+//  AuthRequest.swift
+//  GrowIT
+//
+//  Created by 이수현 on 1/26/25.
+//
+
+import Foundation
+import Moya
+
+// 인증번호 확인 API
+struct EmailVerifyRequest: Codable {
+    let email: String // 이메일 주소
+    let authCode: String // 인증번호
+}
+
+struct EmailSignUpRequest: Codable {
+    let isVerified: Bool        // 이메일 인증 여부
+    let email: String           // 사용자 이메일
+    let name: String            // 사용자 이름
+    let password: String        // 사용자 비밀번호
+    let userTerms: [UserTermDTO] // 약관 동의 리스트
+}
+
+struct UserTermDTO: Codable {
+    let termId: Int  // 약관 ID
+    let agreed: Bool // 약관 동의 여부
+}
+
+struct ReissueTokenRequest: Codable {
+    let refreshToken: String 
+}
+
+struct EmailLoginRequest: Codable {
+    let email: String
+    let password: String
+}
+
+struct SendEmailVerifyRequest: Codable {
+    let email: String
+}
+
+

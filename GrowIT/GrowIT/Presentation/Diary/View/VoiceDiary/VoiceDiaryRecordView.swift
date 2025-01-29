@@ -9,10 +9,24 @@ import UIKit
 import Lottie
 
 class VoiceDiaryRecordView: UIView {
-
+    
+    private var timer: Timer?
+    var remainingTime: Int = 180 {
+        didSet {
+            let minutes = remainingTime / 60
+            let seconds = remainingTime % 60
+            updateTimerLabel(minutes: minutes, seconds: seconds)
+            onRemainingTimeChanged?(remainingTime)
+        }
+    }
+    
+    var onRemainingTimeChanged: ((Int) -> Void)?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        startTimer()
+        startAnimation()
     }
     
     required init?(coder: NSCoder) {
@@ -25,6 +39,45 @@ class VoiceDiaryRecordView: UIView {
         // 그라데이션 적용
         setGradient(color1: .gray700, color2: .gray900)
     }
+    
+    private func startTimer() {
+        stopTimer() // 기존 타이머 중지
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            if self.remainingTime > 0 {
+                self.remainingTime -= 1
+            } else {
+                self.timer?.invalidate()
+                self.timer = nil
+                self.timeOverAction()
+            }
+        }
+    }
+    
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    private func updateTimerLabel(minutes: Int, seconds: Int) {
+        let allText = "대화 종료까지 \(minutes)분 \(seconds)초"
+        timeLabel.text = allText
+        timeLabel.setPartialTextStyle(text: allText, targetText: "\(minutes)분 \(seconds)초", color: .primary400, font: .heading2SemiBold())
+    }
+    
+    private func timeOverAction() {
+        print("타이머 종료!") // 여기서 추가 작업 (예: 알림 표시, 애니메이션 종료 등)
+        stopAnimation()
+    }
+    
+    private func startAnimation() {
+        chatImage.play()
+    }
+    
+    private func stopAnimation() {
+        chatImage.stop()
+    }
+    
     
     // MARK: UI Components
     private let label1 = UILabel().then {
@@ -42,10 +95,25 @@ class VoiceDiaryRecordView: UIView {
     
     var chatImage = LottieAnimationView(name: "Conversation").then {
         $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        $0.loopMode = .loop
     }
     
     let endButton = AppButton(title: "대화 마무리하기", titleColor: .black).then {
         $0.backgroundColor = .primary400
+    }
+    
+    let clockIcon = UIImageView().then {
+        $0.image = UIImage(named: "clockicon")
+    }
+    
+    let timeLabel = UILabel().then {
+        let min = 3
+        let sec = 0
+        let allText = "대화 종료까지 \(min)분 \(sec)초"
+        $0.text = allText
+        $0.font = .heading2SemiBold()
+        $0.textColor = .gray300
+        $0.setPartialTextStyle(text: allText, targetText: "\(min)분 \(sec)초", color: .primary400, font: .heading2SemiBold())
     }
     
     let helpLabel = UILabel().then {
@@ -81,6 +149,18 @@ class VoiceDiaryRecordView: UIView {
             make.leading.equalToSuperview().offset(24)
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-84)
+        }
+        
+        addSubview(timeLabel)
+        timeLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(endButton.snp.top).offset(-100)
+            make.centerX.equalToSuperview()
+        }
+        
+        addSubview(clockIcon)
+        clockIcon.snp.makeConstraints { make in
+            make.trailing.equalTo(timeLabel.snp.leading).offset(-8)
+            make.centerY.equalTo(timeLabel)
         }
         
         addSubview(helpLabel)
