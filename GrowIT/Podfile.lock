@@ -654,6 +654,7 @@ PODS:
     - KakaoSDKCommon/Common (= 2.22.7)
   - KakaoSDKUser (2.22.7):
     - KakaoSDKAuth (= 2.22.7)
+  - Kingfisher (8.1.3)
   - lottie-ios (4.5.1)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
@@ -673,6 +674,7 @@ DEPENDENCIES:
   - KakaoSDKAuth
   - KakaoSDKCommon
   - KakaoSDKUser
+  - Kingfisher (~> 8.0)
   - lottie-ios
   - Moya
   - NVActivityIndicatorView
@@ -694,6 +696,7 @@ SPEC REPOS:
     - KakaoSDKAuth
     - KakaoSDKCommon
     - KakaoSDKUser
+    - Kingfisher
     - lottie-ios
     - Moya
     - NVActivityIndicatorView
@@ -720,6 +723,7 @@ SPEC CHECKSUMS:
   KakaoSDKAuth: 45204252ff7c379c0f86c5573f97ec36885afca0
   KakaoSDKCommon: 132164a6bac8bcd3a4346d3bf777f34f8f39fdca
   KakaoSDKUser: 4c9cf1da78710d19d0b2c2dd32d1a44c544cdfa4
+  Kingfisher: f2af9028b16baf9dc6c07c570072bc41cbf009ef
   lottie-ios: 248b380fa1b97d18e792c37d90da7ab2aa0d6562
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   NVActivityIndicatorView: fe52a6a68664c2df8991d7d9e3d86d8d19453c53
@@ -728,6 +732,6 @@ SPEC CHECKSUMS:
   SwiftyToaster: 316479401103eb231e69c89fb8727d173c2df001
   Then: 844265ae87834bbe1147d91d5d41a404da2ec27d
 
-PODFILE CHECKSUM: 6b196d9db5ca71c72c95959765e06725fda06af0
+PODFILE CHECKSUM: e33c126116341ade0c591c3559409cf95cdd5bd8
 
 COCOAPODS: 1.16.2

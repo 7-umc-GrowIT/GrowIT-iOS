@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+struct ItemRequestDTO: Codable {
+    let status: String
+}

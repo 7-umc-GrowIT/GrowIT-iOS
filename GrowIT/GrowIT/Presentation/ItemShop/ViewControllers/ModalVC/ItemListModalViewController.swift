@@ -6,11 +6,36 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ItemListModalViewController: UIViewController {
-    
+    // MARK: -Properties
+    let itemService = ItemService()
     weak var delegate: MyItemListDelegate?
     private var isMyItems: Bool = false
+    private var category: String = ""
+    
+    private var responseItems: [ItemList] = []
+    private let categories: [String] = ["BACKGROUND", "OBJECT", "PLANT", "HEAD_ACCESSORY"]
+    
+    private let selectedImages: [UIImage] = [
+        UIImage(named: "GrowIT_Background_On")!,
+        UIImage(named: "GrowIT_Object_On")!,
+        UIImage(named: "GrowIT_FlowerPot_On")!,
+        UIImage(named: "GrowIT_Accessories_On")!
+    ]
+    private let defaultImages: [UIImage] = [
+        UIImage(named: "GrowIT_Background_Off")!,
+        UIImage(named: "GrowIT_Object_Off")!,
+        UIImage(named: "GrowIT_FlowerPot_Off")!,
+        UIImage(named: "GrowIT_Accessories_Off")!
+    ]
+    
+    private lazy var currentSegmentIndex: Int = 0 {
+        didSet {
+            itemListModalView.itemCollectionView.reloadData()
+        }
+    }
     
     // 아이템 목록 더미데이터
     private lazy var segmentData: [[ItemDisplayable]] = [
@@ -28,10 +53,22 @@ class ItemListModalViewController: UIViewController {
         ItemAccModel.myItemsDummy()
     ]
     
-    private lazy var currentSegmentIndex: Int = 0 {
-        didSet {
-            itemListModalView.itemCollectionView.reloadData()
-        }
+    // MARK: - NetWork
+    func callGetItems() {
+        print("callGetItems called with category: \(category)")
+        itemService.getItemList(category: category, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let data):
+                self.responseItems = data.itemList
+                
+                DispatchQueue.main.async {
+                    self.itemListModalView.itemCollectionView.reloadData()
+                }
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        })
     }
     
     //MARK: - Views
@@ -74,36 +111,15 @@ class ItemListModalViewController: UIViewController {
     
     // 세그먼트 이미지 초기화
     @objc private func segmentChanged(_ segment: UISegmentedControl) {
-        let defaultImages = [
-            UIImage(named: "GrowIT_Background_Off")!.withRenderingMode(.alwaysOriginal),
-            UIImage(named: "GrowIT_Object_Off")!.withRenderingMode(.alwaysOriginal),
-            UIImage(named: "GrowIT_FlowerPot_Off")!.withRenderingMode(.alwaysOriginal),
-            UIImage(named: "GrowIT_Accessories_Off")!.withRenderingMode(.alwaysOriginal)
-        ]
-        
         for index in 0..<segment.numberOfSegments {
-            segment.setImage(defaultImages[index], forSegmentAt: index)
+            segment.setImage(defaultImages[index].withRenderingMode(.alwaysOriginal), forSegmentAt: index)
         }
         
-        switch segment.selectedSegmentIndex {
-        case 0:
-            segment.setImage(UIImage(named: "GrowIT_Background_On")!
-                .withRenderingMode(.alwaysOriginal), forSegmentAt: 0)
-        case 1:
-            segment.setImage(UIImage(named: "GrowIT_Object_On")!
-                .withRenderingMode(.alwaysOriginal), forSegmentAt: 1)
-        case 2:
-            segment.setImage(UIImage(named: "GrowIT_FlowerPot_On")!
-                .withRenderingMode(.alwaysOriginal), forSegmentAt: 2)
-        case 3:
-            segment.setImage(UIImage(named: "GrowIT_Accessories_On")!
-                .withRenderingMode(.alwaysOriginal), forSegmentAt: 3)
-        default:
-            break
-        }
+        let selectedIndex = segment.selectedSegmentIndex
+        segment.setImage(selectedImages[selectedIndex].withRenderingMode(.alwaysOriginal), forSegmentAt: selectedIndex)
+        category = categories[selectedIndex]
         
-        currentSegmentIndex = segment.selectedSegmentIndex
-        
+        callGetItems()
         UIView.transition(
             with: itemListModalView.itemCollectionView,
             duration: 0.1,
@@ -141,7 +157,7 @@ class ItemListModalViewController: UIViewController {
 //MARK: - UICollectionViewDataSource
 extension ItemListModalViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return segmentData[currentSegmentIndex].count
+        return responseItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -165,12 +181,14 @@ extension ItemListModalViewController: UICollectionViewDataSource {
                 for: indexPath) as? ItemCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            let item = segmentData[currentSegmentIndex][indexPath.row]
-            
-            cell.creditLabel.text = String(item.credit)
-            cell.itemBackGroundView.backgroundColor = item.backgroundColor
-            cell.itemImageView.image = item.Item
-            
+ 
+            for item in responseItems {
+                cell.creditLabel.text = String(item.price)
+                cell.itemImageView.kf.setImage(with: URL(string: Constants.API.imageURL + item.imageUrl))
+                print("이미지 주소: \(Constants.API.imageURL + item.imageUrl)")
+                cell.itemBackGroundView.backgroundColor = .itemPink /// 임시
+
+            }
             return cell
         }
     }

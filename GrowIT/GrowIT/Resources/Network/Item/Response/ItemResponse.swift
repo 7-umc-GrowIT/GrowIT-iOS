@@ -6,3 +6,26 @@
 //
 
 import Foundation
+
+struct ItemPostResponseDTO: Decodable {
+    let itemId: Int
+    let itemName: String
+}
+
+struct ItemPatchResponseDTO: Decodable {
+    let itemId: Int
+    let imageURL, category, status, updatedAt: String
+}
+
+struct ItemGetResponseDTO: Decodable {
+    let itemList: [ItemList]
+}
+
+struct ItemList: Decodable {
+    let id: Int
+    let name: String
+    let price: Int
+    let imageUrl, category: String
+    let status: String?
+    let purchased: Bool
+}

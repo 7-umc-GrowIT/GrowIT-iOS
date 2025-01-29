@@ -15,6 +15,7 @@ struct Constants {
         
         static let GroURL = baseURL + "/characters"
         static let itemURL = baseURL + "/items"
+        static let imageURL = baseURL + "/"
  
     }
 }
