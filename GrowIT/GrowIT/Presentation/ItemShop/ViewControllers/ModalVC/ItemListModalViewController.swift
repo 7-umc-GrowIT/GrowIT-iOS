@@ -98,7 +98,8 @@ class ItemListModalViewController: UIViewController {
         itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
     }
     
-    @objc private func segmentChanged(_ segment: UISegmentedControl) {
+    @objc
+    private func segmentChanged(_ segment: UISegmentedControl) {
         for index in 0..<segment.numberOfSegments {
             segment.setImage(defaultImages[index].withRenderingMode(.alwaysOriginal), forSegmentAt: index)
         }
@@ -120,7 +121,8 @@ class ItemListModalViewController: UIViewController {
         )
     }
     
-    @objc private func didTapPurchaseButton() {
+    @objc
+    private func didTapPurchaseButton() {
         guard let item = selectedItem else { return }
 
         let purchaseModalVC = PurchaseModalViewController(isShortage: false, credit: item.price)
