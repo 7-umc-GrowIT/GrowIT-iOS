@@ -29,6 +29,7 @@ class CustomTextField: UIView {
 
     var validationRule: ((String) -> Bool)?
     var successCondition: (() -> Bool)? // 성공 조건 설정
+    var onClearButtonTapped: (() -> Void)?
     
     private var errorLabelTopConstraint: Constraint?
 
@@ -216,6 +217,7 @@ class CustomTextField: UIView {
         toggleClearButtonVisibility()
         clearError()
         clearSuccess()
+        onClearButtonTapped?()
     }
     
     @objc private func toggleClearButtonVisibility() {
