@@ -11,12 +11,16 @@ class DiaryPostFixViewController: UIViewController {
     
     // MARK: Properties
     let text: String
+    let date: String
+    let diaryId: Int
     let diaryPostFixView = DiaryPostFixView()
     private let diaryService = DiaryService()
+    var onDismiss: (() -> Void)?
     
-    
-    init(text: String) {
+    init(text: String, date: String, diaryId: Int) {
         self.text = text
+        self.date = date
+        self.diaryId = diaryId
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -38,7 +42,7 @@ class DiaryPostFixViewController: UIViewController {
             make.edges.equalToSuperview()
         }
         
-        diaryPostFixView.configure(text: text)
+        diaryPostFixView.configure(text: text, date: date)
     }
     
     // MARK: Setup Actions
@@ -63,11 +67,18 @@ class DiaryPostFixViewController: UIViewController {
     @objc func nextVC() {
         // 수정하기 api 추가 필요
         callPatchFixDiary()
-        dismiss(animated: true)
+        dismiss(animated: true) { [weak self] in
+            self?.onDismiss?()
+        }
     }
     
     @objc func labelTapped() {
-        let nextVC = DiaryDeleteViewController()
+        let nextVC = DiaryDeleteViewController(diaryId: diaryId)
+        
+        nextVC.onDismiss = { [weak self] in
+            self?.onDismiss?() // ✅ `DiaryAllViewController`의 `callGetAllDiaries()` 호출
+        }
+        
         let navController = UINavigationController(rootViewController: nextVC)
         navController.modalPresentationStyle = .fullScreen
         presentPageSheet(viewController: navController, detentFraction: 0.37)
@@ -82,7 +93,7 @@ class DiaryPostFixViewController: UIViewController {
     
     private func callPatchFixDiary() {
         diaryService.patchFixDiary(
-            diaryId: <#T##Int#>,
+            diaryId: diaryId,
             data: getUserContent(),
             completion: { [weak self] result in
                 guard let self = self else { return }

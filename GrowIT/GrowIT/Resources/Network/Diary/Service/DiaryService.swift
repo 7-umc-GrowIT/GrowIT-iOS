@@ -32,8 +32,8 @@ final class DiaryService: NetworkManager {
     }
     
     /// Diary Id를 받아 Diary를 삭제하는 API
-    func deleteDiary(diaryId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .deleteDiary(diaryId: diaryId), decodingType: String.self, completion: completion)
+    func deleteDiary(diaryId: Int, completion: @escaping (Result<DiaryDeleteResponseDTO, NetworkError>) -> Void) {
+        request(target: .deleteDiary(diaryId: diaryId), decodingType: DiaryDeleteResponseDTO.self, completion: completion)
     }
     
     /// Diary Id를 받아 특정 일기를 조회하는 API

@@ -29,6 +29,7 @@ struct DiaryGetAllResponseDTO: Decodable {
 }
 
 struct DiaryDTO: Decodable {
+    let diaryId: Int
     let content: String
     let date: String
 }
@@ -36,4 +37,8 @@ struct DiaryDTO: Decodable {
 struct DiaryPatchResponseDTO: Decodable {
     let diaryId: Int
     let content: String
+}
+
+struct DiaryDeleteResponseDTO: Decodable {
+    let message: String
 }

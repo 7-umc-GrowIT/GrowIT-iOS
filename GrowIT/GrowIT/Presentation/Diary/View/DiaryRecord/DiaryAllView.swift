@@ -43,7 +43,7 @@ class DiaryAllView: UIView {
         $0.tintColor = .gray500
     }
     
-    private let diaryCountLabel = UILabel().then {
+    let diaryCountLabel = UILabel().then {
         var count = 0
         let allText = "작성한 일기 수 \(count)"
         $0.text = allText
@@ -100,5 +100,11 @@ class DiaryAllView: UIView {
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-53)
         }
+    }
+    
+    func updateDiaryCount(_ count: Int) {
+        let allText = "작성한 일기 수 \(count)"
+        diaryCountLabel.text = allText
+        diaryCountLabel.setPartialTextStyle(text: allText, targetText: "\(count)", color: .primary700, font: .body2Medium())
     }
 }

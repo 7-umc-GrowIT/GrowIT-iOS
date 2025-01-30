@@ -105,7 +105,7 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
     func callPostTextDiary() {
         diaryService.postTextDiary(data: DiaryRequestDTO(
             content: UserDefaults.standard.string(forKey: "TextDiary") ?? "잘못된 전달입니다",
-            date: "2025-01-21"),
+            date: "2025-01-22"),
             completion: { [weak self] result in
             guard let self = self else { return }
             switch result {

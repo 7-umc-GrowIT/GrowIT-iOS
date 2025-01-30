@@ -83,7 +83,11 @@ extension DiaryEndpoint: TargetType {
     }
     
     var headers: [String : String]? {
-        return ["Content-Type": "application/json"]
+        // return ["Content-Type": "application/json"]
+        return [
+                "Content-Type": "application/json",
+                "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmNkQGdtYWlsLmNvbSIsInJvbGVzIjoiVVNFUiIsImlkIjoxNSwiZXhwIjoxNzQwODI0NjE0fQ.LmV4d--XV7F6BAdiZlM2suqXvJlbSqUaYnpB7c7chFs"
+            ]
     }
     
     
