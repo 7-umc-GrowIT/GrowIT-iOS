@@ -14,7 +14,7 @@ enum GroEndpoint {
     
     // Post
     case postGroCreate(data: GroRequestDTO)
-}서혀
+}
 
 extension GroEndpoint: TargetType {
     var baseURL: URL {

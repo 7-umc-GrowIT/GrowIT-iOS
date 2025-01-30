@@ -57,6 +57,10 @@ extension ItemBackgroundModalViewController: UICollectionViewDataSource {
         cell.itemBackGroundView.backgroundColor = item.backgroundColor
         cell.itemImageView.image = item.Item
         
+        cell.itemImageView.snp.remakeConstraints {
+            $0.center.equalToSuperview()
+        }
+        
         return cell
     }
     
@@ -70,4 +74,20 @@ extension ItemBackgroundModalViewController: UICollectionViewDelegate {
     }
 }
 
-
+extension ItemBackgroundModalViewController: UICollectionViewDelegateFlowLayout {
+    // 동적 셀 너비 조정
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let itemRow: CGFloat = 3
+        let itemSpacing: CGFloat = 8
+        let aspectRatio: CGFloat = 140 / 122
+        
+        let availableWidth = collectionView.bounds.width - (itemSpacing * 2)
+        let itemWidth = floor(availableWidth / itemRow)
+        let itemHeight = itemWidth * aspectRatio
+        return CGSize(width: itemWidth, height: itemHeight)
+    }
+}

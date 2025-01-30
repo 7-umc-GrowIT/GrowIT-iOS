@@ -15,7 +15,7 @@ class ItemBackgroundModalView: UIView {
     }
     
     var itemCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = .init(width: 122, height: 140)
+        $0.minimumInteritemSpacing = 8
         $0.minimumInteritemSpacing = 8
         $0.scrollDirection = .vertical
     }).then {

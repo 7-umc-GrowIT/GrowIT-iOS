@@ -40,8 +40,11 @@ class GroSetNameView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private lazy var nickNameTextField = CustomTextField().then {
+    var nickNameTextField = CustomTextField().then {
         $0.setPlaceholder("닉네임을 입력해주세요")
+        $0.setValidationRule { text in
+            text.count >= 2 && text.count <= 8
+        }
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -52,7 +55,7 @@ class GroSetNameView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private lazy var startButton = GradientButton().then {
+    var startButton = GradientButton().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     

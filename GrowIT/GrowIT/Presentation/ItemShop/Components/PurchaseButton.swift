@@ -59,12 +59,10 @@ class PurchaseButton: UIButton {
         buttonContentView.setCustomSpacing(10, after: creditLabel)
         addSubview(buttonContentView)
         
-        // Layout
         buttonContentView.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
         
-        // Button configuration
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .black
         self.configuration = config
