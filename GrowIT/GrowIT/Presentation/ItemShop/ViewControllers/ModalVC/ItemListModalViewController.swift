@@ -51,7 +51,7 @@ class ItemListModalViewController: UIViewController {
         itemService.getItemList(category: category, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case.success(let data):
+            case .success(let data):
                 self.shopItems = data.itemList
                 self.myItems = data.itemList.filter { $0.purchased }
                 

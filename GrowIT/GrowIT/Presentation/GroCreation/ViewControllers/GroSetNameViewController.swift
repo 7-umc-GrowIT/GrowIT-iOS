@@ -9,12 +9,16 @@ import UIKit
 
 class GroSetNameViewController: UIViewController {
     //MARK: - Properties
+    let groService = GroService()
     var isValidName: Bool = false
     
     private let selectedBackground: Int
     let selectedColors: [CGColor]
     var selectedIcon = UIImage()
     
+    var groName: String?
+    
+    // MARK: - Data
     let colors = [
         [UIColor.itemColorYellow!.cgColor, UIColor.white.cgColor],
         [UIColor.itemColorGreen!.cgColor, UIColor.white.cgColor],
@@ -25,6 +29,25 @@ class GroSetNameViewController: UIViewController {
         UIImage(named: "Item_Background_Tree"),
         UIImage(named: "Item_Background_Heart")
     ]
+    let backgrounItem = [
+        "별 배경화면",
+        "나무 배경화면",
+        "하트 배경화면"
+    ]
+    
+    // MARK: - NetWork
+    func callPostGroCreate() {
+        groService.postGroCreate(data: GroRequestDTO(name: groName ?? "", backgroundItem: backgrounItem[selectedBackground]), completion: {
+            [weak self] result in
+                guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                print("Success: \(data)")
+            case .failure(let error):
+                print("Error \(error)")
+            }
+        })
+    }
     
     //MARK: - Views
     private lazy var groSetNameView = GroSetNameView(
@@ -61,11 +84,12 @@ class GroSetNameViewController: UIViewController {
     //MARK: - 기능
     @objc
     private func textFieldsDidChange() {
+        groName = groSetNameView.nickNameTextField.textField.text ?? ""
         updateNextButtonState()
     }
     
     private func updateNextButtonState() {
-        isValidName = groSetNameView.nickNameTextField.validationRule?(groSetNameView.nickNameTextField.textField.text ?? "") ?? false
+        isValidName = groSetNameView.nickNameTextField.validationRule?(groName ?? "") ?? false
         groSetNameView.startButton.isEnabled = isValidName
         
         groSetNameView.startButton.setButtonState(
@@ -79,5 +103,6 @@ class GroSetNameViewController: UIViewController {
     @objc
     private func didTapStartButton() {
         print("다음화면으로")
+        callPostGroCreate()
     }
 }

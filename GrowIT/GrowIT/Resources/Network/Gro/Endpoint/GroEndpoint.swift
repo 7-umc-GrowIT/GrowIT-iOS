@@ -18,7 +18,7 @@ enum GroEndpoint {
 
 extension GroEndpoint: TargetType {
     var baseURL: URL {
-        guard let url = URL(string: Constants.API.itemURL) else {
+        guard let url = URL(string: Constants.API.GroURL) else {
             fatalError("잘못된 URL")
         }
         return url
