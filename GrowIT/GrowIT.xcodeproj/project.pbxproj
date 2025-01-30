@@ -218,6 +218,7 @@
 				DEVELOPMENT_TEAM = KR976965YL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GrowIT/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "챌린지 인증 이미지를 업로드하기 위해 갤러리에 접근합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
@@ -248,6 +249,7 @@
 				DEVELOPMENT_TEAM = KR976965YL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GrowIT/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "챌린지 인증 이미지를 업로드하기 위해 갤러리에 접근합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";

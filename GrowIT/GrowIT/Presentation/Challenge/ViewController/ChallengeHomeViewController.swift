@@ -8,11 +8,19 @@
 import UIKit
 import SnapKit
 
-class ChallengHomeViewController: UIViewController {
+class ChallengeHomeViewController: UIViewController {
 
-    private lazy var challengeHomeView = ChallengHomeView()
+    private lazy var challengeHomeView = ChallengeHomeView()
     private lazy var challengeHomeAreaVC = ChallengeHomeAreaController()
-    private lazy var challengeStatusArea = ChallengeStatusArea()
+    private lazy var challengeStatusAreaVC = ChallengeStatusAreaController()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = false
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,15 +29,10 @@ class ChallengHomeViewController: UIViewController {
         
         setCustomSegment()
         setupChallengeHomeArea()
-        challengeHomeView.addSubview(challengeStatusArea)
-        
-        challengeStatusArea.snp.makeConstraints{
-            $0.top.equalTo(challengeHomeView.challengeSegmentUnderline.snp.bottom)
-            $0.horizontalEdges.equalToSuperview()
-        }
+        setupChallengeStatusArea()
         
         challengeHomeAreaVC.view.isHidden = false
-        challengeStatusArea.isHidden = true
+        challengeStatusAreaVC.view.isHidden = true
     }
     
     private func setupChallengeHomeArea(){
@@ -37,6 +40,17 @@ class ChallengHomeViewController: UIViewController {
         challengeHomeAreaVC.didMove(toParent: self)
         challengeHomeView.addSubview(challengeHomeAreaVC.view)
         challengeHomeAreaVC.view.snp.makeConstraints{
+            $0.top.equalTo(challengeHomeView.challengeSegmentUnderline.snp.bottom)
+            $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
+    }
+    
+    private func setupChallengeStatusArea(){
+        addChild(challengeStatusAreaVC)
+        challengeStatusAreaVC.didMove(toParent: self)
+        challengeHomeView.addSubview(challengeStatusAreaVC.view)
+        challengeStatusAreaVC.view.snp.makeConstraints{
             $0.top.equalTo(challengeHomeView.challengeSegmentUnderline.snp.bottom)
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview()
@@ -57,7 +71,7 @@ class ChallengHomeViewController: UIViewController {
         challengeHomeView.challengeStatusBtn.setTitleColor(.gray300, for: .normal)
         
         challengeHomeAreaVC.view.isHidden = false
-        challengeStatusArea.isHidden = true
+        challengeStatusAreaVC.view.isHidden = true
     }
     
     @objc private func challengeStatusBtnTapped(){
@@ -66,6 +80,6 @@ class ChallengHomeViewController: UIViewController {
         challengeHomeView.challengeStatusBtn.setTitleColor(.primary600, for: .normal)
         
         challengeHomeAreaVC.view.isHidden = true
-        challengeStatusArea.isHidden = false
+        challengeStatusAreaVC.view.isHidden = false
     }
 }

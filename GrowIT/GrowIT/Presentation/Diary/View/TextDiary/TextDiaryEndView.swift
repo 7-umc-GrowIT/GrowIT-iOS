@@ -13,10 +13,15 @@ class TextDiaryEndView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        startAnimation()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func startAnimation() {
+        creditView.play()
     }
     
     //MARK: - UI Components
@@ -29,6 +34,7 @@ class TextDiaryEndView: UIView {
     
     var creditView = LottieAnimationView(name: "Credit").then {
         $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        $0.loopMode = .loop
     }
     
     let nextButton = AppButton(title: "지금 바로 챌린지하러 가기", titleColor: .white).then {

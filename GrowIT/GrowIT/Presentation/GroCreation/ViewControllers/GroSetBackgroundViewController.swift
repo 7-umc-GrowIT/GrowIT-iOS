@@ -52,7 +52,8 @@ class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDeleg
     }
     
     //MARK: - 기능구현
-    @objc private func didTapZoomButton(_ sender: UIButton) {
+    @objc
+    private func didTapZoomButton(_ sender: UIButton) {
         sender.isSelected.toggle()
         
         updateItemListPosition(isZoomedOut: sender.isSelected)
@@ -64,7 +65,8 @@ class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDeleg
         }
     }
     
-    @objc private func nextVC() {
+    @objc
+    private func nextVC() {
         let nextVC = GroSetNameViewController(selectedBackground: selectedBackground)
         navigationController?.pushViewController(nextVC, animated: true)
     }

@@ -13,6 +13,7 @@ class VoiceDiaryEndView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        startAnimation()
     }
     
     required init?(coder: NSCoder) {
@@ -26,6 +27,10 @@ class VoiceDiaryEndView: UIView {
         setGradient(color1: .gray700, color2: .gray900)
     }
     
+    private func startAnimation() {
+        creditView.play()
+    }
+    
     //MARK: - UI Components
     private let endLabel = UILabel().then {
         $0.text = "일기 작성을 완료했어요\n크레딧을 지급할게요!"
@@ -36,6 +41,7 @@ class VoiceDiaryEndView: UIView {
     
     var creditView = LottieAnimationView(name: "Credit").then {
         $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        $0.loopMode = .loop
     }
     
     let nextButton = AppButton(title: "지금 바로 챌린지하러 가기", titleColor: .white).then {

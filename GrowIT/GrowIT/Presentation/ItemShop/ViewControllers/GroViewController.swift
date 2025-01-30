@@ -10,6 +10,7 @@ import SnapKit
 
 class GroViewController: UIViewController, MyItemListDelegate {
     private var itemListBottomConstraint: Constraint?
+    private var selectedItem: ItemList?
     
     //MARK: - Views
     // 그로 화면
@@ -38,8 +39,13 @@ class GroViewController: UIViewController, MyItemListDelegate {
     }
     
     //MARK: - MyItemListDelegate
-    func didSelectPurchasedItem(_ isPurchased: Bool) {
+    func didSelectPurchasedItem(_ isPurchased: Bool, selectedItem: ItemList?) {
         groView.purchaseButton.isHidden = isPurchased
+        self.selectedItem = selectedItem
+        
+        if let price = selectedItem?.price {
+            groView.purchaseButton.updateCredit(price)
+        }
     }
     
     
@@ -90,7 +96,9 @@ class GroViewController: UIViewController, MyItemListDelegate {
     
     @objc
     private func didTapPurchaseButton() {
-        let purchaseModalVC = PurchaseModalViewController(isShortage: true)
+        guard let item = selectedItem else { return }
+        
+        let purchaseModalVC = PurchaseModalViewController(isShortage: false, credit: item.price)
         purchaseModalVC.modalPresentationStyle = .pageSheet
         
         if let sheet = purchaseModalVC.sheetPresentationController {
