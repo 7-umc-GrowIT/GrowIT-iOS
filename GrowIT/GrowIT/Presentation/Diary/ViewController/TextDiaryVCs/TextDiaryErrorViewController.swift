@@ -9,6 +9,8 @@ import UIKit
 
 class TextDiaryErrorViewController: UIViewController {
     
+    weak var delegate: VoiceDiaryErrorDelegate?
+    
     // MARK: - Properties
     let errorView = ErrorView()
     
@@ -39,11 +41,8 @@ class TextDiaryErrorViewController: UIViewController {
     }
     
     @objc func mainVC() {
-        if let presentingVC = presentingViewController as? UINavigationController {
-            dismiss(animated: true) {
-                presentingVC.popToRootViewController(animated: true)
-            }
+        dismiss(animated: true) { [weak self] in
+            self?.delegate?.didTapExitButton()
         }
     }
-    
 }

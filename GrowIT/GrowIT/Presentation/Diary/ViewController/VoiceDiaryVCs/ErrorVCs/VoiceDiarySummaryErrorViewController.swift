@@ -9,13 +9,15 @@ import UIKit
 
 class VoiceDiarySummaryErrorViewController: UIViewController {
     
+    weak var delegate: VoiceDiaryErrorDelegate?
+    
     let errorView = ErrorView().then {
         $0.configure(
             icon: "diaryIcon",
             fisrtLabel: "나가면 기록한 일기가 사라져요", secondLabel: "페이지를 이탈하면 현재 기록한 일기가 사라져요\n그래도 처음화면으로 돌아갈까요?",
             firstColor: .white, secondColor: .gray300,
             title1: "나가기", title1Color1: .gray400, title1Background: .gray700,
-            title2: "일기 저장하기", title1Color2: .black, title2Background: .primary400,
+            title2: "계속 진행하기", title1Color2: .black, title2Background: .primary400,
             targetText: "처음화면", viewColor: .gray800
         )
     }
@@ -46,10 +48,8 @@ class VoiceDiarySummaryErrorViewController: UIViewController {
     }
     
     @objc func mainVC() {
-        if let presentingVC = presentingViewController as? UINavigationController {
-            dismiss(animated: true) {
-                presentingVC.popToRootViewController(animated: true)
-            }
+        dismiss(animated: true) { [weak self] in
+            self?.delegate?.didTapExitButton()
         }
     }
 }

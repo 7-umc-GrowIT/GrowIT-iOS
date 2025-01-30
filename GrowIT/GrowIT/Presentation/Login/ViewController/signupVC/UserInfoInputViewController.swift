@@ -13,6 +13,13 @@ class UserInfoInputViewController: UIViewController {
     // MARK: - Properties
     private let userInfoView = UserInfoInputView()
     private let navigationBarManager = NavigationManager()
+    
+    let authService = AuthService()
+    
+    // 이전 화면에서 전달받을 데이터
+    var email: String = ""
+    var isVerified: Bool = false
+    var agreeTerms: [UserTermDTO] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +57,8 @@ class UserInfoInputViewController: UIViewController {
         userInfoView.passwordCheckTextField.textField.addTarget(
             self, action: #selector(passwordCheckFieldDidChange), for: .editingChanged
         )
+        
+        userInfoView.nextButton.addTarget(self, action: #selector(nextButtonTap), for: .touchUpInside)
     }
     
     // MARK: - Update Button States
@@ -106,5 +115,45 @@ class UserInfoInputViewController: UIViewController {
         
         // 버튼 상태 업데이트
         nextButtonState()
+    }
+    
+    @objc func nextButtonTap() {
+        print("🚀 [DEBUG] 다음 버튼 눌림")
+        guard let name = userInfoView.nameTextField.textField.text, !name.isEmpty else {
+            print("이름을 입력하세요")
+            return
+        }
+        guard let password = userInfoView.passwordTextField.textField.text, !password.isEmpty else {
+            print("비밀번호를 입력하세요")
+            return
+        }
+        
+        let signUpRequest = EmailSignUpRequest(
+            isVerified: isVerified,
+            email: email,
+            name: name,
+            password: password,
+            userTerms: agreeTerms
+        )
+        
+        authService.users(data: signUpRequest) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    print("회원 가입 성공 액세스 토큰: \(response.result.accessToken)")
+                    
+                    UserDefaults.standard.set(response.result.accessToken, forKey: "accessToken")
+                    self.moveToLoginScreen()
+                    
+                case .failure(let error):
+                    print("회원가입 실패: \(error)")
+                }
+            }
+        }
+    }
+    
+    func moveToLoginScreen() {
+        let signUpCompleteVC = SignUpCompleteViewController()
+        self.navigationController?.pushViewController(signUpCompleteVC, animated: true)
     }
 }

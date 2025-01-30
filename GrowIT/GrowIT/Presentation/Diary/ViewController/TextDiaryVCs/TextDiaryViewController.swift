@@ -13,6 +13,8 @@ class TextDiaryViewController: UIViewController {
     let navigationBarManager = NavigationManager()
     let textDiaryView = TextDiaryView()
     
+    let calVC = JDiaryCalendarController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -20,7 +22,7 @@ class TextDiaryViewController: UIViewController {
         setupActions()
         navigationController?.navigationBar.isHidden = false
     }
-
+    
     //MARK: - Setup Navigation Bar
     private func setupNavigationBar() {
         navigationBarManager.addBackButton(
@@ -49,6 +51,7 @@ class TextDiaryViewController: UIViewController {
     //MARK: - Setup Button actions
     private func setupActions() {
         textDiaryView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        textDiaryView.dropDownButton.addTarget(self, action: #selector(calenderVC), for: .touchUpInside)
     }
     
     //MARK: - @objc methods
@@ -57,9 +60,17 @@ class TextDiaryViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        let nextVC = TextDiaryLoadingViewController()
-        nextVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(nextVC, animated: true)
+        print(textDiaryView.saveButton.isEnabled)
+        if textDiaryView.saveButton.isEnabled == false {
+            Toast.show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "일기를 더 작성해 주세요", font: .heading3SemiBold())
+        } else {
+            let nextVC = TextDiaryLoadingViewController()
+            nextVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(nextVC, animated: true)
+        }
     }
     
+    @objc func calenderVC() {
+        
+    }
 }

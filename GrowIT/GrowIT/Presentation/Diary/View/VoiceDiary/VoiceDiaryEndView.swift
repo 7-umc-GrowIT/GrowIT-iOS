@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import Lottie
 
 class VoiceDiaryEndView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        startAnimation()
     }
     
     required init?(coder: NSCoder) {
@@ -25,12 +27,21 @@ class VoiceDiaryEndView: UIView {
         setGradient(color1: .gray700, color2: .gray900)
     }
     
+    private func startAnimation() {
+        creditView.play()
+    }
+    
     //MARK: - UI Components
     private let endLabel = UILabel().then {
         $0.text = "일기 작성을 완료했어요\n크레딧을 지급할게요!"
         $0.font = .subTitle1()
         $0.textColor = .white
         $0.numberOfLines = 0
+    }
+    
+    var creditView = LottieAnimationView(name: "Credit").then {
+        $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        $0.loopMode = .loop
     }
     
     let nextButton = AppButton(title: "지금 바로 챌린지하러 가기", titleColor: .white).then {
@@ -44,6 +55,12 @@ class VoiceDiaryEndView: UIView {
         endLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(24)
             make.top.equalTo(safeAreaLayoutGuide).offset(32)
+        }
+        
+        addSubview(creditView)
+        creditView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(endLabel.snp.bottom).offset(50)
         }
         
         addSubview(nextButton)

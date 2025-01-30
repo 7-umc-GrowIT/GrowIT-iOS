@@ -40,7 +40,7 @@ class JDiaryHomeView: UIView {
     public lazy var diaryHomeBanner = JDiaryHomeBanner()
     
     // 캘린더 헤더
-    private lazy var diaryHomeCalendarHeader = JDiaryHomeCalendarHeader()
+    lazy var diaryHomeCalendarHeader = JDiaryHomeCalendarHeader()
     
     // 캘린더
     public lazy var diaryHomeCalendar = JDiaryCalendar()

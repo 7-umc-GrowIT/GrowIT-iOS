@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VoiceDiaryDateSelectViewController: ViewController {
+class VoiceDiaryDateSelectViewController: UIViewController {
 
     // MARK: Properties
     let  voiceDiaryDateSelectView = VoiceDiaryDateSelectView()

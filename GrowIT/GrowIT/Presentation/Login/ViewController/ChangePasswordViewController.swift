@@ -249,8 +249,7 @@ class ChangePasswordViewController: UIViewController {
         Toast.show(
             image: toastImage,
             message: "인증번호를 발송했어요",
-            font: UIFont.heading3SemiBold(),
-            in: self.view
+            font: UIFont.heading3SemiBold()
         )
     }
     
@@ -273,8 +272,7 @@ class ChangePasswordViewController: UIViewController {
         Toast.show(
             image: toastImage,
             message: "인증번호 인증을 완료했어요",
-            font: UIFont.heading3SemiBold(),
-            in: self.view
+            font: UIFont.heading3SemiBold()
         )
     }
     

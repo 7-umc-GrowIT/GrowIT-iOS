@@ -14,6 +14,8 @@ class EmailLoginViewController: UIViewController {
     //MARK: - Properties
     let emailLoginView = EmailLoginView()
     let navigationBarManager = NavigationManager()
+    
+    let authService = AuthService()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,8 +27,8 @@ class EmailLoginViewController: UIViewController {
         emailLoginView.changePwdButton.addTarget(self, action: #selector(
             changePwdBtnTap), for: .touchUpInside)
         
-//        emailLoginView.singUpButton.addTarget(self, action: #selector(
-//            signUpBtnTap), for: .touchUpInside)
+        emailLoginView.singUpButton.addTarget(self, action: #selector(
+            signUpBtnTap), for: .touchUpInside)
         
         emailLoginView.findEmailButton.addTarget(self, action: #selector(
             findEmailBtnTap), for: .touchUpInside
@@ -65,6 +67,9 @@ class EmailLoginViewController: UIViewController {
         emailLoginView.pwdTextField.textField.addTarget(
             self, action: #selector(textFieldsDidChange), for: .editingChanged
         )
+        
+        // 로그인 버튼
+        emailLoginView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
     }
 
     
@@ -107,16 +112,52 @@ class EmailLoginViewController: UIViewController {
         UserDefaults.standard.set(isChecked, forKey: "isCheckBoxChecked")
     }
     
+    @objc func loginButtonTapped() {
+        guard let email = emailLoginView.emailTextField.textField.text, !email.isEmpty,
+              let password = emailLoginView.pwdTextField.textField.text, !password.isEmpty else {
+            print("이메일 또는 비밀번호가 비어 있습니다.")
+            return
+        }
+        
+        let loginRequest = EmailLoginRequest(email: email, password: password)
+        
+        authService.loginEmail(data: loginRequest) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    print("로그인 성공 액세스 토큰: \(response.result.accessToken)")
+                    
+                    // 토큰 저장 (로그인 유지)
+                    UserDefaults.standard.set(response.result.accessToken, forKey: "accessToken")
+                    
+                    // 로그인 성공 후 다음 화면으로 이동
+                    self.moveToNextScreen()
+                case .failure(let error):
+                    print("로그인 실패: \(error)")
+                }
+            }
+        }
+    }
+    
+    
+    // 로그인 성공 후 다음 화면으로 이동
+    private func moveToNextScreen() {
+        let homeVC = HomeViewController()
+        self.navigationController?.pushViewController(homeVC, animated: true)
+    }
+    
     // 찾기, 변경, 회원가입 버튼 액션
     @objc func changePwdBtnTap() {
         let changePwdVC = ChangePasswordViewController()
         self.navigationController?.pushViewController(changePwdVC, animated: true)
     }
     
-//    @objc func signUpBtnTap() {
-//        let signUpVC = SignUpViewController()
-//        self.navigationController?.pushViewController(signUpVC, animated: true)
-//    }
+    @objc func signUpBtnTap() {
+        let termsAgreeVC = TermsAgreeViewController()
+        self.navigationController?.pushViewController(termsAgreeVC, animated: true)
+    }
     
     @objc func findEmailBtnTap() {
         let findEmailVC = FindEmailViewController()

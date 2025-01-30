@@ -7,8 +7,8 @@
 
 import UIKit
 
-class VoiceDiaryRecordViewController: ViewController {
-
+class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate {
+    
     // MARK: Properties
     let voiceDiaryRecordView = VoiceDiaryRecordView()
     let navigationBarManager = NavigationManager()
@@ -18,8 +18,22 @@ class VoiceDiaryRecordViewController: ViewController {
         setupUI()
         setupActions()
         setupNavigationBar()
+        observeRemainingTime()
     }
-
+    
+    private func observeRemainingTime() {
+        voiceDiaryRecordView.onRemainingTimeChanged = { [weak self] remainingTime in
+            guard let self = self else { return }
+            if remainingTime == 30 {
+                Toast.show(
+                    image: UIImage(named: "warningIcon") ?? UIImage(),
+                    message: "30초 후 대화가 종료돼요",
+                    font: .heading3SemiBold()
+                )
+            }
+        }
+    }
+    
     // MARK: Setup Navigation Bar
     private func setupNavigationBar() {
         navigationBarManager.addBackButton(
@@ -43,7 +57,7 @@ class VoiceDiaryRecordViewController: ViewController {
             make.edges.equalToSuperview()
         }
     }
-
+    
     // MARK: Setup Actions
     private func setupActions() {
         voiceDiaryRecordView.endButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
@@ -52,15 +66,30 @@ class VoiceDiaryRecordViewController: ViewController {
     // MARK: @objc methods
     @objc func prevVC() {
         let prevVC = VoiceDiaryRecordErrorViewController()
+        prevVC.delegate = self
         let navController = UINavigationController(rootViewController: prevVC)
         navController.modalPresentationStyle = .fullScreen
+        
         presentPageSheet(viewController: navController, detentFraction: 0.37)
     }
     
     @objc func nextVC() {
-        let nextVC = VoiceDiaryLoadingViewController()
-        nextVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(nextVC, animated: true)
+        let remainingTime = voiceDiaryRecordView.remainingTime
+        if remainingTime > 120 {
+            Toast.show(
+                image: UIImage(named: "warningIcon") ?? UIImage(),
+                message: "1분 이상 대화해 주세요",
+                font: .heading3SemiBold()
+               )
+        } else {
+            let nextVC = VoiceDiaryLoadingViewController()
+            nextVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(nextVC, animated: true)
+        }
+    }
+    
+    func didTapExitButton() {
+        navigationController?.popToRootViewController(animated: true)
     }
     
 }

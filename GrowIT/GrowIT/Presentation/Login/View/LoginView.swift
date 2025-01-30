@@ -40,7 +40,7 @@ class LoginView: UIView {
     }
     
     // 카카오 로그인 버튼
-    private lazy var kakaoLoginButton = UIButton().then {
+    public lazy var kakaoLoginButton = UIButton().then {
         // 배경색 및 스타일 설정
         $0.backgroundColor = UIColor.kakao
         $0.layer.cornerRadius = 30
