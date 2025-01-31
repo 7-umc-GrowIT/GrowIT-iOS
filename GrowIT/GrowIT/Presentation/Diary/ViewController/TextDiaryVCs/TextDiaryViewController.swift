@@ -75,6 +75,7 @@ class TextDiaryViewController: UIViewController {
     
     @objc func calenderVC(_ sender: UIButton) {
         let calVC = JDiaryCalendarController()
+        calVC.configureTheme(isDarkMode: false)
         calVC.view.backgroundColor = .clear
         let popupVC = PopupViewController(contentController: calVC, popupWidth: 382, popupHeight: 370)
         present(popupVC, animated: true)

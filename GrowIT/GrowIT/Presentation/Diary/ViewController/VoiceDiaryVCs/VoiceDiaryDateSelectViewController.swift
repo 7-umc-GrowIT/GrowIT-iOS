@@ -7,11 +7,13 @@
 
 import UIKit
 
-class VoiceDiaryDateSelectViewController: UIViewController {
-
+class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarControllerDelegate {
+    
     // MARK: Properties
     let  voiceDiaryDateSelectView = VoiceDiaryDateSelectView()
     let navigationBarManager = NavigationManager()
+    
+    let calVC = JDiaryCalendarController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +21,7 @@ class VoiceDiaryDateSelectViewController: UIViewController {
         setupUI()
         setupNavigationBar()
         setupActions()
+        setupDelegate()
     }
     
     // MARK: Setup Navigation Bar
@@ -43,6 +46,22 @@ class VoiceDiaryDateSelectViewController: UIViewController {
         voiceDiaryDateSelectView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        
+        view.addSubview(calVC.view)
+        addChild(calVC)
+        calVC.configureTheme(isDarkMode: true)
+        calVC.didMove(toParent: self)
+        calVC.view.snp.makeConstraints { make in
+            make.top.equalTo(voiceDiaryDateSelectView.dateView.snp.bottom).offset(8)
+            make.leading.equalToSuperview()
+            make.centerX.equalToSuperview()
+        }
+        calVC.view.isHidden = true
+    }
+    
+    // MARK: Setup Delegate
+    private func setupDelegate() {
+        calVC.delegate = self
     }
     
     // MARK: Setup Actions
@@ -51,6 +70,8 @@ class VoiceDiaryDateSelectViewController: UIViewController {
         
         let labelAction = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
         voiceDiaryDateSelectView.helpLabel.addGestureRecognizer(labelAction)
+        
+        voiceDiaryDateSelectView.toggleButton.addTarget(self, action: #selector(toggleTapped), for: .touchUpInside)
     }
     
     
@@ -69,19 +90,14 @@ class VoiceDiaryDateSelectViewController: UIViewController {
         let nextVC = VoiceDiaryTipViewController()
         nextVC.modalPresentationStyle = .pageSheet
         
-        if let sheet = nextVC.sheetPresentationController {
-        //지원할 크기 지정
-        if #available(iOS 16.0, *) {
-        sheet.detents = [
-        .custom{ context in
-        0.37 * context.maximumDetentValue
-        }
-        ]
-        } else {
-        sheet.detents = [.medium()]
-        }
-        sheet.prefersGrabberVisible = true
-        }
-        present(nextVC, animated: true, completion: nil)
+        presentPageSheet(viewController: nextVC, detentFraction: 0.37)
+    }
+    
+    @objc func toggleTapped() {
+        calVC.view.isHidden.toggle()
+    }
+    
+    func didSelectDate(_ date: String) {
+        voiceDiaryDateSelectView.updateDateLabel(date) // ✅ `VoiceDiaryDateSelectView`의 메서드 호출
     }
 }
