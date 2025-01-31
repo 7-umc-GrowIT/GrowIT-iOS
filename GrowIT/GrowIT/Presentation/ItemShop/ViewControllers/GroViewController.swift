@@ -9,21 +9,36 @@ import UIKit
 import SnapKit
 
 class GroViewController: UIViewController, MyItemListDelegate {
+    // MARK: - Properties
+    let userService = UserService()
+    private lazy var credit: Int = 123
+    
     private var itemListBottomConstraint: Constraint?
     private var selectedItem: ItemList?
     
+    // MARK: - NetWork
+    func callGetCredit() {
+        userService.getUserCredits(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                self.credit = data.currentCredit
+                itemShopHeader.updateCredit(data.currentCredit)
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        })
+    }
+    
     //MARK: - Views
-    // 그로 화면
     private lazy var groView = GroView().then {
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
         $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
     }
     
-    // 아이템샵 모달 화면
     private lazy var itemListModalVC = ItemListModalViewController()
     
-    // 상단 바
-    private lazy var itemShopHeader = ItemShopHeader().then {
+    private lazy var itemShopHeader = ItemShopHeader(credit: credit).then {
         $0.myItemButton.addTarget(self, action: #selector(didTapMyItemButton), for: .touchUpInside)
     }
     
@@ -36,6 +51,7 @@ class GroViewController: UIViewController, MyItemListDelegate {
         setView()
         setConstraints()
         setInitialState()
+        callGetCredit()
     }
     
     //MARK: - MyItemListDelegate

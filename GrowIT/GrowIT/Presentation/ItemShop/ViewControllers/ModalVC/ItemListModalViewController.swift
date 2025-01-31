@@ -191,6 +191,7 @@ extension ItemListModalViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = isMyItems ? myItems[indexPath.row] : shopItems[indexPath.row]
 
+        selectedItem = item
         itemListModalView.purchaseButton.updateCredit(item.price)
         delegate?.didSelectPurchasedItem(item.purchased, selectedItem: item)
 
