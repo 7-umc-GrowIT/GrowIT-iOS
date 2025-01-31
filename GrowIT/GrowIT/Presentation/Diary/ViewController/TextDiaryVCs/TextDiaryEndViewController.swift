@@ -57,7 +57,7 @@ class TextDiaryEndViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        
+        navigationController?.popToRootViewController(animated: true)
     }
 
 }
