@@ -13,5 +13,6 @@ struct Constants {
         static let baseURL = "http://13.124.160.115:8080"
         static let diaryURL = "\(baseURL)/diaries"
         static let authURL = "\(baseURL)/auth"
+        static let challengeURL = "\(baseURL)/challenges"
     }
 }

@@ -218,7 +218,10 @@
 				DEVELOPMENT_TEAM = KR976965YL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GrowIT/Info.plist;
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "챌린지 인증 이미지를 업로드하기 위해 갤러리에 접근합니다";
+				INFOPLIST_KEY_NSCameraUsageDescription = "챌린지 인증샷을 업로드하기 위해 카메라에 접근합니다";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "이 앱은 음성을 녹음하기 위해 마이크를 사용합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "챌린지 인증샷을 업로드하기 위해 갤러리에 접근합니다";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성을 텍스트로 변환하기 위해 음성 인식 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
@@ -249,7 +252,10 @@
 				DEVELOPMENT_TEAM = KR976965YL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GrowIT/Info.plist;
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "챌린지 인증 이미지를 업로드하기 위해 갤러리에 접근합니다";
+				INFOPLIST_KEY_NSCameraUsageDescription = "챌린지 인증샷을 업로드하기 위해 카메라에 접근합니다";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "이 앱은 음성을 녹음하기 위해 마이크를 사용합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "챌린지 인증샷을 업로드하기 위해 갤러리에 접근합니다";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성을 텍스트로 변환하기 위해 음성 인식 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";

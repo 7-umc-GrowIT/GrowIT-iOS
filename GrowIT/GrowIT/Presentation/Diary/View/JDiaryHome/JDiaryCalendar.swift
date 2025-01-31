@@ -25,7 +25,7 @@ class JDiaryCalendar: UIView {
     
     // MARK: - Property
     // 달력 배경 박스
-    private lazy var calendarBg = UIView().then{
+    public lazy var calendarBg = UIView().then{
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 20
         $0.layer.borderWidth = 1
@@ -61,7 +61,7 @@ class JDiaryCalendar: UIView {
         $0.itemSize = CGSize(width: 52, height: 52)
     }).then {
         $0.backgroundColor = .clear
-        $0.isScrollEnabled = true
+        $0.isScrollEnabled = false
         $0.showsHorizontalScrollIndicator = false
         $0.showsVerticalScrollIndicator = false
         $0.register(JDiaryCell.self, forCellWithReuseIdentifier: JDiaryCell.identifier)
@@ -81,6 +81,14 @@ class JDiaryCalendar: UIView {
         return stackView
     }
     
+    public func onDarkMode(){
+        self.calendarBg.backgroundColor = .gray700
+        self.backMonthBtn.tintColor = .gray500
+        self.nextMonthBtn.tintColor = .gray500
+        self.yearMonthLabel.textColor = .gray300
+        self.todayBtn.setTitleColor(.gray300, for: .normal)
+    }
+   
     // MARK: - addFunc & Constraints
     private func addStack(){
         [backMonthBtn, yearMonthLabel, nextMonthBtn].forEach(yearMonthHeader.addArrangedSubview)
@@ -96,12 +104,21 @@ class JDiaryCalendar: UIView {
         calendarBg.snp.makeConstraints{
             $0.top.bottom.equalToSuperview()
             $0.horizontalEdges.equalToSuperview().inset(24)
+            $0.height.equalTo(366)
         }
         
         yearMonthHeader.snp.makeConstraints {
             $0.top.equalToSuperview().offset(12)
-            $0.left.equalToSuperview().offset(32)
+            $0.left.equalToSuperview().offset(16)
             $0.height.equalTo(32)
+        }
+        
+        backMonthBtn.snp.makeConstraints{
+            $0.width.height.equalTo(24)
+        }
+        
+        nextMonthBtn.snp.makeConstraints{
+            $0.height.width.equalTo(24)
         }
         
         todayBtn.snp.makeConstraints{
@@ -112,7 +129,7 @@ class JDiaryCalendar: UIView {
         calendarCollectionView.snp.makeConstraints {
             $0.top.equalTo(yearMonthHeader.snp.bottom).offset(6)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(12)
         }
     }
     

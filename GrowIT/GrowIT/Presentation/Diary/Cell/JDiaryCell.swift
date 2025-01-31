@@ -33,6 +33,7 @@ class JDiaryCell: UICollectionViewCell{
     private lazy var dateImage = UIImageView().then{
         $0.image = UIImage(named: "diaryIcon")
         $0.contentMode = .scaleAspectFit
+        $0.isHidden = true
     }
     private func addComponents(){
         [dateCell, dateImage].forEach(self.addSubview)
@@ -51,14 +52,24 @@ class JDiaryCell: UICollectionViewCell{
         }
     }
     
-    public func figure(day:Int, isSunday:Bool, isFromCurrentMonth: Bool){
+    public func figure(day:Int, isSunday:Bool, isFromCurrentMonth: Bool, isDark: Bool){
         dateCell.text = "\(day)"
         if(isSunday){
             dateCell.textColor = .negative400
         }else if(!isFromCurrentMonth){
             dateCell.textColor = .gray300
         }else{
-            dateCell.textColor = .gray900
+            dateCell.textColor = isDark ? .white : .gray900
         }
+        
+        if(isDark){
+            dateImage.image = UIImage(named: "diaryIconDark")
+        }else{
+            dateImage.image = UIImage(named: "diaryIcon")
+        }
+    }
+    
+    public func showIcon(isShow:Bool){
+        dateImage.isHidden = !isShow
     }
 }
