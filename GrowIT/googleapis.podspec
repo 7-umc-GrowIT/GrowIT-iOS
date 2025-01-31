@@ -21,11 +21,12 @@ Pod::Spec.new do |s|
   protoc_dir = "#{pods_root}/!ProtoCompiler"
   protoc = "#{protoc_dir}/protoc"
   plugin = "#{pods_root}/!ProtoCompiler-gRPCPlugin/grpc_objective_c_plugin"
-  
+
   # Run protoc with the Objective-C and gRPC plugins to generate protocol messages and gRPC clients.
   # You can run this command manually if you later change your protos and need to regenerate.  
   s.prepare_command = <<-CMD
     #{protoc} \
+        --objc_opt=named_framework_to_proto_path_mappings_path=./protomap \
         --plugin=protoc-gen-grpc=#{plugin} \
         --objc_out=. \
         --grpc_out=. \
