@@ -115,7 +115,7 @@ class GroViewController: UIViewController, MyItemListDelegate {
         guard let item = selectedItem else { return }
         
         let isShortage = item.price > currentCredit
-        let purchaseModalVC = PurchaseModalViewController(isShortage: isShortage, credit: item.price)
+        let purchaseModalVC = PurchaseModalViewController(isShortage: isShortage, credit: item.price, itemId: item.id)
         purchaseModalVC.modalPresentationStyle = .pageSheet
         
         if let sheet = purchaseModalVC.sheetPresentationController {

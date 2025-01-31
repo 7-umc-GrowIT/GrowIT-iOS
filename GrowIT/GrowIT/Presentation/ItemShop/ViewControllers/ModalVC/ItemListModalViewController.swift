@@ -52,7 +52,7 @@ class ItemListModalViewController: UIViewController {
         itemService.getItemList(category: category, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case.success(let data):
+            case .success(let data):
                 self.shopItems = data.itemList
                 self.myItems = data.itemList.filter { $0.purchased }
                 
@@ -127,7 +127,7 @@ class ItemListModalViewController: UIViewController {
         guard let item = selectedItem else { return }
 
         let isShortage = item.price > currentCredit
-        let purchaseModalVC = PurchaseModalViewController(isShortage: isShortage, credit: item.price)
+        let purchaseModalVC = PurchaseModalViewController(isShortage: isShortage, credit: item.price, itemId: item.id)
         purchaseModalVC.modalPresentationStyle = .pageSheet
         
         if let sheet = purchaseModalVC.sheetPresentationController {
