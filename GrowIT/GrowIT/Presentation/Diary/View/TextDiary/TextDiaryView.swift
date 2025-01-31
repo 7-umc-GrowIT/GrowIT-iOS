@@ -15,6 +15,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
         super.init(frame: frame)
         diaryTextField.delegate = self
         setupUI()
+        setTodayDate()
     }
     
     required init?(coder: NSCoder) {
@@ -33,8 +34,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
         $0.textColor = .primary600
     }
     
-    // 추후 드롭다운으로 수정 예정
-    private let dateLabel = UILabel().then {
+    let dateLabel = UILabel().then {
         $0.text = "2025년 1월 30일"
         $0.font = .heading2Bold()
         $0.textColor = .gray900
@@ -142,5 +142,17 @@ class TextDiaryView: UIView, UITextViewDelegate {
             make.centerX.equalTo(diaryTextField)
             make.bottom.equalToSuperview().offset(-40)
         }
+    }
+    
+    private func setTodayDate() {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 M월 d일"
+        formatter.locale = Locale(identifier: "ko_KR")
+        
+        dateLabel.text = formatter.string(from: Date())
+    }
+    
+    func updateDateLabel(_ date: String) {
+        dateLabel.text = date.formattedDate()
     }
 }

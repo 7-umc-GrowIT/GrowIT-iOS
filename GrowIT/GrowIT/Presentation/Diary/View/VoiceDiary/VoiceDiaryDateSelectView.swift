@@ -117,8 +117,8 @@ class VoiceDiaryDateSelectView: UIView {
     
     // MARK: UI Update
     func updateDateLabel(_ date: String) {
-        dateSelectLabel.text = date
-        dateSelectLabel.textColor = .white // ✅ 선택되면 색 변경
+        dateSelectLabel.text = date.formattedDate()
+        dateSelectLabel.textColor = .white
     }
 
 }
