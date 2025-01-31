@@ -4,7 +4,6 @@
 //
 //  Created by 오현민 on 1/12/25.
 //
-// MARK: - 구매하기 버튼 누르면 나오는 ModalView
 
 import UIKit
 

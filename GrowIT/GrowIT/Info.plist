@@ -37,7 +37,7 @@
     <dict>
         <key>NSExceptionDomains</key>
         <dict>
-            <key>13.125.97.8</key>
+            <key>13.124.160.115</key>
             <dict>
                 <key>NSIncludesSubdomains</key>
                 <true/>
@@ -47,5 +47,7 @@
         </dict>
     </dict>
     <!-- ATS 설정 끝 -->
+    <key>Google_Speech_API_Key</key>
+    <string>AIzaSyArKR4aSUzQaK504AlT1WXtyWfuWK0S2LQ</string>
 </dict>
 </plist>

@@ -12,4 +12,5 @@ protocol ItemDisplayable {
     var credit: Int { get }
     var backgroundColor: UIColor { get }
     var Item: UIImage { get }
+    var isPurchased: Bool { get }
 }
