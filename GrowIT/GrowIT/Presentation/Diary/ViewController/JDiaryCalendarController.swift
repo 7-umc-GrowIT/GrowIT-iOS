@@ -9,6 +9,10 @@ import UIKit
 import Then
 import SnapKit
 
+protocol JDiaryCalendarControllerDelegate: AnyObject {
+    func didSelectDate(_ date: String)
+}
+
 class JDiaryCalendarController: UIViewController {
     private lazy var jDiaryCalendar = JDiaryCalendar()
     private lazy var diaryService = DiaryService()
@@ -21,6 +25,8 @@ class JDiaryCalendarController: UIViewController {
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         return formatter
     }()
+    
+    weak var delegate: JDiaryCalendarControllerDelegate?
     
     var daysPerMonth: [Int] {
         return [31, isLeapYear() ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] // 윤년 고려
@@ -309,7 +315,7 @@ func collectionView(_ collectionView: UICollectionView, layout collectionViewLay
                 //let diaryPostFixVC = DiaryPostFixViewController(text: <#String#>)
                 
             }
-            
+            delegate?.didSelectDate(formattedDate)
             print("Selected date: \(formattedDate)")
         }
     }
