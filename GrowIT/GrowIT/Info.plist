@@ -2,6 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+<<<<<<< HEAD
     <key>NSSpeechRecognitionUsageDescription</key>
     <string>음성을 텍스트로 변환하기 위해 음성 인식 권한이 필요합니다.</string>
     <key>NSMicrophoneUsageDescription</key>
