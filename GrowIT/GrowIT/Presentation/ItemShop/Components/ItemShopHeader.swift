@@ -9,7 +9,6 @@ import UIKit
 
 class ItemShopHeader: UIView {
     // MARK: - Properties
-    private lazy var credit: Int = 0
     
     private lazy var headerStackView = UIStackView().then {
         $0.axis = .horizontal
@@ -58,7 +57,6 @@ class ItemShopHeader: UIView {
     }
     
     private lazy var creditLabel = UILabel().then {
-        $0.text = String(credit)
         $0.textColor = UIColor.white
         $0.font = UIFont.heading2Bold()
         $0.textAlignment = .center
@@ -66,9 +64,8 @@ class ItemShopHeader: UIView {
     }
     
     //MARK: - init
-    init(credit: Int) {
-        super.init(frame: .zero)
-        self.credit = credit
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setView()
         setConstraints()
     }

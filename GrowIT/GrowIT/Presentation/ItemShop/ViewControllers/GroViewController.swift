@@ -11,7 +11,7 @@ import SnapKit
 class GroViewController: UIViewController, MyItemListDelegate {
     // MARK: - Properties
     let userService = UserService()
-    private lazy var credit: Int = 123
+    private lazy var currentCredit: Int = 0
     
     private var itemListBottomConstraint: Constraint?
     private var selectedItem: ItemList?
@@ -22,8 +22,9 @@ class GroViewController: UIViewController, MyItemListDelegate {
             guard let self = self else { return }
             switch result {
             case .success(let data):
-                self.credit = data.currentCredit
+                currentCredit = data.currentCredit
                 itemShopHeader.updateCredit(data.currentCredit)
+                itemListModalVC.currentCredit = data.currentCredit
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
             }
@@ -38,7 +39,7 @@ class GroViewController: UIViewController, MyItemListDelegate {
     
     private lazy var itemListModalVC = ItemListModalViewController()
     
-    private lazy var itemShopHeader = ItemShopHeader(credit: credit).then {
+    private lazy var itemShopHeader = ItemShopHeader().then {
         $0.myItemButton.addTarget(self, action: #selector(didTapMyItemButton), for: .touchUpInside)
     }
     
@@ -63,7 +64,6 @@ class GroViewController: UIViewController, MyItemListDelegate {
             groView.purchaseButton.updateCredit(price)
         }
     }
-    
     
     //MARK: - 컴포넌트추가
     private func setView() {
@@ -114,7 +114,8 @@ class GroViewController: UIViewController, MyItemListDelegate {
     private func didTapPurchaseButton() {
         guard let item = selectedItem else { return }
         
-        let purchaseModalVC = PurchaseModalViewController(isShortage: false, credit: item.price)
+        let isShortage = item.price > currentCredit
+        let purchaseModalVC = PurchaseModalViewController(isShortage: isShortage, credit: item.price)
         purchaseModalVC.modalPresentationStyle = .pageSheet
         
         if let sheet = purchaseModalVC.sheetPresentationController {
