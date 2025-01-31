@@ -10,11 +10,13 @@ import UIKit
 class ItemCollectionViewCell: UICollectionViewCell {
     static let identifier = "ItemCollectionViewCell"
     
+    // 아이템 이미지
     var itemImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFill
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
+    // 아이템 배경(색상)
     var itemBackGroundView = UIView().then {
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 12
@@ -81,13 +83,13 @@ class ItemCollectionViewCell: UICollectionViewCell {
     //MARK: - 레이아웃 설정
     private func setConstraints() {
         itemBackGroundView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(8)
+            $0.top.horizontalEdges.equalToSuperview().inset(8)
             $0.centerX.equalToSuperview()
-            $0.width.equalTo(106)
-            $0.height.equalTo(84)
+            $0.height.equalTo(itemBackGroundView.snp.width).multipliedBy(84.0 / 106.0)
         }
         
         itemImageView.snp.makeConstraints {
+            $0.size.equalToSuperview()
             $0.center.equalToSuperview()
         }
         

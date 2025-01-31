@@ -8,16 +8,21 @@
 import UIKit
 import SnapKit
 
-class GroViewController: UIViewController {
+class GroViewController: UIViewController, MyItemListDelegate {
     private var itemListBottomConstraint: Constraint?
-    private var isZoomIn: Bool = true
+    private var selectedItem: ItemList?
     
     //MARK: - Views
+    // 그로 화면
     private lazy var groView = GroView().then {
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
         $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
     }
+    
+    // 아이템샵 모달 화면
     private lazy var itemListModalVC = ItemListModalViewController()
+    
+    // 상단 바
     private lazy var itemShopHeader = ItemShopHeader().then {
         $0.myItemButton.addTarget(self, action: #selector(didTapMyItemButton), for: .touchUpInside)
     }
@@ -26,10 +31,23 @@ class GroViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = groView
+        itemListModalVC.delegate = self
         
         setView()
         setConstraints()
+        setInitialState()
     }
+    
+    //MARK: - MyItemListDelegate
+    func didSelectPurchasedItem(_ isPurchased: Bool, selectedItem: ItemList?) {
+        groView.purchaseButton.isHidden = isPurchased
+        self.selectedItem = selectedItem
+        
+        if let price = selectedItem?.price {
+            groView.purchaseButton.updateCredit(price)
+        }
+    }
+    
     
     //MARK: - 컴포넌트추가
     private func setView() {
@@ -49,28 +67,38 @@ class GroViewController: UIViewController {
         itemListModalVC.view.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalToSuperview().multipliedBy(0.47)
-            self.itemListBottomConstraint = $0.bottom.equalToSuperview().offset(500).constraint
+            self.itemListBottomConstraint = $0.bottom.equalToSuperview().offset(0).constraint
         }
     }
     
     //MARK: - 기능
-    @objc private func didTapZoomButton(_ sender: UIButton) {
+    @objc
+    private func didTapZoomButton(_ sender: UIButton) {
         sender.isSelected.toggle()
-        
-        // 상태에 따라 동작 분기
-        updateItemListPosition(isZoomedOut: sender.isSelected)
-        updateButtonStackViewPosition(isZoomedOut: sender.isSelected)
-        updateZoomButtonImage(isZoomedOut: sender.isSelected)
-        updateGroImageViewTopConstraint(isZoomedOut: sender.isSelected)
-        
-        // 레이아웃 업데이트 애니메이션
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
+        showModalView(isZoomedOut: sender.isSelected)
     }
     
-    @objc private func didTapPurchaseButton() {
-        let purchaseModalVC = PurchaseModalViewController()
+    @objc
+    private func didTapMyItemButton(_ sender: UIButton) {
+        sender.isSelected.toggle()
+        if sender.isSelected {
+            groView.zoomButton.isSelected = false // 줌 버튼 상태 초기화
+            showModalView(isZoomedOut: !sender.isSelected)
+        }
+        
+        let imageName = sender.isSelected ? "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
+        itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
+        
+        // 구매하기 버튼
+        itemListModalVC.updateToMyItems(sender.isSelected)
+        groView.purchaseButton.isHidden = sender.isSelected
+    }
+    
+    @objc
+    private func didTapPurchaseButton() {
+        guard let item = selectedItem else { return }
+        
+        let purchaseModalVC = PurchaseModalViewController(isShortage: false, credit: item.price)
         purchaseModalVC.modalPresentationStyle = .pageSheet
         
         if let sheet = purchaseModalVC.sheetPresentationController {
@@ -89,40 +117,45 @@ class GroViewController: UIViewController {
         present(purchaseModalVC, animated: true, completion: nil)
     }
     
-    @objc private func didTapMyItemButton(_ sender: UIButton) {
-        sender.isSelected.toggle()
-        let imageName = sender.isSelected ? "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
-        itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
-        
+    //MARK: - UI 업데이트 함수
+    private func showModalView(isZoomedOut: Bool) {
+        updateItemListPosition(isZoomedOut: isZoomedOut)
+        updateButtonStackViewPosition(isZoomedOut: isZoomedOut)
+        updateZoomButtonImage(isZoomedOut: isZoomedOut)
+        updateGroImageViewTopConstraint(isZoomedOut: isZoomedOut)
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
     }
-    
-    //MARK: - UI 업데이트 함수
     private func updateItemListPosition(isZoomedOut: Bool) {
-        let offset = isZoomedOut ? 0 : 500
+        let offset = isZoomedOut ? 500 : 0
         self.itemListBottomConstraint?.update(offset: offset)
     }
     
     private func updateButtonStackViewPosition(isZoomedOut: Bool) {
         groView.buttonStackView.snp.remakeConstraints {
             let bottomConstraint = isZoomedOut
-            ? itemListModalVC.view.snp.top
-            : groView.purchaseButton.snp.top
+            ? groView.purchaseButton.snp.top
+            : itemListModalVC.view.snp.top
             $0.bottom.equalTo(bottomConstraint).offset(-24)
             $0.trailing.equalToSuperview().inset(24)
         }
     }
     
     private func updateZoomButtonImage(isZoomedOut: Bool) {
-        let imageName = isZoomedOut ? "GrowIT_ZoomOut" : "GrowIT_ZoomIn"
+        let imageName = isZoomedOut ? "GrowIT_ZoomIn" : "GrowIT_ZoomOut"
         groView.zoomButton.configuration?.image = UIImage(named: imageName)
     }
     
     private func updateGroImageViewTopConstraint(isZoomedOut: Bool) {
-        let inset = isZoomedOut ? 40 : 168
+        let inset = isZoomedOut ? 168 : 40
         groView.groImageViewTopConstraint?.update(inset: inset)
     }
     
+    private func setInitialState() {
+        groView.buttonStackView.snp.remakeConstraints {
+            $0.bottom.equalTo( itemListModalVC.view.snp.top).offset(-24)
+            $0.trailing.equalToSuperview().inset(24)
+        }
+    }
 }

@@ -59,10 +59,16 @@ class ChallengeHomeArea: UIView {
         $0.setTitle("인증하기", for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = .body2Medium()
-        $0.layer.cornerRadius = 18
+        $0.titleLabel?.adjustsFontSizeToFitWidth = true
+        $0.layer.cornerRadius = 16
         $0.clipsToBounds = true
         $0.backgroundColor = .black
-
+        
+        configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = UIFont.body2Medium() // 폰트를 적절하게 설정
+            return outgoing
+        }
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 16, bottom: 7, trailing: 16)
         
         $0.configuration = configuration
@@ -129,6 +135,7 @@ class ChallengeHomeArea: UIView {
         label.text = title
         label.textColor = color
         label.font = font
+        label.adjustsFontSizeToFitWidth = true
         return label
     }
     
@@ -150,18 +157,23 @@ class ChallengeHomeArea: UIView {
     private func makeChallengeHashTagButton(title: String) -> UIButton {
         let button = UIButton()
         
-        let configuration = UIButton.Configuration.plain()
+        var configuration = UIButton.Configuration.plain()
         
         button.setTitle(title, for: .normal)
         button.setTitleColor(.primary700, for: .normal)
-        button.titleLabel?.font = .body2SemiBold()
+        //button.titleLabel?.font = .body2SemiBold()
         button.backgroundColor = .primary100
         button.layer.cornerRadius = 6
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
         button.layer.masksToBounds = true
         
-        //configuration.contentInsets = .init(top: 6, leading: 16, bottom: 6, trailing: 16)
+        configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = UIFont.body2SemiBold() // 폰트를 적절하게 설정
+            return outgoing
+        }
+        configuration.contentInsets = .init(top: 6, leading: 16, bottom: 6, trailing: 16)
         
         button.configuration = configuration
         return button
@@ -211,7 +223,7 @@ class ChallengeHomeArea: UIView {
         }
         
         challengeListIcon.snp.makeConstraints {
-            $0.verticalEdges.equalToSuperview().inset(32)
+            $0.verticalEdges.equalToSuperview().inset(30)
             $0.left.equalToSuperview().offset(24)
             $0.width.height.equalTo(40)
         }

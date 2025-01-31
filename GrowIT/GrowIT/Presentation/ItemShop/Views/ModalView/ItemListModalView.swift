@@ -21,13 +21,14 @@ class ItemListModalView: UIView {
     }
     
     var itemCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = .init(width: 122, height: 140)
+        $0.minimumInteritemSpacing = 8
         $0.minimumInteritemSpacing = 8
         $0.scrollDirection = .vertical
     }).then {
         $0.isScrollEnabled = true
         $0.showsVerticalScrollIndicator = false
         $0.register(ItemCollectionViewCell.self, forCellWithReuseIdentifier: ItemCollectionViewCell.identifier)
+        $0.register(MyItemCollectionViewCell.self, forCellWithReuseIdentifier: MyItemCollectionViewCell.identifier)
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -83,6 +84,13 @@ class ItemListModalView: UIView {
             $0.horizontalEdges.equalToSuperview().inset(24)
             $0.height.equalTo(60)
         }
+    }
+    
+    func updateCollectionViewConstraints(forSuperviewInset inset: CGFloat) {
+        itemCollectionView.snp.updateConstraints {
+            $0.bottom.equalTo(purchaseButton.snp.top).offset(inset)
+        }
+        self.layoutIfNeeded()
     }
 }
 

@@ -572,7 +572,6 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.24):
     - BoringSSL-GRPC/Interface (= 0.0.24)
   - BoringSSL-GRPC/Interface (0.0.24)
-  - EzPopup (1.2.4)
   - googleapis (0.0.1):
     - "!ProtoCompiler-gRPCPlugin (~> 1.0)"
     - googleapis/Messages (= 0.0.1)
@@ -655,6 +654,7 @@ PODS:
     - KakaoSDKCommon/Common (= 2.22.7)
   - KakaoSDKUser (2.22.7):
     - KakaoSDKAuth (= 2.22.7)
+  - Kingfisher (8.1.3)
   - lottie-ios (4.5.1)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
@@ -670,11 +670,11 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
-  - EzPopup
   - googleapis (from `.`)
   - KakaoSDKAuth
   - KakaoSDKCommon
   - KakaoSDKUser
+  - Kingfisher (~> 8.0)
   - lottie-ios
   - Moya
   - NVActivityIndicatorView
@@ -689,7 +689,6 @@ SPEC REPOS:
     - abseil
     - Alamofire
     - BoringSSL-GRPC
-    - EzPopup
     - gRPC
     - gRPC-Core
     - gRPC-ProtoRPC
@@ -697,6 +696,7 @@ SPEC REPOS:
     - KakaoSDKAuth
     - KakaoSDKCommon
     - KakaoSDKUser
+    - Kingfisher
     - lottie-ios
     - Moya
     - NVActivityIndicatorView
@@ -715,8 +715,7 @@ SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
-  EzPopup: 37f2c40e8ce50412a269bfba365baa7085c28002
-  googleapis: af28ab42f5bf87909feedb362dd4218f6bcb7ed7
+  googleapis: 4a1ccc37f91588665528a670f62350c00a352c61
   gRPC: 64f36d689b2ecd99c4351f74e6f91347cdc65d9f
   gRPC-Core: 3a9fdb5967d42211e875826f3f6fc163ea02c2a1
   gRPC-ProtoRPC: 1c223e0f1732bb8d0b9e9e0ea60cc0fe995b8e2d
@@ -724,6 +723,7 @@ SPEC CHECKSUMS:
   KakaoSDKAuth: 45204252ff7c379c0f86c5573f97ec36885afca0
   KakaoSDKCommon: 132164a6bac8bcd3a4346d3bf777f34f8f39fdca
   KakaoSDKUser: 4c9cf1da78710d19d0b2c2dd32d1a44c544cdfa4
+  Kingfisher: f2af9028b16baf9dc6c07c570072bc41cbf009ef
   lottie-ios: 248b380fa1b97d18e792c37d90da7ab2aa0d6562
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   NVActivityIndicatorView: fe52a6a68664c2df8991d7d9e3d86d8d19453c53
@@ -732,6 +732,6 @@ SPEC CHECKSUMS:
   SwiftyToaster: 316479401103eb231e69c89fb8727d173c2df001
   Then: 844265ae87834bbe1147d91d5d41a404da2ec27d
 
-PODFILE CHECKSUM: eb36becf6887c7230f4e9496370c5ab23ad1869e
+PODFILE CHECKSUM: e33c126116341ade0c591c3559409cf95cdd5bd8
 
 COCOAPODS: 1.16.2
