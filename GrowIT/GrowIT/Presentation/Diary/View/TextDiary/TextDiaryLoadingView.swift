@@ -34,7 +34,7 @@ class TextDiaryLoadingView: UIView {
         $0.font = .heading3SemiBold()
     }
     
-    var loadingIndicator = LottieAnimationView(name: "loadingIndicator").then {
+    var loadingIndicator = LottieAnimationView(name: "Loading").then {
         $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
     }
     

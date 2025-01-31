@@ -22,7 +22,6 @@ extension UIFont {
      크기, 자간, 행간 피그마보고 초기세팅 해놓은거라서 따로 설정할 필요 없음
      ex) .font = UIFont.메서드명
     */
-    
     // Title 1 Font
     public class func title1Bold() -> UIFont {
         return createFont(name: AppFontName.pBold, size: 28, lineHeight: 1.2)

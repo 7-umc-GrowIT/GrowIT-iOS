@@ -36,6 +36,14 @@ class TextDiaryView: UIView, UITextViewDelegate {
     // 추후 드롭다운으로 수정 예정
     private let dateLabel = UILabel().then {
         $0.text = "2025년 1월 6일"
+        $0.font = .heading2Bold()
+        $0.textColor = .gray900
+    }
+    
+    let dropDownButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "arrowtriangle.down.fill"), for: .normal)
+        $0.backgroundColor = .clear
+        $0.tintColor = .gray500
     }
     
     private let placeholder: String = "일기 내용을 입력하세요"
@@ -66,7 +74,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        if !textView.text.isEmpty && textView.text != placeholder {
+        if !textView.text.isEmpty && textView.text != placeholder && textView.text.count > 100 {
             saveButton.setButtonState(isEnabled: true, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
         } else {
             saveButton.setButtonState(isEnabled: false, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
@@ -96,6 +104,13 @@ class TextDiaryView: UIView, UITextViewDelegate {
         dateLabel.snp.makeConstraints { make in
             make.leading.equalTo(dayLabel)
             make.top.equalTo(dayLabel.snp.bottom).offset(8)
+            // make.width.equalTo(160)
+        }
+        
+        addSubview(dropDownButton)
+        dropDownButton.snp.makeConstraints { make in
+            make.leading.equalTo(dateLabel.snp.trailing).offset(4)
+            make.centerY.equalTo(dateLabel.snp.centerY)
         }
         
         addSubview(diaryTextField)

@@ -14,12 +14,14 @@ class AppButton: UIButton {
     init(
         title: String = "",
         titleColor: UIColor = .black,
-        isEnabled: Bool = true
+        isEnabled: Bool = true,
+        icon: String = ""
     ) {
         super.init(frame: .zero)
         self.setTitle(title, for: .normal)
         self.setTitleColor(titleColor, for: .normal)
         self.backgroundColor = isEnabled ? UIColor.primary400 : UIColor.primary50
+        self.setImage(UIImage(named: icon), for: .normal)
         
         self.titleLabel?.font = UIFont.heading2Bold()
         self.layer.cornerRadius = 16

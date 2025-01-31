@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8603BD48EFCE1076F35542DE /* Pods_GrowIT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E6D79CD90165CF22C85093 /* Pods_GrowIT.framework */; };
+		4DC20180D2A67C667D225A43 /* Pods_GrowIT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAECDA072246E3A0071B47CB /* Pods_GrowIT.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		00E6D79CD90165CF22C85093 /* Pods_GrowIT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GrowIT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2232EC5435D4C9871CA11D4E /* Pods-GrowIT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GrowIT.release.xcconfig"; path = "Target Support Files/Pods-GrowIT/Pods-GrowIT.release.xcconfig"; sourceTree = "<group>"; };
-		A8CEAC3157728EBD83D25D43 /* Pods-GrowIT.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GrowIT.debug.xcconfig"; path = "Target Support Files/Pods-GrowIT/Pods-GrowIT.debug.xcconfig"; sourceTree = "<group>"; };
+		4F511AC676F74BE9A78EBF80 /* Pods-GrowIT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GrowIT.release.xcconfig"; path = "Target Support Files/Pods-GrowIT/Pods-GrowIT.release.xcconfig"; sourceTree = "<group>"; };
+		5D8EBBB931C148F49651BDAA /* Pods-GrowIT.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GrowIT.debug.xcconfig"; path = "Target Support Files/Pods-GrowIT/Pods-GrowIT.debug.xcconfig"; sourceTree = "<group>"; };
 		D13225212D2C2CA600AA4C01 /* GrowIT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrowIT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DAECDA072246E3A0071B47CB /* Pods_GrowIT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GrowIT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -43,28 +43,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8603BD48EFCE1076F35542DE /* Pods_GrowIT.framework in Frameworks */,
+				4DC20180D2A67C667D225A43 /* Pods_GrowIT.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7C34D7D327B2D730A3EC7ECF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DAECDA072246E3A0071B47CB /* Pods_GrowIT.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		91BBA695C5C09F3E731DE165 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				A8CEAC3157728EBD83D25D43 /* Pods-GrowIT.debug.xcconfig */,
-				2232EC5435D4C9871CA11D4E /* Pods-GrowIT.release.xcconfig */,
+				5D8EBBB931C148F49651BDAA /* Pods-GrowIT.debug.xcconfig */,
+				4F511AC676F74BE9A78EBF80 /* Pods-GrowIT.release.xcconfig */,
 			);
 			path = Pods;
-			sourceTree = "<group>";
-		};
-		CD98CC256776CF04B0B12CCA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				00E6D79CD90165CF22C85093 /* Pods_GrowIT.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		D13225182D2C2CA600AA4C01 = {
@@ -73,7 +73,7 @@
 				D13225232D2C2CA600AA4C01 /* GrowIT */,
 				D13225222D2C2CA600AA4C01 /* Products */,
 				91BBA695C5C09F3E731DE165 /* Pods */,
-				CD98CC256776CF04B0B12CCA /* Frameworks */,
+				7C34D7D327B2D730A3EC7ECF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -92,11 +92,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D13225342D2C2CA700AA4C01 /* Build configuration list for PBXNativeTarget "GrowIT" */;
 			buildPhases = (
-				DFF155C5995935504E1598C3 /* [CP] Check Pods Manifest.lock */,
+				BC41FBD247728D11C22FF938 /* [CP] Check Pods Manifest.lock */,
 				D132251D2D2C2CA600AA4C01 /* Sources */,
 				D132251E2D2C2CA600AA4C01 /* Frameworks */,
 				D132251F2D2C2CA600AA4C01 /* Resources */,
-				BB11E48D4B8275B46D1B80C8 /* [CP] Embed Pods Frameworks */,
+				DD92E076A668AC41A8E68621 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -155,24 +155,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		BB11E48D4B8275B46D1B80C8 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-GrowIT/Pods-GrowIT-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-GrowIT/Pods-GrowIT-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GrowIT/Pods-GrowIT-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DFF155C5995935504E1598C3 /* [CP] Check Pods Manifest.lock */ = {
+		BC41FBD247728D11C22FF938 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -194,6 +177,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		DD92E076A668AC41A8E68621 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GrowIT/Pods-GrowIT-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GrowIT/Pods-GrowIT-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GrowIT/Pods-GrowIT-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -209,19 +209,25 @@
 /* Begin XCBuildConfiguration section */
 		D13225352D2C2CA700AA4C01 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A8CEAC3157728EBD83D25D43 /* Pods-GrowIT.debug.xcconfig */;
+			baseConfigurationReference = 5D8EBBB931C148F49651BDAA /* Pods-GrowIT.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KR976965YL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GrowIT/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "챌린지 인증샷을 업로드하기 위해 카메라에 접근합니다";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "이 앱은 음성을 녹음하기 위해 마이크를 사용합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "챌린지 인증샷을 업로드하기 위해 갤러리에 접근합니다";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성을 텍스트로 변환하기 위해 음성 인식 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -237,19 +243,25 @@
 		};
 		D13225362D2C2CA700AA4C01 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2232EC5435D4C9871CA11D4E /* Pods-GrowIT.release.xcconfig */;
+			baseConfigurationReference = 4F511AC676F74BE9A78EBF80 /* Pods-GrowIT.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KR976965YL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GrowIT/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "챌린지 인증샷을 업로드하기 위해 카메라에 접근합니다";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "이 앱은 음성을 녹음하기 위해 마이크를 사용합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "챌린지 인증샷을 업로드하기 위해 갤러리에 접근합니다";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성을 텍스트로 변환하기 위해 음성 인식 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

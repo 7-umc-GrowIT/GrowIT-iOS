@@ -23,7 +23,7 @@ class EmoStackView: UIStackView {
         $0.backgroundColor = .primary100
         $0.layer.cornerRadius = 6
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        $0.layer.borderColor = UIColor(hex: "#0000001A")?.cgColor
     }
     
     private let label1 = UILabel().then {
@@ -36,7 +36,7 @@ class EmoStackView: UIStackView {
         $0.backgroundColor = .primary100
         $0.layer.cornerRadius = 6
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        $0.layer.borderColor = UIColor(hex: "#0000001A")?.cgColor
     }
     
     private let label2 = UILabel().then {
@@ -49,7 +49,7 @@ class EmoStackView: UIStackView {
         $0.backgroundColor = .primary100
         $0.layer.cornerRadius = 6
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        $0.layer.borderColor = UIColor(hex: "#0000001A")?.cgColor
     }
     
     private let label3 = UILabel().then {
@@ -83,6 +83,16 @@ class EmoStackView: UIStackView {
         addArrangedSubview(rect1)
         addArrangedSubview(rect2)
         addArrangedSubview(rect3)
+    }
+    
+    func configure(rectColor: UIColor, titleColor: UIColor) {
+        [rect1, rect2, rect3].forEach { rect in
+            rect.backgroundColor = rectColor
+        }
+        
+        [label1, label2, label3].forEach { label in
+            label.textColor = titleColor
+        }
     }
     
 }

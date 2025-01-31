@@ -8,9 +8,9 @@
 import UIKit
 import SnapKit
 
-class CustomTabBarController: UIViewController {
+class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
     
-    private var customTabBar: CustomTabBarView!
+    var customTabBar: CustomTabBarView!
     private var viewControllers: [UIViewController] = []
     
     override func viewDidLoad() {
@@ -23,12 +23,31 @@ class CustomTabBarController: UIViewController {
     private func setupViewControllers() {
         let firstVC = JDiaryHomeViewController()
         let secondVC = HomeViewController()
-        let thirdVC = ThirdViewController()
+        let thirdVC = ChallengeHomeViewController()
         
-        viewControllers = [firstVC, secondVC, thirdVC]
         
-        // 초기 뷰 컨트롤러 설정
+        // 각 뷰 컨트롤러를 UINavigationController에 포함시킵니다.
+        let firstNavController = UINavigationController(rootViewController: firstVC)
+        let secondNavController = UINavigationController(rootViewController: secondVC)
+        let thirdNavController = UINavigationController(rootViewController: thirdVC)
+        
+        firstNavController.delegate = self
+        secondNavController.delegate = self
+        thirdNavController.delegate = self
+
+           // 네비게이션 컨트롤러 배열을 viewControllers에 할당
+        viewControllers = [firstNavController, secondNavController, thirdNavController]
+
+           // 초기 뷰 컨트롤러 설정
         add(asChildViewController: viewControllers[1])
+    }
+    
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if navigationController.viewControllers.count > 1 {
+            self.customTabBar.isHidden = true
+        } else {
+            self.customTabBar.isHidden = false
+        }
     }
     
     private func setupCustomTabBar() {
