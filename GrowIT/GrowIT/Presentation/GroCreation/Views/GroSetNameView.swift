@@ -130,6 +130,7 @@ class GroSetNameView: UIView {
         
         nickNameTextField.snp.makeConstraints {
             $0.top.equalTo(nickNameLabel.snp.bottom).offset(8)
+            $0.height.equalTo(48)
             $0.horizontalEdges.equalToSuperview().inset(24)
         }
         

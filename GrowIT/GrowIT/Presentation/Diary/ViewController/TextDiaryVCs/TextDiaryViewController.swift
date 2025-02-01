@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import EzPopup
 
 class TextDiaryViewController: UIViewController {
     
@@ -64,13 +65,19 @@ class TextDiaryViewController: UIViewController {
         if textDiaryView.saveButton.isEnabled == false {
             Toast.show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "일기를 더 작성해 주세요", font: .heading3SemiBold())
         } else {
+            let userDiary = textDiaryView.diaryTextField.text
+            UserDefaults.standard.set(userDiary, forKey: "TextDiary")
             let nextVC = TextDiaryLoadingViewController()
             nextVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(nextVC, animated: true)
         }
     }
     
-    @objc func calenderVC() {
-        
+    @objc func calenderVC(_ sender: UIButton) {
+        let calVC = JDiaryCalendarController()
+        calVC.configureTheme(isDarkMode: false)
+        calVC.view.backgroundColor = .clear
+        let popupVC = PopupViewController(contentController: calVC, popupWidth: 382, popupHeight: 370)
+        present(popupVC, animated: true)
     }
 }

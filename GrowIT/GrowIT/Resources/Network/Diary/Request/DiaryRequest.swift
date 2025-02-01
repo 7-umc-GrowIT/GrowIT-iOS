@@ -12,3 +12,6 @@ struct DiaryRequestDTO: Codable {
     let date: String
 }
 
+struct DiaryPatchDTO: Codable {
+    let content: String
+}

@@ -28,7 +28,7 @@ class GroView: UIView {
     var zoomButton = UIButton().then {
         var config = UIButton.Configuration.plain()
         config.baseBackgroundColor = .clear
-        config.image = UIImage(named: "GrowIT_ZoomIn")
+        config.image = UIImage(named: "GrowIT_ZoomOut")
         
         $0.configuration = config
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -81,7 +81,7 @@ class GroView: UIView {
             $0.width.equalTo(758)
             $0.height.equalTo(554)
             $0.centerX.equalToSuperview()
-            self.groImageViewTopConstraint = $0.top.equalToSuperview().inset(168).constraint
+            self.groImageViewTopConstraint = $0.top.equalToSuperview().inset(40).constraint
         }
         
         buttonStackView.snp.makeConstraints {

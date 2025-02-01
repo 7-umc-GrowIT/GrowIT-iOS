@@ -41,6 +41,7 @@ class JDiaryHomeViewController: UIViewController {
         // 캘린더 뷰 컨트롤러를 자식으로 추가
         addChild(jDiaryCalendarVC)
         jDiaryCalendarVC.didMove(toParent: self)
+        jDiaryCalendarVC.configureTheme(isDarkMode: false)
         
         // 캘린더 뷰를 JDiaryHomeView에 추가
         jDiaryHomeView.diaryHomeStack.addArrangedSubview(jDiaryCalendarVC.view)
@@ -53,7 +54,7 @@ class JDiaryHomeViewController: UIViewController {
             //$0.top.equalTo(jdiaryHomeView.diaryHomeCalendar.snp.bottom).offset(10)
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview().inset(100)
-            $0.height.equalTo(366)
+            //$0.height.equalTo(jDiaryHomeView.snp.height).multipliedBy(0.313)
         }
     }
     
