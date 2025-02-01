@@ -16,6 +16,7 @@ enum AuthorizationEndpoints {
     case postEmailLogin(data: EmailLoginRequest)
     case postSendEmailVerification(type: String, data: SendEmailVerifyRequest)
     case patchSignOut
+    case fetchSignUpTerms
 }
 
 extension AuthorizationEndpoints: TargetType {
@@ -41,12 +42,16 @@ extension AuthorizationEndpoints: TargetType {
         case .postSendEmailVerification:
             return "/email"
         case .patchSignOut:
-            return ""
+            return "/signout"
+        case .fetchSignUpTerms:
+            return "/auth/terms"
         }
     }
     
     var method: Moya.Method {
         switch self {
+        case .fetchSignUpTerms:
+            return .get
         case .patchSignOut:
             return .patch
         default:
@@ -74,6 +79,8 @@ extension AuthorizationEndpoints: TargetType {
             )
         case .patchSignOut:
             return .requestPlain
+        case .fetchSignUpTerms:
+            return .requestPlain
         }
     }
     
@@ -95,4 +102,5 @@ extension AuthorizationEndpoints: TargetType {
         }
         return headers
     }
+
 }

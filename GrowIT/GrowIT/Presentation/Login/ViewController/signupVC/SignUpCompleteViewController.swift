@@ -16,6 +16,7 @@ class SignUpCompleteViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        setupAction()
     }
     
     // MARK: - setupView
@@ -37,9 +38,19 @@ class SignUpCompleteViewController: UIViewController {
         )
     }
     
+    // MARK: - setup Actions
+    private func setupAction() {
+        signUpCompleteView.loginButton.addTarget(self, action: #selector(loginButtonTap), for: .touchUpInside)
+    }
+    
     // MARK: - Actions
     @objc private func prevVC() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func loginButtonTap() {
+        let emailLoginVC = EmailLoginViewController()
+        self.navigationController?.pushViewController(emailLoginVC, animated: true)
     }
     
 

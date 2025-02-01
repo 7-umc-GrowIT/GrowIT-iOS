@@ -20,12 +20,25 @@ class UserInfoInputViewController: UIViewController {
     var email: String = ""
     var isVerified: Bool = false
     var agreeTerms: [UserTermDTO] = []
-
+    // 약관 데이터를 전달받기 위한 변수
+    var termsList: [Term] = []
+    var optionalTermsList: [Term] = []
+    var agreedTerms: [String: Bool] = [:]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupActions()
         nextButtonState()
+        
+        print("✅ 사용자 정보 입력 화면으로 전달된 이메일: \(email)")
+        print("✅ 사용자 정보 입력 화면으로 전달된 인증 여부: \(isVerified)")
+        print("✅ 사용자 정보 입력 화면으로 전달된 약관 목록: \(agreeTerms)") // 디버깅용 로그
+        
+        // ✅ 약관 데이터가 정상적으로 유지되었는지 확인
+        if agreeTerms.isEmpty {
+            print("❌ 약관 데이터가 전달되지 않았습니다.")
+        }
     }
     
     // MARK: - SetupView
@@ -89,7 +102,7 @@ class UserInfoInputViewController: UIViewController {
         guard let password = userInfoView.passwordTextField.textField.text,
               let confirmPassword = userInfoView.passwordCheckTextField.textField.text
         else { return }
-
+        
         if confirmPassword.isEmpty {
             // 비밀번호 확인 필드가 비어 있으면 초기 상태 유지
             userInfoView.passwordCheckTextField.clearError()
@@ -117,43 +130,53 @@ class UserInfoInputViewController: UIViewController {
         nextButtonState()
     }
     
-    @objc func nextButtonTap() {
-        print("🚀 [DEBUG] 다음 버튼 눌림")
-        guard let name = userInfoView.nameTextField.textField.text, !name.isEmpty else {
-            print("이름을 입력하세요")
+    @objc private func nextButtonTap() {
+        let name = "입력받은 사용자 이름"
+        let password = "입력받은 비밀번호"
+
+        let mappedUserTerms = agreeTerms
+
+        let requiredTermIds: Set<Int> = [1, 2, 3, 4]
+        let agreedTermIds = Set(mappedUserTerms.map { $0.termId })
+
+        guard requiredTermIds.isSubset(of: agreedTermIds) else {
+            print("❌ 필수 약관 (1~4)에 대한 동의가 필요합니다.")
             return
         }
-        guard let password = userInfoView.passwordTextField.textField.text, !password.isEmpty else {
-            print("비밀번호를 입력하세요")
-            return
-        }
+
+        print("✅ 최종 약관 동의 상태: \(mappedUserTerms)")
         
-        let signUpRequest = EmailSignUpRequest(
+        let request = EmailSignUpRequest(
             isVerified: isVerified,
             email: email,
             name: name,
             password: password,
-            userTerms: agreeTerms
+            userTerms: mappedUserTerms
         )
         
-        authService.users(data: signUpRequest) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let response):
-                    print("회원 가입 성공 액세스 토큰: \(response.result.accessToken)")
-                    
-                    UserDefaults.standard.set(response.result.accessToken, forKey: "accessToken")
-                    self.moveToLoginScreen()
-                    
-                case .failure(let error):
-                    print("회원가입 실패: \(error)")
-                }
+        authService.signUp(type: "email", data: request) { result in
+            switch result {
+            case .success(let response):
+                print("✅ 회원가입 성공: \(response.message)")
+                self.handleSignUpSuccess(accessToken: response.result.accessToken)
+
+            case .failure(let error):
+                print("❌ 회원가입 실패: \(error.localizedDescription)")
             }
         }
+
     }
     
-    func moveToLoginScreen() {
+    private func handleSignUpSuccess(accessToken: String) {
+        print("회원가입 완료! 액세스 토큰: \(accessToken)")
+        
+        moveToSignUpCompleteScreen()
+    }
+
+
+    func moveToSignUpCompleteScreen() {
         let signUpCompleteVC = SignUpCompleteViewController()
         self.navigationController?.pushViewController(signUpCompleteVC, animated: true)
     }
+
 }

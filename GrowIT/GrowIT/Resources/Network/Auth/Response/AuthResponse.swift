@@ -18,11 +18,29 @@ struct LoginResponse: Decodable {
     let result: TokenData
 }
 
+struct SignUpResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: TokenData
+}
+
 struct TokenData: Decodable {
     let accessToken: String
     let refreshToken: String
 }
 
+struct KakaoLoginResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: AuthResult
+}
+
+struct AuthResult: Codable {
+    let accessToken: String
+    let refreshToken: String
+}
 
 struct EmailVerifyResponse: Decodable {
     let email: String
@@ -39,4 +57,3 @@ struct SignOutResponse: Decodable {
 struct ReissueResponse: Decodable {
     let accessToken: String
 }
-

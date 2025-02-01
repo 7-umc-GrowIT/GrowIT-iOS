@@ -19,10 +19,13 @@ class EmailVerificationViewController: UIViewController {
     let authService = AuthService()
     private var email: String = ""
     
+    var agreeTerms: [UserTermDTO] = []
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("✅ 전달된 약관 목록: \(agreeTerms)")
         setupView()
         setupActions()
     }
@@ -244,7 +247,7 @@ class EmailVerificationViewController: UIViewController {
             disabledTitleColor: .gray300
         )
         
-        // 5. 토스트 메시지 표시
+        // 토스트 메시지 표시
         let toastImage = UIImage(named: "Style=check") ?? UIImage()
         Toast.show(
             image: toastImage,
@@ -261,11 +264,18 @@ class EmailVerificationViewController: UIViewController {
             disabledTitleColor: .gray400
         )
     }
+
     
     @objc func nextButtonTap() {
         let userInfoVC = UserInfoInputViewController()
+        
+        // ✅ 약관 동의 데이터를 올바르게 전달
         userInfoVC.email = email
         userInfoVC.isVerified = true
+        userInfoVC.agreeTerms = agreeTerms
+
+        print("✅ 이메일 인증에서 전달된 약관 목록: \(agreeTerms)")
+
         self.navigationController?.pushViewController(userInfoVC, animated: true)
     }
     
