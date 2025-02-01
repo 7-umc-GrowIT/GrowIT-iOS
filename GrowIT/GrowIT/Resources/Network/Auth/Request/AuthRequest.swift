@@ -23,8 +23,13 @@ struct EmailSignUpRequest: Codable {
 }
 
 struct UserTermDTO: Codable {
-    let termId: Int  // 약관 ID
-    let agreed: Bool // 약관 동의 여부
+    let termId: Int
+    let agreed: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case termId
+        case agreed
+    }
 }
 
 struct ReissueTokenRequest: Codable {
@@ -39,5 +44,4 @@ struct EmailLoginRequest: Codable {
 struct SendEmailVerifyRequest: Codable {
     let email: String
 }
-
 

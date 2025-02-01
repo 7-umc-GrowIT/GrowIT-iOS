@@ -24,7 +24,7 @@ class EmailLoginView: UIView {
     
     // MARK: - UI Components
     
-    public lazy var emailTextField = CustomTextField().then {
+    public lazy var emailTextField = CustomTextField(frame: .zero, isPasswordField: false).then {
         $0.setTitleLabel("이메일")
         $0.setPlaceholder("이메일을 입력해 주세요")
         $0.setValidationRule { text in
@@ -34,7 +34,7 @@ class EmailLoginView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    public lazy var pwdTextField = CustomTextField().then {
+    public lazy var pwdTextField = CustomTextField(frame: .zero, isPasswordField: true).then {
         $0.setTitleLabel("비밀번호")
         $0.setPlaceholder("비밀번호를 입력해 주세요")
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -79,7 +79,7 @@ class EmailLoginView: UIView {
     }
     
     // 회원가입 버튼
-    public lazy var joinButton = UIButton().then {
+    public lazy var singUpButton = UIButton().then {
         $0.setTitle("회원가입", for: .normal)
         $0.setTitleColor(.gray400, for: .normal)
         $0.titleLabel?.font = UIFont.body2Medium()
@@ -107,7 +107,7 @@ class EmailLoginView: UIView {
         $0.addArrangedSubview(divider1)
         $0.addArrangedSubview(changePwdButton)
         $0.addArrangedSubview(divider2)
-        $0.addArrangedSubview(joinButton)
+        $0.addArrangedSubview(singUpButton)
     }
     
     // MARK: - add Function & Constraints
