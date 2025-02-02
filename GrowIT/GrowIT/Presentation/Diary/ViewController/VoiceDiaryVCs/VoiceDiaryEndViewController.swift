@@ -57,7 +57,7 @@ class VoiceDiaryEndViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        
+        navigationController?.popToRootViewController(animated: true)
     }
 
     

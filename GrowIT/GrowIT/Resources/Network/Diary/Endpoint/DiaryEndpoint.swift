@@ -16,12 +16,13 @@ enum DiaryEndpoint {
     
     // Post
     case postVoiceDiary(data: DiaryRequestDTO)
-    case postTextDiary(Data: DiaryRequestDTO)
+    case postTextDiary(data: DiaryRequestDTO)
     
     // Delete
     case deleteDiary(diaryId: Int)
     
-    // Put
+    // Patch
+    case patchFixDiary(diaryId: Int, data: DiaryPatchDTO)
 }
 
 extension DiaryEndpoint: TargetType {
@@ -38,7 +39,7 @@ extension DiaryEndpoint: TargetType {
             return "/text"
         case.postVoiceDiary:
             return "/voice"
-        case.deleteDiary(let diaryId), .getDiaryID(let diaryId):
+        case.deleteDiary(let diaryId), .getDiaryID(let diaryId), .patchFixDiary(let diaryId, _):
             return "/\(diaryId)"
         case.getDiaryDates:
             return "/dates"
@@ -53,6 +54,8 @@ extension DiaryEndpoint: TargetType {
             return .post
         case .deleteDiary:
             return .delete
+        case .patchFixDiary:
+            return .patch
         default :
             return .get
         }
@@ -61,6 +64,8 @@ extension DiaryEndpoint: TargetType {
     public var task: Moya.Task {
         switch self {
         case .postTextDiary(let data), .postVoiceDiary(let data):
+            return .requestJSONEncodable(data)
+        case .patchFixDiary(_, let data):
             return .requestJSONEncodable(data)
         case .deleteDiary(_):
             return  .requestPlain
@@ -78,7 +83,9 @@ extension DiaryEndpoint: TargetType {
     }
     
     var headers: [String : String]? {
-        return [ "Content-type": "application/json" ]
+        return [
+                "Content-Type": "application/json"
+            ]
     }
     
     

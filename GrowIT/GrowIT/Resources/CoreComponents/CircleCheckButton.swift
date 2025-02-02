@@ -35,4 +35,9 @@ class CircleCheckButton: UIButton {
     func isSelectedState() -> Bool {
         return isEnabledState
     }
+    
+    func setSelectedState(_ isSelected: Bool) {
+        self.isEnabledState = isSelected
+        updateButtonColor()
+    }
 }

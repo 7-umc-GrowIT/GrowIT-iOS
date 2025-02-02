@@ -11,6 +11,7 @@ import SnapKit
 class JWeekDayHeaderView: UICollectionReusableView {
 
     static let reuseIdentifier = "WeekdayHeaderView"
+    private var dayLabels: [UILabel] = []
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -34,13 +35,6 @@ class JWeekDayHeaderView: UICollectionReusableView {
             $0.bottom.equalToSuperview().inset(12)
         }
         
-//        NSLayoutConstraint.activate([
-//            stackView.topAnchor.constraint(equalTo: topAnchor),
-//            stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-//            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-//            stackView.trailingAnchor.constraint(equalTo: trailingAnchor)
-//        ])
-        
         daysOfWeek.forEach { day in
             var label = UILabel()
             if(day == "일"){
@@ -50,7 +44,18 @@ class JWeekDayHeaderView: UICollectionReusableView {
                 label = AppLabel(text: day, font: .subBody1(), textColor: .gray600)
             }
             label.textAlignment = .center
+            dayLabels.append(label)
             stackView.addArrangedSubview(label)
+        }
+    }
+    
+    func configureTheme(isDarkMode: Bool) {
+        dayLabels.enumerated().forEach { index, label in
+            if isDarkMode {
+                label.textColor = index == 0 ? .negative400 : .gray300
+            } else {
+                label.textColor = index == 0 ? .negative400 : .gray600
+            }
         }
     }
 

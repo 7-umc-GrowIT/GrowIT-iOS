@@ -13,6 +13,7 @@ class ItemListModalViewController: UIViewController {
     let itemService = ItemService()
     weak var delegate: MyItemListDelegate?
     
+    var currentCredit: Int = 0
     private var isMyItems: Bool = false
     private var category: String = "BACKGROUND"
     private var selectedItem: ItemList?
@@ -125,7 +126,8 @@ class ItemListModalViewController: UIViewController {
     private func didTapPurchaseButton() {
         guard let item = selectedItem else { return }
 
-        let purchaseModalVC = PurchaseModalViewController(isShortage: false, credit: item.price)
+        let isShortage = item.price > currentCredit
+        let purchaseModalVC = PurchaseModalViewController(isShortage: isShortage, credit: item.price, itemId: item.id)
         purchaseModalVC.modalPresentationStyle = .pageSheet
         
         if let sheet = purchaseModalVC.sheetPresentationController {
@@ -191,6 +193,7 @@ extension ItemListModalViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = isMyItems ? myItems[indexPath.row] : shopItems[indexPath.row]
 
+        selectedItem = item
         itemListModalView.purchaseButton.updateCredit(item.price)
         delegate?.didSelectPurchasedItem(item.purchased, selectedItem: item)
 

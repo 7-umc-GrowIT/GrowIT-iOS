@@ -23,7 +23,7 @@ final class DiaryService: NetworkManager {
     
     /// Post Text Diary API
     func postTextDiary(data: DiaryRequestDTO, completion: @escaping (Result<DiaryPostResponseDTO, NetworkError>) -> Void) {
-        request(target: .postTextDiary(Data: data), decodingType: DiaryPostResponseDTO.self, completion: completion)
+        request(target: .postTextDiary(data: data), decodingType: DiaryPostResponseDTO.self, completion: completion)
     }
     
     /// Post Voice Diary API
@@ -32,8 +32,8 @@ final class DiaryService: NetworkManager {
     }
     
     /// Diary Id를 받아 Diary를 삭제하는 API
-    func deleteDiary(diaryId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .deleteDiary(diaryId: diaryId), decodingType: String.self, completion: completion)
+    func deleteDiary(diaryId: Int, completion: @escaping (Result<DiaryDeleteResponseDTO, NetworkError>) -> Void) {
+        request(target: .deleteDiary(diaryId: diaryId), decodingType: DiaryDeleteResponseDTO.self, completion: completion)
     }
     
     /// Diary Id를 받아 특정 일기를 조회하는 API
@@ -51,12 +51,16 @@ final class DiaryService: NetworkManager {
     }
     
     /// 월별 일기 작성 날짜 및 일기 Id 조회 API
-    public func fetchDiaryDates(year: Int, month: Int, completion: @escaping (Result<DiaryGetDatesResponseDTO?, NetworkError>) -> Void) {
+    func fetchDiaryDates(year: Int, month: Int, completion: @escaping (Result<DiaryGetDatesResponseDTO?, NetworkError>) -> Void) {
         requestOptional(
             target: .getDiaryDates(year: year, month: month),
             decodingType: DiaryGetDatesResponseDTO.self,
             completion: completion
         )
+    }
+    
+    func patchFixDiary(diaryId: Int, data: DiaryPatchDTO, completion: @escaping (Result<DiaryPatchResponseDTO, NetworkError>) -> Void) {
+        request(target: .patchFixDiary(diaryId: diaryId, data: data), decodingType: DiaryPatchResponseDTO.self, completion: completion)
     }
 }
 

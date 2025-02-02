@@ -20,7 +20,7 @@
       "~> 1.0"
     ]
   },
-  "prepare_command": "Pods/!ProtoCompiler/protoc         --plugin=protoc-gen-grpc=Pods/!ProtoCompiler-gRPCPlugin/grpc_objective_c_plugin         --objc_out=.         --grpc_out=.         -I .         -I Pods/!ProtoCompiler         google/*/*.proto google/*/*/*/*.proto",
+  "prepare_command": "Pods/!ProtoCompiler/protoc         --objc_opt=named_framework_to_proto_path_mappings_path=./protomap         --plugin=protoc-gen-grpc=Pods/!ProtoCompiler-gRPCPlugin/grpc_objective_c_plugin         --objc_out=.         --grpc_out=.         -I .         -I Pods/!ProtoCompiler         google/*/*.proto google/*/*/*/*.proto",
   "pod_target_xcconfig": {
     "GCC_PREPROCESSOR_DEFINITIONS": "$(inherited) GPB_USE_PROTOBUF_FRAMEWORK_IMPORTS=1",
     "USER_HEADER_SEARCH_PATHS": "$SRCROOT/.."
@@ -32,9 +32,7 @@
       "header_mappings_dir": ".",
       "requires_arc": false,
       "dependencies": {
-        "Protobuf": [
-
-        ]
+        "Protobuf": []
       }
     },
     {
@@ -43,12 +41,8 @@
       "header_mappings_dir": ".",
       "requires_arc": true,
       "dependencies": {
-        "gRPC-ProtoRPC": [
-
-        ],
-        "googleapis/Messages": [
-
-        ]
+        "gRPC-ProtoRPC": [],
+        "googleapis/Messages": []
       }
     }
   ]
