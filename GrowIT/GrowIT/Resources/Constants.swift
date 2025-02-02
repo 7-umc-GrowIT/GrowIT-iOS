@@ -18,6 +18,7 @@ struct Constants {
         static let imageURL = baseURL + "/"
 
         static let authURL = "\(baseURL)/auth"
+        static let userURL = "\(baseURL)/users"
         static let challengeURL = "\(baseURL)/challenges"
     }
 }

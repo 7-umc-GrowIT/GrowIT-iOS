@@ -8,8 +8,7 @@
 import Foundation
 import UIKit
 
-struct ItemBackgroundModel: ItemDisplayable {
-    
+struct ItemBackgroundModel {
     var credit: Int
     var backgroundColor: UIColor
     var Item: UIImage

@@ -79,6 +79,7 @@ class MyItemCollectionViewCell: UICollectionViewCell {
         }
         
         itemImageView.snp.makeConstraints {
+            $0.size.equalToSuperview()
             $0.center.equalToSuperview()
         }
         
