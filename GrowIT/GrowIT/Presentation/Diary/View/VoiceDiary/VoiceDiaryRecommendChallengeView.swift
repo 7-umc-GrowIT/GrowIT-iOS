@@ -26,6 +26,14 @@ class VoiceDiaryRecommendChallengeView: UIView {
     }
     
     //MARK: - UI Components
+    private let scrollView = UIScrollView().then {
+        $0.backgroundColor = .clear
+    }
+    
+    private let contentView = UIView().then {
+        $0.backgroundColor = .white
+    }
+    
     private let recommendLabel = UILabel().then {
         $0.text = "현재 감정에 맞는\n챌린지를 추천할게요"
         $0.numberOfLines = 0
@@ -69,10 +77,22 @@ class VoiceDiaryRecommendChallengeView: UIView {
     
     //MARK: - Setup UI
     private func setupUI() {
+        addSubview(scrollView)
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+        
         addSubview(recommendLabel)
         recommendLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(24)
-            make.top.equalTo(safeAreaLayoutGuide).offset(32)
+            make.top.equalToSuperview().offset(32)
         }
         
         addSubview(emoLabel)
@@ -113,6 +133,11 @@ class VoiceDiaryRecommendChallengeView: UIView {
             make.centerX.equalToSuperview()
             make.top.equalTo(saveButton.snp.bottom).offset(8)
         }
+        
+        contentView.snp.makeConstraints { make in
+            make.bottom.equalTo(descriptionLabel.snp.bottom).offset(40)
+        }
+        
     }
     
     

@@ -55,6 +55,7 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
             make.top.equalTo(voiceDiaryDateSelectView.dateView.snp.bottom).offset(8)
             make.leading.equalToSuperview()
             make.centerX.equalToSuperview()
+            make.height.equalTo(Constants.Screen.ScreenHeight * (Constants.Screen.CalenderRatio))
         }
         calVC.view.isHidden = true
     }
