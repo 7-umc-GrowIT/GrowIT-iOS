@@ -31,6 +31,14 @@ class ChallengeVerifyViewController: UIViewController {
         challengeVerifyView.reviewTextView.delegate = self
         challengeVerifyView.challengeVerifyButton.addTarget(self, action: #selector(challengeVerifyButtonTapped), for: .touchUpInside)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(handleImage(_:)), name: NSNotification.Name("ImageSelected"), object: nil)
+        
+    }
+    @objc func handleImage(_ notification: Notification) {
+        if let userInfo = notification.userInfo, let image = userInfo["image"] as? UIImage {
+            challengeVerifyView.imageUploadCompleted(image)
+            challengeVerifyView.imageContainer.superview?.layoutIfNeeded()
+        }
     }
     
     private func setupNavigationBar() {
@@ -71,59 +79,36 @@ class ChallengeVerifyViewController: UIViewController {
     }
     
     @objc private func imageContainerTapped() {
-        let actionSheet = UIAlertController(title: "인증샷 업로드 방식 설정", message: nil, preferredStyle: .actionSheet)
-
-        // 카메라 액션
-        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            let cameraAction = UIAlertAction(title: "카메라로 촬영", style: .default) { [weak self] _ in
-                self?.openImagePicker(sourceType: .camera)
-            }
-            actionSheet.addAction(cameraAction)
-        }
-
-        // 포토 라이브러리 액션
-        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            let photoLibraryAction = UIAlertAction(title: "갤러리에서 선택", style: .default) { [weak self] _ in
-                self?.openImagePicker(sourceType: .photoLibrary)
-            }
-            actionSheet.addAction(photoLibraryAction)
-        }
-
-        // 취소 액션
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        actionSheet.addAction(cancelAction)
-
-        // 액션 시트 표시
-        present(actionSheet, animated: true, completion: nil)
+        let challengeImageModalController = ChallengeImageModalController()
+        challengeImageModalController.modalPresentationStyle = .pageSheet
         
-//        print("이미지 업로드")
-//        let authorizationStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-//        switch authorizationStatus {
-//        case .notDetermined:
-//            // 권한이 아직 요청되지 않았다면 권한 요청
-//            PHPhotoLibrary.requestAuthorization { status in
-//                DispatchQueue.main.async {
-//                    if status == .authorized {
-//                        // 권한이 허용되면 이미지 피커 표시
-//                        self.present(self.imagePicker, animated: true, completion: nil)
-//                    } else {
-//                        // 권한 거부 처리
-//                        self.showPermissionDeniedAlert()
-//                    }
-//                }
-//            }
-//        case .authorized:
-//            // 권한이 이미 있으면 바로 이미지 피커 표시
-//            self.present(self.imagePicker, animated: true, completion: nil)
-//        case .restricted, .denied:
-//            // 권한이 거부되었거나 제한된 경우
-//            self.showPermissionDeniedAlert()
-//        case .limited:
-//            self.present(self.imagePicker, animated: true, completion: nil)
-//        @unknown default:
-//            // 예상치 못한 상태 처리
-//            break
-//        }
+        if let sheet = challengeImageModalController.sheetPresentationController {
+                    
+            //지원할 크기 지정
+            if #available(iOS 16.0, *){
+                sheet.detents = [.custom{ _ in
+                    360.0
+                }]
+            }else{
+                sheet.detents = [.medium(), .large()]
+            }
+            
+            // 시트의 상단 둥근 모서리 설정
+            if #available(iOS 15.0, *) {
+                sheet.preferredCornerRadius = 40
+            }
+            
+            //크기 변하는거 감지
+            sheet.delegate = self
+           
+            //시트 상단에 그래버 표시 (기본 값은 false)
+            sheet.prefersGrabberVisible = false
+            
+            //처음 크기 지정 (기본 값은 가장 작은 크기)
+            sheet.selectedDetentIdentifier = .large
+        }
+        
+        self.present(challengeImageModalController, animated: true, completion: nil)
     }
     
     private func openImagePicker(sourceType: UIImagePickerController.SourceType) {
@@ -243,5 +228,12 @@ extension ChallengeVerifyViewController: UITextViewDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // 키보드 숨기기
         return true
+    }
+}
+
+extension ChallengeVerifyViewController: UISheetPresentationControllerDelegate {
+    func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
+        //크기 변경 됐을 경우
+        print(sheetPresentationController.selectedDetentIdentifier == .large ? "large" : "medium")
     }
 }

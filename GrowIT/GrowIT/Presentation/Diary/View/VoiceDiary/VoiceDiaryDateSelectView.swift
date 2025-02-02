@@ -39,7 +39,7 @@ class VoiceDiaryDateSelectView: UIView {
         $0.textColor = .gray300
     }
     
-    private let dateView = UIView().then {
+    let dateView = UIView().then {
         $0.backgroundColor = .gray700
         $0.layer.cornerRadius = 8
     }
@@ -113,6 +113,12 @@ class VoiceDiaryDateSelectView: UIView {
             make.top.equalTo(startButton.snp.bottom).offset(8)
             make.centerX.equalToSuperview()
         }
+    }
+    
+    // MARK: UI Update
+    func updateDateLabel(_ date: String) {
+        dateSelectLabel.text = date.formattedDate()
+        dateSelectLabel.textColor = .white
     }
 
 }

@@ -3,7 +3,8 @@ import Moya
 
 class SpeechAPIProvider {
     private let provider = MoyaProvider<SpeechAPI>()
-    private let apiKey: String = "AIzaSyArKR4aSUzQaK504AlT1WXtyWfuWK0S2LQ" // 하드코딩된 API Key
+    // private let apiKey: String = "AIzaSyArKR4aSUzQaK504AlT1WXtyWfuWK0S2LQ" // 하드코딩된 API Key
+    private let apiKey: String = Bundle.main.googleSpeechAPIKey
 
     func recognize(audioContent: String, completion: @escaping (Result<String, Error>) -> Void) {
         provider.request(.recognize(audioContent: audioContent, apiKey: apiKey)) { result in
@@ -27,5 +28,11 @@ class SpeechAPIProvider {
                 completion(.failure(error)) // 네트워크 요청 실패
             }
         }
+    }
+}
+
+extension Bundle {
+    var googleSpeechAPIKey: String {
+        return object(forInfoDictionaryKey: "Google_Speech_API_Key") as? String ?? ""
     }
 }

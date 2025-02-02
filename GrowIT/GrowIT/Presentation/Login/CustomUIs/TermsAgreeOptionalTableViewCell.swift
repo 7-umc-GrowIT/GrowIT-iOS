@@ -39,6 +39,12 @@ class TermsAgreeOptionalTableViewCell: UITableViewCell {
         $0.textColor = .gray800
     }
     
+    let contentLabel = UILabel().then {
+        $0.font = .body2Regular()
+        $0.textColor = .gray600
+        $0.numberOfLines = 0
+    }
+    
     let detailButton = UIButton().then {
         $0.setImage(UIImage(systemName: "chevron.right"), for: .normal)
         $0.backgroundColor = .clear
@@ -75,8 +81,10 @@ class TermsAgreeOptionalTableViewCell: UITableViewCell {
         }
     }
     
-    func configure(with count: Int) {
-        titleLabel.text = "이용약관(\(count))"
+    func configure(title: String, content: String, isAgreed: Bool) {
+        titleLabel.text = title
+        contentLabel.text = content
+        agreeButton.setSelectedState(isAgreed)
     }
     
     @objc private func didTapAgreeButton() {

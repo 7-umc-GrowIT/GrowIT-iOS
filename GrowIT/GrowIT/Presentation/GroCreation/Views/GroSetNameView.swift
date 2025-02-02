@@ -40,7 +40,7 @@ class GroSetNameView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private lazy var nickNameTextField = CustomTextField().then {
+    private lazy var nickNameTextField = CustomTextField(frame: .zero, isPasswordField: false).then {
         $0.setPlaceholder("닉네임을 입력해주세요")
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
