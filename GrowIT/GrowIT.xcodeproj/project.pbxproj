@@ -22,6 +22,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Presentation/GroCreation/Models/ItemBackgroundModel.swift,
 			);
 			target = D13225202D2C2CA600AA4C01 /* GrowIT */;
 		};
