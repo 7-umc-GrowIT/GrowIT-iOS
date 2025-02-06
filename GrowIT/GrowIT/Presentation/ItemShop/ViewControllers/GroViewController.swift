@@ -59,9 +59,20 @@ class GroViewController: UIViewController, ItemListDelegate {
     //MARK: - Delegate Method
     func didSelectItem(_ isPurchased: Bool, selectedItem: ItemList?) {
         groView.purchaseButton.isHidden = isPurchased
-        self.selectedItem = selectedItem
-        if let price = selectedItem?.price {
-            groView.purchaseButton.updateCredit(price)
+        guard let selectedItem = selectedItem else { return }
+        groView.purchaseButton.updateCredit(selectedItem.price)
+        
+        let categoryImageViews: [String: UIImageView] = [
+            "BACKGROUND": groView.backgroundImageView,
+            "OBJECT": groView.groObjectImageView,
+            "PLANT": groView.groFlowerPotImageView,
+            "HEAD_ACCESSORY": groView.groAccImageView
+        ]
+        
+        if let imageView = categoryImageViews[selectedItem.category] {
+            imageView.kf.setImage(with: URL(string: selectedItem.groImageUrl))
+        } else {
+            fatalError("category not found")
         }
     }
     
