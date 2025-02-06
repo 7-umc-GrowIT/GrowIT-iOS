@@ -14,7 +14,7 @@ struct ItemPostResponseDTO: Decodable {
 
 struct ItemPatchResponseDTO: Decodable {
     let itemId: Int
-    let imageURL, category, status, updatedAt: String
+    let category, status, updatedAt: String
 }
 
 struct ItemGetResponseDTO: Decodable {
@@ -25,7 +25,7 @@ struct ItemList: Decodable {
     let id: Int
     let name: String
     let price: Int
-    let imageUrl, shopBackgroundColor, category: String
+    let imageUrl, groImageUrl, shopBackgroundColor, category: String
     let status: String?
     let purchased: Bool
 }
