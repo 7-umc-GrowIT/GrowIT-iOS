@@ -109,7 +109,7 @@ class GroViewController: UIViewController, ItemListDelegate {
         itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
         
         itemListModalVC.updateToMyItems(sender.isSelected)
-        groView.purchaseButton.isHidden = sender.isSelected
+        groView.purchaseButton.isHidden = true
     }
     
     @objc

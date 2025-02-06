@@ -100,7 +100,7 @@ class ItemListModalViewController: UIViewController {
     func updateToMyItems(_ isMyItems: Bool) {
         self.isMyItems = isMyItems
         itemListModalView.itemCollectionView.reloadData()
-        itemListModalView.purchaseButton.isHidden = isMyItems
+        itemListModalView.purchaseButton.isHidden = true
         
         let inset: CGFloat = isMyItems ? 100 : -16
         itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
