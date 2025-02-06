@@ -120,7 +120,7 @@ class GroView: UIView {
             $0.width.equalTo(560)
             $0.height.equalTo(groFrameView.snp.width)
             $0.centerX.equalToSuperview()
-            self.groImageViewTopConstraint = $0.top.equalToSuperview().inset(40).constraint
+            self.groImageViewTopConstraint = $0.top.equalToSuperview().inset(68).constraint
         }
         
         [groFaceImageView, groFlowerPotImageView, groAccImageView, groObjectImageView].forEach {

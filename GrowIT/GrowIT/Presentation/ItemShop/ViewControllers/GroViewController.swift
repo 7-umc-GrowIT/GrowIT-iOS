@@ -180,7 +180,7 @@ class GroViewController: UIViewController, ItemListDelegate {
     }
     
     private func updateGroImageViewTopConstraint(isZoomedOut: Bool) {
-        let inset = isZoomedOut ? 168 : 40
+        let inset = isZoomedOut ? 178 : 68
         groView.groImageViewTopConstraint?.update(inset: inset)
     }
     
