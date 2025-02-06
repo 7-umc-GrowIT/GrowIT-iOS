@@ -11,9 +11,3 @@ import Foundation
 protocol ItemListDelegate: AnyObject {
     func didSelectItem(_ isPurchased: Bool, selectedItem: ItemList?)
 }
-
-// 구매 완료한 뒤 전달
-protocol PurchaseDelegate: AnyObject {
-    func didCompletePurchase()
-    func updateCredit()
-}

@@ -8,12 +8,10 @@
 import UIKit
 import Kingfisher
 
-class ItemListModalViewController: UIViewController, PurchaseDelegate {
-    
+class ItemListModalViewController: UIViewController {
     // MARK: Properties
     let itemService = ItemService()
     weak var itemDelegate: ItemListDelegate?
-    weak var purchaseDelegate: PurchaseDelegate?
     
     var currentCredit: Int = 0
     private var isMyItems: Bool = false
@@ -62,6 +60,7 @@ class ItemListModalViewController: UIViewController, PurchaseDelegate {
         
         setDelegate()
         callGetItems()
+        setNotification()
     }
     
     // MARK: - NetWork
@@ -90,16 +89,8 @@ class ItemListModalViewController: UIViewController, PurchaseDelegate {
             }
         })
     }
-
+    
     //MARK: - Delegate Method
-    func didCompletePurchase() {
-        itemListModalView.purchaseButton.isHidden = true
-        callGetItems()
-        purchaseDelegate?.updateCredit()
-    }
-    
-    func updateCredit() { }
-    
     private func setDelegate() {
         itemListModalView.itemCollectionView.dataSource = self
         itemListModalView.itemCollectionView.delegate = self
@@ -113,6 +104,19 @@ class ItemListModalViewController: UIViewController, PurchaseDelegate {
         
         let inset: CGFloat = isMyItems ? 100 : -16
         itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
+    }
+    
+    //MARK: Notification
+    private func setNotification() {
+        let Notification = NotificationCenter.default
+        
+        Notification.addObserver(self, selector: #selector(didCompletePurchase), name: .purchaseCompleted, object: nil)
+    }
+    
+    @objc
+    func didCompletePurchase() {
+        itemListModalView.purchaseButton.isHidden = true
+        callGetItems()
     }
     
     //MARK: Event
@@ -154,7 +158,6 @@ class ItemListModalViewController: UIViewController, PurchaseDelegate {
             credit: item.price,
             itemId: item.id
         )
-        purchaseModalVC.purchaseDelegate = self
         
         purchaseModalVC.modalPresentationStyle = .pageSheet
         if let sheet = purchaseModalVC.sheetPresentationController {

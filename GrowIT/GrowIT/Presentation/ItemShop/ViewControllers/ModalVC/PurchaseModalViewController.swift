@@ -10,7 +10,6 @@ import UIKit
 class PurchaseModalViewController: UIViewController {
     // MARK: Properties
     let itemService = ItemService()
-    weak var purchaseDelegate: PurchaseDelegate?
     
     private let isShortage: Bool
     private let credit: Int
@@ -35,8 +34,7 @@ class PurchaseModalViewController: UIViewController {
             case .success(let data):
                 print("Success: \(data)")
                 DispatchQueue.main.async {
-                    self.purchaseDelegate?.didCompletePurchase()
-                    self.purchaseDelegate?.updateCredit()
+                    self.setNotification()
                     self.dismiss(animated: true, completion: nil)
                 }
             case .failure(let error):
@@ -59,6 +57,14 @@ class PurchaseModalViewController: UIViewController {
     
     override func loadView() {
         self.view = isShortage ? shortageModalView : purchaseModalView
+    }
+    
+    //MARK: Notification
+    private func setNotification() {
+        let Notification = NotificationCenter.default
+        
+        Notification.post(name: .purchaseCompleted, object: nil)
+        Notification.post(name: .creditUpdated, object: nil)
     }
     
     //MARK: event

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class GroViewController: UIViewController, ItemListDelegate, PurchaseDelegate {
+class GroViewController: UIViewController, ItemListDelegate {
     // MARK: - Properties
     let userService = UserService()
     private lazy var currentCredit: Int = 0
@@ -33,6 +33,7 @@ class GroViewController: UIViewController, ItemListDelegate, PurchaseDelegate {
         super.viewDidLoad()
         self.view = groView
         
+        setNotification()
         setView()
         setConstraints()
         setInitialState()
@@ -64,21 +65,29 @@ class GroViewController: UIViewController, ItemListDelegate, PurchaseDelegate {
         }
     }
     
+    private func setDelegate() {
+        itemListModalVC.itemDelegate = self
+    }
+    
+    //MARK: - Functional
+    //MARK: Notification
+    private func setNotification() {
+        let Notification = NotificationCenter.default
+        
+        Notification.addObserver(self, selector: #selector(didCompletePurchase), name: .purchaseCompleted, object: nil)
+        Notification.addObserver(self, selector: #selector(updateCredit), name: .creditUpdated, object: nil)
+    }
+    
+    @objc
     func didCompletePurchase() {
         groView.purchaseButton.isHidden = true
         callGetCredit()
     }
-    
+    @objc
     func updateCredit() {
-        callGetCredit() 
+        callGetCredit()
     }
     
-    private func setDelegate() {
-        itemListModalVC.itemDelegate = self
-        itemListModalVC.purchaseDelegate = self
-    }
-    
-    //MARK: - Functional
     //MARK: Event
     @objc
     private func didTapZoomButton(_ sender: UIButton) {
@@ -113,7 +122,6 @@ class GroViewController: UIViewController, ItemListDelegate, PurchaseDelegate {
             credit: item.price,
             itemId: item.id
         )
-        purchaseModalVC.purchaseDelegate = self
         
         purchaseModalVC.modalPresentationStyle = .pageSheet
         if let sheet = purchaseModalVC.sheetPresentationController {
