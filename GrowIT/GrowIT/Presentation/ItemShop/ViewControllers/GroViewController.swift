@@ -8,13 +8,37 @@
 import UIKit
 import SnapKit
 
-class GroViewController: UIViewController, MyItemListDelegate {
+class GroViewController: UIViewController, ItemListDelegate, PurchaseDelegate {
     // MARK: - Properties
     let userService = UserService()
     private lazy var currentCredit: Int = 0
     
     private var itemListBottomConstraint: Constraint?
     private var selectedItem: ItemList?
+    
+    //MARK: - Views
+    private lazy var groView = GroView().then {
+        $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
+        $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
+    }
+    
+    private lazy var itemShopHeader = ItemShopHeader().then {
+        $0.myItemButton.addTarget(self, action: #selector(didTapMyItemButton), for: .touchUpInside)
+    }
+    
+    private lazy var itemListModalVC = ItemListModalViewController()
+    
+    //MARK: - init
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view = groView
+        
+        setView()
+        setConstraints()
+        setInitialState()
+        callGetCredit()
+        setDelegate()
+    }
     
     // MARK: - NetWork
     func callGetCredit() {
@@ -30,64 +54,32 @@ class GroViewController: UIViewController, MyItemListDelegate {
             }
         })
     }
-    
-    //MARK: - Views
-    private lazy var groView = GroView().then {
-        $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
-        $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
-    }
-    
-    private lazy var itemListModalVC = ItemListModalViewController()
-    
-    private lazy var itemShopHeader = ItemShopHeader().then {
-        $0.myItemButton.addTarget(self, action: #selector(didTapMyItemButton), for: .touchUpInside)
-    }
-    
-    //MARK: - init
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view = groView
-        itemListModalVC.delegate = self
-        
-        setView()
-        setConstraints()
-        setInitialState()
-        callGetCredit()
-    }
-    
-    //MARK: - MyItemListDelegate
-    func didSelectPurchasedItem(_ isPurchased: Bool, selectedItem: ItemList?) {
+
+    //MARK: - Delegate Method
+    func didSelectItem(_ isPurchased: Bool, selectedItem: ItemList?) {
         groView.purchaseButton.isHidden = isPurchased
         self.selectedItem = selectedItem
-        
         if let price = selectedItem?.price {
             groView.purchaseButton.updateCredit(price)
         }
     }
     
-    //MARK: - 컴포넌트추가
-    private func setView() {
-        addChild(itemListModalVC)
-        groView.addSubviews([itemShopHeader, itemListModalVC.view])
-        itemListModalVC.didMove(toParent: self)
+    func didCompletePurchase() {
+        groView.purchaseButton.isHidden = true
+        callGetCredit()
     }
     
-    //MARK: - 레이아웃설정
-    private func setConstraints() {
-        itemShopHeader.snp.makeConstraints {
-            $0.top.equalTo(groView.safeAreaLayoutGuide).inset(12)
-            $0.horizontalEdges.equalToSuperview().inset(24)
-            $0.height.equalTo(48)
-        }
-        
-        itemListModalVC.view.snp.makeConstraints {
-            $0.horizontalEdges.equalToSuperview()
-            $0.height.equalToSuperview().multipliedBy(0.47)
-            self.itemListBottomConstraint = $0.bottom.equalToSuperview().offset(0).constraint
-        }
+    func updateCredit() {
+        callGetCredit() 
     }
     
-    //MARK: - 기능
+    private func setDelegate() {
+        itemListModalVC.itemDelegate = self
+        itemListModalVC.purchaseDelegate = self
+    }
+    
+    //MARK: - Functional
+    //MARK: Event
     @objc
     private func didTapZoomButton(_ sender: UIButton) {
         sender.isSelected.toggle()
@@ -97,15 +89,16 @@ class GroViewController: UIViewController, MyItemListDelegate {
     @objc
     private func didTapMyItemButton(_ sender: UIButton) {
         sender.isSelected.toggle()
+        
         if sender.isSelected {
             groView.zoomButton.isSelected = false // 줌 버튼 상태 초기화
             showModalView(isZoomedOut: !sender.isSelected)
         }
         
-        let imageName = sender.isSelected ? "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
+        let imageName = sender.isSelected ?
+        "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
         itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
         
-        // 구매하기 버튼
         itemListModalVC.updateToMyItems(sender.isSelected)
         groView.purchaseButton.isHidden = sender.isSelected
     }
@@ -115,9 +108,14 @@ class GroViewController: UIViewController, MyItemListDelegate {
         guard let item = selectedItem else { return }
         
         let isShortage = item.price > currentCredit
-        let purchaseModalVC = PurchaseModalViewController(isShortage: isShortage, credit: item.price, itemId: item.id)
-        purchaseModalVC.modalPresentationStyle = .pageSheet
+        let purchaseModalVC = PurchaseModalViewController(
+            isShortage: isShortage,
+            credit: item.price,
+            itemId: item.id
+        )
+        purchaseModalVC.purchaseDelegate = self
         
+        purchaseModalVC.modalPresentationStyle = .pageSheet
         if let sheet = purchaseModalVC.sheetPresentationController {
             //지원할 크기 지정
             if #available(iOS 16.0, *) {
@@ -126,9 +124,7 @@ class GroViewController: UIViewController, MyItemListDelegate {
                         0.32 * context.maximumDetentValue
                     }
                 ]
-            } else {
-                sheet.detents = [.medium()]
-            }
+            } else { sheet.detents = [.medium()] }
             sheet.prefersGrabberVisible = true
         }
         present(purchaseModalVC, animated: true, completion: nil)
@@ -175,4 +171,26 @@ class GroViewController: UIViewController, MyItemListDelegate {
             $0.trailing.equalToSuperview().inset(24)
         }
     }
+    //MARK: - 컴포넌트추가
+    private func setView() {
+        addChild(itemListModalVC)
+        groView.addSubviews([itemShopHeader, itemListModalVC.view])
+        itemListModalVC.didMove(toParent: self)
+    }
+    
+    //MARK: - 레이아웃설정
+    private func setConstraints() {
+        itemShopHeader.snp.makeConstraints {
+            $0.top.equalTo(groView.safeAreaLayoutGuide).inset(12)
+            $0.horizontalEdges.equalToSuperview().inset(24)
+            $0.height.equalTo(48)
+        }
+        
+        itemListModalVC.view.snp.makeConstraints {
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalToSuperview().multipliedBy(0.47)
+            self.itemListBottomConstraint = $0.bottom.equalToSuperview().offset(0).constraint
+        }
+    }
+    
 }

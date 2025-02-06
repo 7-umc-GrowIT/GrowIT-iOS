@@ -14,7 +14,7 @@ final class UserService: NetworkManager {
     
     init(provider: MoyaProvider<UserEndpoint>? = nil) {
         let plugins: [PluginType] = [
-            NetworkLoggerPlugin(configuration: .init(logOptions: [.requestHeaders, .verbose]))
+//            NetworkLoggerPlugin(configuration: .init(logOptions: [.requestHeaders, .verbose]))
         ]
         
         self.provider = provider ?? MoyaProvider<UserEndpoint>(plugins: plugins)

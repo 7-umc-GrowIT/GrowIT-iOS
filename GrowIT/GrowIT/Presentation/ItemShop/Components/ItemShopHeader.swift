@@ -9,7 +9,6 @@ import UIKit
 
 class ItemShopHeader: UIView {
     // MARK: - Properties
-    
     private lazy var headerStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.distribution = .equalCentering
