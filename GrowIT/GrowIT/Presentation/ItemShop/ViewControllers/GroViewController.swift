@@ -16,7 +16,8 @@ class GroViewController: UIViewController, ItemListDelegate {
     
     private var itemListBottomConstraint: Constraint?
     private var selectedItem: ItemList?
-    
+    var categoryToEquippedId: [String: Int] = [:]
+
     //MARK: - Views
     private lazy var groView = GroView().then {
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
@@ -74,6 +75,11 @@ class GroViewController: UIViewController, ItemListDelegate {
                     "HEAD_ACCESSORY": groView.groAccImageView
                 ]
                 
+                categoryToEquippedId = equippedItems.reduce(into: [String: Int]()) { dict, item in
+                    dict[item.category] = item.id
+                }
+                print(categoryToEquippedId)
+                
                 for item in equippedItems {
                     if let imageView = categoryImageViews[item.category] {
                         imageView.kf.setImage(with: URL(string: item.itemImageUrl))
@@ -93,6 +99,8 @@ class GroViewController: UIViewController, ItemListDelegate {
         groView.purchaseButton.isHidden = isPurchased
         guard let selectedItem = selectedItem else { return }
         groView.purchaseButton.updateCredit(selectedItem.price)
+        categoryToEquippedId[selectedItem.category] = selectedItem.id
+        print(categoryToEquippedId)
         
         let categoryImageViews: [String: UIImageView] = [
             "BACKGROUND": groView.backgroundImageView,
