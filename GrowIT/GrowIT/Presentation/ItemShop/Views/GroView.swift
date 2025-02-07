@@ -19,12 +19,35 @@ class GroView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    var groImageView = UIImageView().then {
-        $0.image = UIImage(named: "GrowIT_Gro")
-        $0.contentMode = .scaleAspectFit
+    private lazy var groFrameView = UIView().then {
+        $0.backgroundColor = .clear
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
 
+    var groFaceImageView = UIImageView().then {
+//        $0.image = UIImage(named: "Gro_Face")
+        $0.contentMode = .scaleAspectFit
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    var groFlowerPotImageView = UIImageView().then {
+        $0.image = UIImage(named: "Gro_FlowerPot")
+        $0.contentMode = .scaleAspectFit
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    var groAccImageView = UIImageView().then {
+//        $0.image = UIImage(named: "Gro_Acc")
+        $0.contentMode = .scaleAspectFit
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    var groObjectImageView = UIImageView().then {
+//        $0.image = UIImage(named: "Gro_Object")
+        $0.contentMode = .scaleAspectFit
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
     var zoomButton = UIButton().then {
         var config = UIButton.Configuration.plain()
         config.baseBackgroundColor = .clear
@@ -59,16 +82,32 @@ class GroView: UIView {
         super.init(frame: frame)
         setView()
         setConstraints()
+        setGroLayer()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - Gro
+    private func setGroLayer() {
+        groFlowerPotImageView.layer.zPosition = 0
+        groFaceImageView.layer.zPosition = 1
+        groAccImageView.layer.zPosition = 2
+        groObjectImageView.layer.zPosition = 3
+    }
+    
     //MARK: - 컴포넌트 추가
     private func setView() {
         buttonStackView.addArrangedSubViews([zoomButton, eraseButton])
-        self.addSubviews([backgroundImageView, groImageView, buttonStackView, purchaseButton])
+        self.addSubviews([backgroundImageView, groFrameView, buttonStackView, purchaseButton])
+        
+        groFrameView.addSubviews([
+            groFaceImageView,
+            groFlowerPotImageView,
+            groAccImageView,
+            groObjectImageView
+        ])
     }
     
     //MARK: - 레이아웃 설정
@@ -77,11 +116,17 @@ class GroView: UIView {
             $0.edges.equalToSuperview()
         }
         
-        groImageView.snp.makeConstraints {
-            $0.width.equalTo(758)
-            $0.height.equalTo(554)
+        groFrameView.snp.makeConstraints {
+            $0.width.equalTo(560)
+            $0.height.equalTo(groFrameView.snp.width)
             $0.centerX.equalToSuperview()
-            self.groImageViewTopConstraint = $0.top.equalToSuperview().inset(40).constraint
+            self.groImageViewTopConstraint = $0.top.equalToSuperview().inset(68).constraint
+        }
+        
+        [groFaceImageView, groFlowerPotImageView, groAccImageView, groObjectImageView].forEach {
+            $0.snp.makeConstraints {
+                $0.edges.equalToSuperview()
+            }
         }
         
         buttonStackView.snp.makeConstraints {
