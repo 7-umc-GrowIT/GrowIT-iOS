@@ -25,7 +25,7 @@ class GroView: UIView {
     }
 
     var groFaceImageView = UIImageView().then {
-        $0.image = UIImage(named: "Gro_Face")
+//        $0.image = UIImage(named: "Gro_Face")
         $0.contentMode = .scaleAspectFit
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -37,13 +37,13 @@ class GroView: UIView {
     }
     
     var groAccImageView = UIImageView().then {
-        $0.image = UIImage(named: "Gro_Acc")
+//        $0.image = UIImage(named: "Gro_Acc")
         $0.contentMode = .scaleAspectFit
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     var groObjectImageView = UIImageView().then {
-        $0.image = UIImage(named: "Gro_Object")
+//        $0.image = UIImage(named: "Gro_Object")
         $0.contentMode = .scaleAspectFit
         $0.translatesAutoresizingMaskIntoConstraints = false
     }

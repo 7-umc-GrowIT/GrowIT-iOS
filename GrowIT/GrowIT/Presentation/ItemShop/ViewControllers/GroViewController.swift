@@ -11,6 +11,7 @@ import SnapKit
 class GroViewController: UIViewController, ItemListDelegate {
     // MARK: - Properties
     let userService = UserService()
+    let groService = GroService()
     private lazy var currentCredit: Int = 0
     
     private var itemListBottomConstraint: Constraint?
@@ -24,6 +25,7 @@ class GroViewController: UIViewController, ItemListDelegate {
     
     private lazy var itemShopHeader = ItemShopHeader().then {
         $0.myItemButton.addTarget(self, action: #selector(didTapMyItemButton), for: .touchUpInside)
+        $0.backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
     }
     
     private lazy var itemListModalVC = ItemListModalViewController()
@@ -38,6 +40,7 @@ class GroViewController: UIViewController, ItemListDelegate {
         setConstraints()
         setInitialState()
         callGetCredit()
+        callGetGroImage()
         setDelegate()
     }
     
@@ -55,7 +58,36 @@ class GroViewController: UIViewController, ItemListDelegate {
             }
         })
     }
-
+    
+    func callGetGroImage() {
+        groService.getGroImage(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                groView.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl))
+                let equippedItems = data.equippedItems
+                
+                let categoryImageViews: [String: UIImageView] = [
+                    "BACKGROUND": groView.backgroundImageView,
+                    "OBJECT": groView.groObjectImageView,
+                    "PLANT": groView.groFlowerPotImageView,
+                    "HEAD_ACCESSORY": groView.groAccImageView
+                ]
+                
+                for item in equippedItems {
+                    if let imageView = categoryImageViews[item.category] {
+                        imageView.kf.setImage(with: URL(string: item.itemImageUrl))
+                    } else {
+                        fatalError("category not found")
+                    }
+                }
+                
+                
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        })
+    }
     //MARK: - Delegate Method
     func didSelectItem(_ isPurchased: Bool, selectedItem: ItemList?) {
         groView.purchaseButton.isHidden = isPurchased
@@ -104,6 +136,11 @@ class GroViewController: UIViewController, ItemListDelegate {
     private func didTapZoomButton(_ sender: UIButton) {
         sender.isSelected.toggle()
         showModalView(isZoomedOut: sender.isSelected)
+    }
+    
+    @objc
+    private func didTapBackButton() {
+    
     }
     
     @objc

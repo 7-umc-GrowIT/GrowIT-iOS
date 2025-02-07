@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct GroGetResponseDTO: Decodable {
+struct GroPostResponseDTO: Decodable {
     let id, user_id: Int
     let name: String
     let level: Int
 }
 
-struct GroPostResponseDTO: Decodable {
+struct GroGetResponseDTO: Decodable {
     let gro: Gro
     let equippedItems: [EquippedItem]
 }
