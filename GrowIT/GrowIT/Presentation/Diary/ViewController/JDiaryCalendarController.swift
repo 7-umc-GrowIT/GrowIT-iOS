@@ -314,6 +314,7 @@ func collectionView(_ collectionView: UICollectionView, layout collectionViewLay
                 // })
                 //let diaryPostFixVC = DiaryPostFixViewController(text: <#String#>)
                 
+                
             }
             delegate?.didSelectDate(formattedDate)
             print("Selected date: \(formattedDate)")

@@ -22,18 +22,10 @@ class VoiceDiaryRecommendChallengeView: UIView {
         super.layoutSubviews()
         
         // 그라데이션 적용
-        contentView.setGradient(color1: .gray700, color2: .gray900)
+        setGradient(color1: .gray700, color2: .gray900)
     }
     
     //MARK: - UI Components
-    private let scrollView = UIScrollView().then {
-        $0.backgroundColor = .clear
-    }
-    
-    private let contentView = UIView().then {
-        $0.backgroundColor = .clear
-    }
-    
     private let recommendLabel = UILabel().then {
         $0.text = "현재 감정에 맞는\n챌린지를 추천할게요"
         $0.numberOfLines = 0
@@ -52,7 +44,7 @@ class VoiceDiaryRecommendChallengeView: UIView {
         $0.spacing = 8
         $0.distribution = .equalSpacing
         $0.backgroundColor = .clear
-        $0.configure(rectColor: UIColor(hex: "00B277")!.withAlphaComponent(0.2), titleColor: .primary200)
+        $0.configure(rectColor: UIColor(hex: "0B0B11")!.withAlphaComponent(0.5), titleColor: .primary200)
     }
     
     let challengeStackView = VoiceDiaryhallengeStackView().then {
@@ -77,65 +69,49 @@ class VoiceDiaryRecommendChallengeView: UIView {
     
     //MARK: - Setup UI
     private func setupUI() {
-        addSubview(scrollView)
-        scrollView.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide)
-            make.leading.trailing.bottom.equalToSuperview()
-        }
-        
-        scrollView.addSubview(contentView)
-        contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.width.equalToSuperview()
-        }
-        
-        contentView.addSubview(recommendLabel)
+        addSubview(recommendLabel)
         recommendLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(24)
-            make.top.equalToSuperview().offset(32)
+            make.top.equalTo(safeAreaLayoutGuide).offset(32)
         }
         
-        contentView.addSubview(emoLabel)
+        addSubview(emoLabel)
         emoLabel.snp.makeConstraints { make in
             make.leading.equalTo(recommendLabel.snp.leading)
             make.top.equalTo(recommendLabel.snp.bottom).offset(28)
         }
         
-        contentView.addSubview(emoStackView)
+        addSubview(emoStackView)
         emoStackView.snp.makeConstraints { make in
             make.leading.equalTo(emoLabel.snp.leading)
             make.top.equalTo(emoLabel.snp.bottom).offset(8)
         }
         
-        contentView.addSubview(toolTip)
+        addSubview(toolTip)
         toolTip.snp.makeConstraints { make in
             make.top.equalTo(emoStackView.snp.bottom).offset(24)
             make.height.equalTo(47)
             make.centerX.equalToSuperview()
         }
         
-        contentView.addSubview(challengeStackView)
+        addSubview(challengeStackView)
         challengeStackView.snp.makeConstraints { make in
             make.leading.equalTo(emoStackView.snp.leading)
             make.top.equalTo(toolTip.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
         }
         
-        contentView.addSubview(saveButton)
+        addSubview(saveButton)
         saveButton.snp.makeConstraints { make in
             make.top.equalTo(challengeStackView.snp.bottom).offset(58)
             make.leading.equalToSuperview().offset(24)
             make.centerX.equalToSuperview()
         }
         
-        contentView.addSubview(descriptionLabel)
+        addSubview(descriptionLabel)
         descriptionLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(saveButton.snp.bottom).offset(8)
-        }
-        
-        contentView.snp.makeConstraints { make in
-            make.bottom.equalTo(descriptionLabel.snp.bottom).offset(40)
         }
     }
     
