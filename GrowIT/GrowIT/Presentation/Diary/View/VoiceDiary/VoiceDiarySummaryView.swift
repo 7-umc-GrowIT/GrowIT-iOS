@@ -143,7 +143,7 @@ class VoiceDiarySummaryView: UIView {
             make.leading.equalTo(dateLabel.snp.leading)
             make.centerX.equalToSuperview()
             make.top.equalTo(dateLabel.snp.bottom).offset(12)
-            make.height.equalTo(216)
+            make.height.equalTo(Constants.Screen.ScreenHeight * (216 / 932))
         }
         
         textView.addSubview(aiLabel)
