@@ -23,10 +23,14 @@ class TextDiaryChallengeStackView: UIStackView {
         super.layoutSubviews()
         
         // 그라데이션 적용
-        rect1.setGradient(color1: .white, color2: .primary50)
-        rect2.setGradient(color1: .white, color2: .primary50)
-        rect3.setGradient(color1: .white, color2: .primary50)
+        [rect1, rect2, rect3, backRect1, backRect2, backRect3].forEach{
+            $0.setGradient(color1: .white, color2: .primary50)
+        }
     }
+    
+    private var isFlipped1 = false
+    private var isFlipped2 = false
+    private var isFlipped3 = false
     
     //MARK: - UI Components
     private let rect1 = UIView().then {
@@ -120,6 +124,42 @@ class TextDiaryChallengeStackView: UIStackView {
         $0.text = "1시간"
         $0.font = .body2Medium()
         $0.textColor = .primary600
+    }
+    
+    private let backRect1 = UIView().then {
+        $0.backgroundColor = .clear
+        $0.layer.cornerRadius = 20
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor(hex: "#0000001A")?.cgColor
+    }
+    
+    private let backRect2 = UIView().then {
+        $0.backgroundColor = .clear
+        $0.layer.cornerRadius = 20
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor(hex: "#0000001A")?.cgColor
+    }
+    
+    private let backRect3 = UIView().then {
+        $0.backgroundColor = .clear
+        $0.layer.cornerRadius = 20
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor(hex: "#0000001A")?.cgColor
+    }
+    
+    private let backIcon1 = UIImageView().then {
+        $0.image = UIImage(named: "bath")
+        $0.backgroundColor = .clear
+    }
+    
+    private let backIcon2 = UIImageView().then {
+        $0.image = UIImage(named: "bath")
+        $0.backgroundColor = .clear
+    }
+    
+    private let backIcon3 = UIImageView().then {
+        $0.image = UIImage(named: "bath")
+        $0.backgroundColor = .clear
     }
     
     //MARK: - Setup UI
@@ -230,6 +270,11 @@ class TextDiaryChallengeStackView: UIStackView {
         addArrangedSubview(rect2)
         addArrangedSubview(rect3)
         
+        backRect1.addSubview(backIcon1)
+        backIcon1.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(24)
+            make.top.equalToSuperview().offset(30)
+            make.centerY.equalToSuperview()
+        }
     }
-    
 }

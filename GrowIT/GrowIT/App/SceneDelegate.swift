@@ -26,7 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navigationController.isNavigationBarHidden = true
         // UIWindow의 시작 ViewController를 생성한 NavigationController로 지정
         window.rootViewController = navigationController
-        // window 표시.
+        // window 표시
         self.window = window
         // makeKeyAndVisible() 메서드 호출
         window.makeKeyAndVisible()
