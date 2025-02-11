@@ -117,7 +117,7 @@ class ItemListModalViewController: UIViewController {
         }
 
         itemListModalView.purchaseButton.isHidden = true
-        let inset: CGFloat = isMyItems ? 100 : -16
+        let inset: CGFloat = 100
         itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
     }
     
