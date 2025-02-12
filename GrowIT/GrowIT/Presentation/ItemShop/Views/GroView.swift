@@ -25,6 +25,7 @@ class GroView: UIView {
     }
 
     var groFaceImageView = UIImageView().then {
+        $0.image = UIImage(named: "Gro_Face")
         $0.contentMode = .scaleAspectFit
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
