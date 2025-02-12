@@ -187,6 +187,8 @@ class ItemListModalViewController: UIViewController {
             sheet.prefersGrabberVisible = true
         }
         present(purchaseModalVC, animated: true, completion: nil)
+        let inset: CGFloat = 100
+        itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
     }
 }
 
