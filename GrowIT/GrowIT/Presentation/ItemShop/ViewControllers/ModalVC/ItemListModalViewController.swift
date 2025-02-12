@@ -100,9 +100,24 @@ class ItemListModalViewController: UIViewController {
     func updateToMyItems(_ isMyItems: Bool) {
         self.isMyItems = isMyItems
         itemListModalView.itemCollectionView.reloadData()
-        itemListModalView.purchaseButton.isHidden = true
         
-        let inset: CGFloat = isMyItems ? 100 : -16
+        DispatchQueue.main.async {
+            if isMyItems {
+                for (index, item) in self.myItems.enumerated() {
+                    if let equippedItemId = self.itemDelegate?.categoryToEquippedId[item.category], equippedItemId == item.id {
+                        let indexPath = IndexPath(item: index, section: 0)
+                        self.itemListModalView.itemCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                    }
+                }
+            } else {
+                for indexPath in self.itemListModalView.itemCollectionView.indexPathsForSelectedItems ?? [] {
+                    self.itemListModalView.itemCollectionView.deselectItem(at: indexPath, animated: false)
+                }
+            }
+        }
+
+        itemListModalView.purchaseButton.isHidden = true
+        let inset: CGFloat = 100
         itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
     }
     
@@ -172,6 +187,8 @@ class ItemListModalViewController: UIViewController {
             sheet.prefersGrabberVisible = true
         }
         present(purchaseModalVC, animated: true, completion: nil)
+        let inset: CGFloat = 100
+        itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
     }
 }
 
@@ -196,7 +213,8 @@ extension ItemListModalViewController: UICollectionViewDataSource {
             cell.isOwnedLabel.text = "보유 중"
             cell.itemBackGroundView.backgroundColor = colorMapping[item.shopBackgroundColor] ?? .itemYellow
             cell.itemImageView.kf.setImage(with: URL(string: item.imageUrl))
-            
+            cell.updateSelectionState()
+
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(

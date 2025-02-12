@@ -12,12 +12,14 @@ class GroViewController: UIViewController, ItemListDelegate {
     // MARK: - Properties
     let userService = UserService()
     let groService = GroService()
+    let itemService = ItemService()
     private lazy var currentCredit: Int = 0
     
     private var itemListBottomConstraint: Constraint?
     private var selectedItem: ItemList?
+    var originalEquippedItem: [String: Int] = [:]
     var categoryToEquippedId: [String: Int] = [:]
-
+    
     //MARK: - Views
     private lazy var groView = GroView().then {
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
@@ -78,6 +80,7 @@ class GroViewController: UIViewController, ItemListDelegate {
                 categoryToEquippedId = equippedItems.reduce(into: [String: Int]()) { dict, item in
                     dict[item.category] = item.id
                 }
+                originalEquippedItem = categoryToEquippedId
                 print(categoryToEquippedId)
                 
                 for item in equippedItems {
@@ -94,13 +97,41 @@ class GroViewController: UIViewController, ItemListDelegate {
             }
         })
     }
+    
+    func callPatchItemState(itemId: Int, status: String) {
+        itemService.patchItemState(itemId: itemId, data: ItemRequestDTO(status: status), completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let data):
+                print("Success: \(data)")
+            case.failure(let error):
+                print("Error: \(error)")
+            }
+        })
+    }
+    
     //MARK: - Delegate Method
     func didSelectItem(_ isPurchased: Bool, selectedItem: ItemList?) {
         groView.purchaseButton.isHidden = isPurchased
         guard let selectedItem = selectedItem else { return }
         groView.purchaseButton.updateCredit(selectedItem.price)
-        categoryToEquippedId[selectedItem.category] = selectedItem.id
-        print(categoryToEquippedId)
+        
+        let category = selectedItem.category
+        let newItemId = selectedItem.id
+        let currentItemId = categoryToEquippedId[category]
+        
+        if currentItemId == newItemId { return }
+        
+        // 착용 아이템 해제
+        if let currentItemId = currentItemId {
+            callPatchItemState(itemId: currentItemId, status: "UNEQUIPPED")
+        }
+        
+        // 새로운 아이템 착용
+        categoryToEquippedId[category] = newItemId
+        if isPurchased {
+            callPatchItemState(itemId: newItemId, status: "EQUIPPED")
+        }
         
         let categoryImageViews: [String: UIImageView] = [
             "BACKGROUND": groView.backgroundImageView,
@@ -109,7 +140,7 @@ class GroViewController: UIViewController, ItemListDelegate {
             "HEAD_ACCESSORY": groView.groAccImageView
         ]
         
-        if let imageView = categoryImageViews[selectedItem.category] {
+        if let imageView = categoryImageViews[category] {
             imageView.kf.setImage(with: URL(string: selectedItem.groImageUrl))
         } else {
             fatalError("category not found")

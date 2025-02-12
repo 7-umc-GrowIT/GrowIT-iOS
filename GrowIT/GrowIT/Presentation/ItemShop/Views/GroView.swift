@@ -31,19 +31,16 @@ class GroView: UIView {
     }
     
     var groFlowerPotImageView = UIImageView().then {
-        $0.image = UIImage(named: "Gro_FlowerPot")
         $0.contentMode = .scaleAspectFit
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     var groAccImageView = UIImageView().then {
-//        $0.image = UIImage(named: "Gro_Acc")
         $0.contentMode = .scaleAspectFit
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     var groObjectImageView = UIImageView().then {
-//        $0.image = UIImage(named: "Gro_Object")
         $0.contentMode = .scaleAspectFit
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -117,7 +114,7 @@ class GroView: UIView {
         }
         
         groFrameView.snp.makeConstraints {
-            $0.width.equalTo(560)
+            $0.width.equalToSuperview().multipliedBy(1.3)
             $0.height.equalTo(groFrameView.snp.width)
             $0.centerX.equalToSuperview()
             self.groImageViewTopConstraint = $0.top.equalToSuperview().inset(68).constraint
