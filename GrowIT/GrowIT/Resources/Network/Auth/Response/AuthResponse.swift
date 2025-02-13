@@ -25,7 +25,7 @@ struct SignUpResponse: Decodable {
     let result: TokenData
 }
 
-struct TokenData: Decodable {
+struct TokenData: Codable {
     let accessToken: String
     let refreshToken: String
 }
@@ -34,7 +34,19 @@ struct KakaoLoginResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: AuthResult
+    let result: KakaoLoginResult
+}
+
+struct KakaoLoginResult: Codable {
+    let signupRequired: Bool
+    let tokens: TokenData?
+    let oauthUserInfo: KakaoUserInfo?
+}
+
+struct KakaoUserInfo: Codable {
+    let id: Int
+    let email: String
+    let name: String
 }
 
 struct AuthResult: Codable {
@@ -55,5 +67,12 @@ struct SignOutResponse: Decodable {
 }
 
 struct ReissueResponse: Decodable {
-    let accessToken: String
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: TokenData
+}
+
+struct ChangePasswordResponse: Codable {
+    let message: String
 }

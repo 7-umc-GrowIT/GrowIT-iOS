@@ -22,12 +22,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-           if (AuthApi.isKakaoTalkLoginUrl(url)) {
-               return AuthController.handleOpenUrl(url: url)
-           }
-
-           return false
-       }
+        if AuthApi.isKakaoTalkLoginUrl(url) {
+            print("✅ AppDelegate: 카카오 로그인 URL 감지")
+            return AuthController.handleOpenUrl(url: url)
+        }
+        return true  // handleAuthorizationCode 호출 제거
+    }
 
     // MARK: UISceneSession Lifecycle
 

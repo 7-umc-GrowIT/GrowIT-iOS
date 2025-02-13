@@ -11,10 +11,11 @@ struct TermsResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: [Term]
+    let result: [TermsData]
 }
 
-struct Term: Codable {
+struct TermsData: Codable {
+    let termId: Int
     let title: String
     let content: String
     let type: String

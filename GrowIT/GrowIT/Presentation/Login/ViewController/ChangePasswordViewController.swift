@@ -231,6 +231,17 @@ class ChangePasswordViewController: UIViewController {
     }
     
     @objc private func sendCodeButtonTapped() {
+        guard let emailText = changePasswordView.emailTextField.textField.text,
+              !emailText.isEmpty else {
+            print("이메일란 비어있음")
+            return
+        }
+        
+//        email = emailText
+//        
+//        let request = SendEmailVerifyRequest(email: emailText)
+//        
+//        authService.email(type: "cha")
         // 이메일 필드 비활성화
         isEmailFieldDisabled = true
         setEmailFieldDisabledUI()
