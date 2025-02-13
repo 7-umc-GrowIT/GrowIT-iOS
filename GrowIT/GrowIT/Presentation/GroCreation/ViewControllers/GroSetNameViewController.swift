@@ -44,7 +44,14 @@ class GroSetNameViewController: UIViewController {
             case .success(let data):
                 print("Success: \(data)")
             case .failure(let error):
-                print("Error \(error)")
+                switch error {
+                case .serverError(let statusCode, let message):
+                    if message == "이미 사용 중인 닉네임입니다." {
+                        groSetNameView.nickNameTextField.setError(message: "다른 닉네임과 중복되는 닉네임입니다")
+                    }
+                default:
+                    break
+                }
             }
         })
     }
