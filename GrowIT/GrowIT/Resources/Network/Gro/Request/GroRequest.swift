@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct GroRequestDTO: Codable {
+    let name: String
+    let backgroundItem: String
+}

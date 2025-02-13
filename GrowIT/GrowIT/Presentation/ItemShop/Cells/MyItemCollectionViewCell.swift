@@ -48,22 +48,26 @@ class MyItemCollectionViewCell: UICollectionViewCell {
     
     override var isSelected: Bool{
         didSet {
-            if isSelected {
-                self.layer.borderWidth = 1.5
-                self.layer.borderColor = UIColor.primary400.cgColor
-                self.layer.shadowColor = UIColor.primary400.cgColor
-                self.layer.shadowOpacity = 0.2
-                self.layer.shadowRadius = 4
-                self.layer.shadowOffset = CGSize(width: 0, height: 0)
-                self.isOwnedLabel.text = "착용 중"
-            } else {
-                self.layer.borderColor = UIColor.clear.cgColor
-                self.layer.shadowColor = UIColor.clear.cgColor
-                self.isOwnedLabel.text = "보유 중"
-            }
+            updateSelectionState()
         }
     }
     
+    func updateSelectionState() {
+        if isSelected {
+            self.layer.borderWidth = 1.5
+            self.layer.borderColor = UIColor.primary400.cgColor
+            self.layer.shadowColor = UIColor.primary400.cgColor
+            self.layer.shadowOpacity = 0.2
+            self.layer.shadowRadius = 4
+            self.layer.shadowOffset = CGSize(width: 0, height: 0)
+            self.isOwnedLabel.text = "착용 중"
+        } else {
+            self.layer.borderWidth = 0
+            self.layer.borderColor = UIColor.clear.cgColor
+            self.layer.shadowColor = UIColor.clear.cgColor
+            self.isOwnedLabel.text = "보유 중"
+        }
+    }
     //MARK: - 컴포넌트 추가
     private func setView() {
         itemBackGroundView.addSubview(itemImageView)
@@ -79,6 +83,7 @@ class MyItemCollectionViewCell: UICollectionViewCell {
         }
         
         itemImageView.snp.makeConstraints {
+            $0.size.equalToSuperview()
             $0.center.equalToSuperview()
         }
         

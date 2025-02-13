@@ -8,12 +8,17 @@
 import UIKit
 
 class PurchaseModalViewController: UIViewController {
+    // MARK: Properties
+    let itemService = ItemService()
+    
     private let isShortage: Bool
     private let credit: Int
+    private let itemId: Int
     
-    //MARK: - Views
+    //MARK: -Views
     private lazy var purchaseModalView = PurchaseModalView().then {
         $0.cancleButton.addTarget(self, action: #selector(didTapCancleButton), for: .touchUpInside)
+        $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
         $0.purchaseButton.updateCredit(credit)
     }
     
@@ -21,10 +26,28 @@ class PurchaseModalViewController: UIViewController {
         $0.confirmButton.addTarget(self, action: #selector(didTapCancleButton), for: .touchUpInside)
     }
     
-    //MARK: - init
-    init(isShortage: Bool, credit: Int) {
+    // MARK: - NetWork
+    func callPostItemPurchase() {
+        itemService.postItemPurchase(itemId: itemId, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                print("Success: \(data)")
+                DispatchQueue.main.async {
+                    self.setNotification()
+                    self.dismiss(animated: true, completion: nil)
+                }
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        })
+    }
+    
+    //MARK: init
+    init(isShortage: Bool, credit: Int, itemId: Int) {
         self.isShortage = isShortage
         self.credit = credit
+        self.itemId = itemId
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -36,9 +59,22 @@ class PurchaseModalViewController: UIViewController {
         self.view = isShortage ? shortageModalView : purchaseModalView
     }
     
-    //MARK: - 기능
+    //MARK: Notification
+    private func setNotification() {
+        let Notification = NotificationCenter.default
+        
+        Notification.post(name: .purchaseCompleted, object: nil)
+        Notification.post(name: .creditUpdated, object: nil)
+    }
+    
+    //MARK: event
     @objc
     private func didTapCancleButton() {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc
+    private func didTapPurchaseButton() {
+        callPostItemPurchase()
     }
 }

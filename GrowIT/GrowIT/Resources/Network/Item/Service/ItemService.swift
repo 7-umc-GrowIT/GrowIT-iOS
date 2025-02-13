@@ -14,7 +14,7 @@ final class ItemService: NetworkManager {
     
     init(provider: MoyaProvider<ItemEndpoint>? = nil) {
         let plugins: [PluginType] = [
-            NetworkLoggerPlugin(configuration: .init(logOptions: [.requestHeaders, .verbose]))
+//            NetworkLoggerPlugin(configuration: .init(logOptions: [.requestHeaders, .verbose]))
         ]
         
         self.provider = provider ?? MoyaProvider<ItemEndpoint>(plugins: plugins)
@@ -30,7 +30,7 @@ final class ItemService: NetworkManager {
     }
     
     // 아이템 착용 상태 변경 API
-    func petchItemState(itemId: Int, data: ItemRequestDTO, completion: @escaping(Result<ItemPatchResponseDTO, NetworkError>) -> Void) {
+    func patchItemState(itemId: Int, data: ItemRequestDTO, completion: @escaping(Result<ItemPatchResponseDTO, NetworkError>) -> Void) {
         request(
             target: .patchItemState(itemId: itemId, data: data),
             decodingType: ItemPatchResponseDTO.self,
