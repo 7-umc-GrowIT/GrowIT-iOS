@@ -16,6 +16,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     private var speechAPIProvider = SpeechAPIProvider()
     private var audioRecorder: AVAudioRecorder?
     private var isRecording = false // 녹음 상태 관리
+    
     private let diaryService = DiaryService()
     
     override func viewDidLoad() {
@@ -29,7 +30,6 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        startRecording()
     }
     
     private func observeRemainingTime() {
@@ -72,6 +72,10 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     // MARK: Setup Actions
     private func setupActions() {
         voiceDiaryRecordView.endButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        voiceDiaryRecordView.recordButton.addTarget(self, action: #selector(beginRecord), for: .touchUpInside)
+        
+        let animationTap = UITapGestureRecognizer(target: self, action: #selector(stopRecord))
+        voiceDiaryRecordView.recordAnimation.addGestureRecognizer(animationTap)
     }
     
     // MARK: @objc methods
@@ -98,6 +102,14 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
             nextVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(nextVC, animated: true)
         }
+    }
+    
+    @objc func beginRecord() {
+        startRecording()
+    }
+    
+    @objc func stopRecord() {
+        stopRecording()
     }
     
     func didTapExitButton() {

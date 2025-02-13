@@ -53,10 +53,6 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
     
     //MARK: - Setup Actions
     private func setupActions() {
-        textDiaryRecommendChallengeView.challengeStackView.button1.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        textDiaryRecommendChallengeView.challengeStackView.button2.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        textDiaryRecommendChallengeView.challengeStackView.button3.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        
         textDiaryRecommendChallengeView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     

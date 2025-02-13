@@ -11,6 +11,9 @@ import Lottie
 class VoiceDiaryRecordView: UIView {
     
     private var timer: Timer?
+    
+    private var isRecording = false
+    
     var remainingTime: Int = 180 {
         didSet {
             let minutes = remainingTime / 60
@@ -27,6 +30,7 @@ class VoiceDiaryRecordView: UIView {
         setupUI()
         startTimer()
         startAnimation()
+        setupActions()
     }
     
     required init?(coder: NSCoder) {
@@ -38,6 +42,7 @@ class VoiceDiaryRecordView: UIView {
         
         // 그라데이션 적용
         setGradient(color1: .gray700, color2: .gray900)
+        recordButton.setGradient(color1: .primary400, color2: .primary600)
     }
     
     private func startTimer() {
@@ -94,8 +99,14 @@ class VoiceDiaryRecordView: UIView {
     }
     
     var chatImage = LottieAnimationView(name: "Conversation").then {
-        $0.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        $0.frame = CGRect(x: 0, y: 0, width: 175, height: 100)
         $0.loopMode = .loop
+    }
+    
+    let recordButton = UIButton().then {
+        $0.setImage(UIImage(named: "recordIcon"), for: .normal)
+        $0.layer.cornerRadius = 40
+        $0.clipsToBounds = true
     }
     
     let endButton = AppButton(title: "대화 마무리하기", titleColor: .black).then {
@@ -123,6 +134,13 @@ class VoiceDiaryRecordView: UIView {
         $0.isUserInteractionEnabled = true
     }
     
+    let recordAnimation = LottieAnimationView(name: "Loading").then {
+        $0.loopMode = .loop
+        $0.contentMode = .scaleAspectFit
+        $0.alpha = 0
+        $0.isUserInteractionEnabled = true
+    }
+    
     // MARK: Setup UI
     private func setupUI() {
         backgroundColor = .gray700
@@ -141,7 +159,7 @@ class VoiceDiaryRecordView: UIView {
         addSubview(chatImage)
         chatImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(label2.snp.bottom).offset(30)
+            make.top.equalTo(label2.snp.bottom).offset(-70)
         }
         
         addSubview(endButton)
@@ -153,8 +171,20 @@ class VoiceDiaryRecordView: UIView {
         
         addSubview(timeLabel)
         timeLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(endButton.snp.top).offset(-100)
+            make.bottom.equalTo(endButton.snp.top).offset(-150)
             make.centerX.equalToSuperview()
+        }
+        
+        addSubview(recordButton)
+        recordButton.snp.makeConstraints { make in
+            make.top.equalTo(timeLabel.snp.bottom).offset(60)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(80)
+        }
+        
+        addSubview(recordAnimation)
+        recordAnimation.snp.makeConstraints { make in
+            make.edges.equalTo(recordButton)
         }
         
         addSubview(clockIcon)
@@ -168,5 +198,30 @@ class VoiceDiaryRecordView: UIView {
             make.top.equalTo(endButton.snp.bottom).offset(8)
             make.centerX.equalToSuperview()
         }
+    }
+    
+    private func setupActions() {
+        recordButton.addTarget(self, action: #selector(toggleRecording), for: .touchUpInside)
+        
+        let animationTap = UITapGestureRecognizer(target: self, action: #selector(toggleRecording))
+        recordAnimation.addGestureRecognizer(animationTap)
+        
+    }
+    
+    @objc private func toggleRecording() {
+        if isRecording {
+            recordButton.alpha = 1
+            recordAnimation.alpha = 0
+            recordAnimation.stop()
+            
+            bringSubviewToFront(recordButton)
+        } else {
+            recordButton.alpha = 0
+            recordAnimation.alpha = 1
+            recordAnimation.play()
+            
+            bringSubviewToFront(recordAnimation)
+        }
+        isRecording.toggle()
     }
 }

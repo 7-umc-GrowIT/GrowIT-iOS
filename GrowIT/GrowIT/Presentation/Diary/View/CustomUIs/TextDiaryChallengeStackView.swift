@@ -13,6 +13,7 @@ class TextDiaryChallengeStackView: UIStackView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        setupActions()
     }
     
     required init(coder: NSCoder) {
@@ -131,6 +132,7 @@ class TextDiaryChallengeStackView: UIStackView {
         $0.layer.cornerRadius = 20
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(hex: "#0000001A")?.cgColor
+        $0.alpha = 0
     }
     
     private let backRect2 = UIView().then {
@@ -276,5 +278,43 @@ class TextDiaryChallengeStackView: UIStackView {
             make.top.equalToSuperview().offset(30)
             make.centerY.equalToSuperview()
         }
+        
+        backRect2.addSubview(backIcon2)
+        backIcon2.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(24)
+            make.top.equalToSuperview().offset(30)
+            make.centerY.equalToSuperview()
+        }
+        
+        backRect3.addSubview(backIcon3)
+        backIcon3.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(24)
+            make.top.equalToSuperview().offset(30)
+            make.centerY.equalToSuperview()
+        }
+        
+//        addArrangedSubview(backRect1)
+//        addArrangedSubview(backRect2)
+//        addArrangedSubview(backRect3)
     }
+    
+    private func setupActions() {
+        let gesture1 = UITapGestureRecognizer(target: self, action: #selector(tapRect))
+        rect1.addGestureRecognizer(gesture1)
+        
+        let gesture2 = UITapGestureRecognizer(target: self, action: #selector(tapRect))
+        rect2.addGestureRecognizer(gesture2)
+        
+        let gesture3 = UITapGestureRecognizer(target: self, action: #selector(tapRect))
+        rect3.addGestureRecognizer(gesture3)
+    }
+    
+    @objc func tapRect() {
+        UIView.transition(with: rect1.superview!, duration: 0.3, options: .transitionFlipFromLeft, animations: {
+            self.rect1.alpha = 0
+            self.backRect1.alpha = 1
+        }, completion: nil)
+    }
+    
+    
 }
