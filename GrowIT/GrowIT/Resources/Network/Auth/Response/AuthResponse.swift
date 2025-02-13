@@ -73,6 +73,3 @@ struct ReissueResponse: Decodable {
     let result: TokenData
 }
 
-struct ChangePasswordResponse: Codable {
-    let message: String
-}

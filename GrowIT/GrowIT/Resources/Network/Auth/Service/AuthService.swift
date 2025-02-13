@@ -269,8 +269,6 @@ final class AuthService: NetworkManager {
         }
     }
 
-    /// 비밀번호 변경
-    func changePassword(data: Change)
 }
 
 

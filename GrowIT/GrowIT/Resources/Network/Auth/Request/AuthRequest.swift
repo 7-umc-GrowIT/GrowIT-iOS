@@ -61,9 +61,3 @@ struct KakaoSignUpRequest: Codable {
     let userTerms: [UserTermDTO] // 약관 동의 리스트
 }
 
-struct ChangePasswordRequest: Codable {
-    let isVerified: Bool
-    let email: String
-    let password: String
-    let passwordCheck: String
-}
