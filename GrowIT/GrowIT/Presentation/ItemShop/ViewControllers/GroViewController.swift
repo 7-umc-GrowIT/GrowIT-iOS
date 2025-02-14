@@ -8,29 +8,264 @@
 import UIKit
 import SnapKit
 
-class GroViewController: UIViewController {
+class GroViewController: UIViewController, ItemListDelegate {
+    // MARK: - Properties
+    let userService = UserService()
+    let groService = GroService()
+    let itemService = ItemService()
+    private lazy var currentCredit: Int = 0
+    
     private var itemListBottomConstraint: Constraint?
-    private var isZoomIn: Bool = true
+    private var selectedItem: ItemList?
+    var originalEquippedItem: [String: Int] = [:]
+    var categoryToEquippedId: [String: Int] = [:]
     
     //MARK: - Views
     private lazy var groView = GroView().then {
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
         $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
     }
-    private lazy var itemListModalVC = ItemListModalViewController()
+    
     private lazy var itemShopHeader = ItemShopHeader().then {
         $0.myItemButton.addTarget(self, action: #selector(didTapMyItemButton), for: .touchUpInside)
+        $0.backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
     }
+    
+    private lazy var itemListModalVC = ItemListModalViewController()
     
     //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = groView
         
+        setNotification()
         setView()
         setConstraints()
+        setInitialState()
+        callGetCredit()
+        callGetGroImage()
+        setDelegate()
     }
     
+    // MARK: - NetWork
+    func callGetCredit() {
+        userService.getUserCredits(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                currentCredit = data.currentCredit
+                itemShopHeader.updateCredit(data.currentCredit)
+                itemListModalVC.currentCredit = data.currentCredit
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        })
+    }
+    
+    func callGetGroImage() {
+        groService.getGroImage(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                groView.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl))
+                let equippedItems = data.equippedItems
+                
+                let categoryImageViews: [String: UIImageView] = [
+                    "BACKGROUND": groView.backgroundImageView,
+                    "OBJECT": groView.groObjectImageView,
+                    "PLANT": groView.groFlowerPotImageView,
+                    "HEAD_ACCESSORY": groView.groAccImageView
+                ]
+                
+                categoryToEquippedId = equippedItems.reduce(into: [String: Int]()) { dict, item in
+                    dict[item.category] = item.id
+                }
+                originalEquippedItem = categoryToEquippedId
+                print(categoryToEquippedId)
+                
+                for item in equippedItems {
+                    if let imageView = categoryImageViews[item.category] {
+                        imageView.kf.setImage(with: URL(string: item.itemImageUrl))
+                    } else {
+                        fatalError("category not found")
+                    }
+                }
+                
+                
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        })
+    }
+    
+    func callPatchItemState(itemId: Int, status: String) {
+        itemService.patchItemState(itemId: itemId, data: ItemRequestDTO(status: status), completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let data):
+                print("Success: \(data)")
+            case.failure(let error):
+                print("Error: \(error)")
+            }
+        })
+    }
+    
+    //MARK: - Delegate Method
+    func didSelectItem(_ isPurchased: Bool, selectedItem: ItemList?) {
+        groView.purchaseButton.isHidden = isPurchased
+        guard let selectedItem = selectedItem else { return }
+        groView.purchaseButton.updateCredit(selectedItem.price)
+        
+        let category = selectedItem.category
+        let newItemId = selectedItem.id
+        let currentItemId = categoryToEquippedId[category]
+        
+        if currentItemId == newItemId { return }
+        
+        // 착용 아이템 해제
+        if let currentItemId = currentItemId {
+            callPatchItemState(itemId: currentItemId, status: "UNEQUIPPED")
+        }
+        
+        // 새로운 아이템 착용
+        categoryToEquippedId[category] = newItemId
+        if isPurchased {
+            callPatchItemState(itemId: newItemId, status: "EQUIPPED")
+        }
+        
+        let categoryImageViews: [String: UIImageView] = [
+            "BACKGROUND": groView.backgroundImageView,
+            "OBJECT": groView.groObjectImageView,
+            "PLANT": groView.groFlowerPotImageView,
+            "HEAD_ACCESSORY": groView.groAccImageView
+        ]
+        
+        if let imageView = categoryImageViews[category] {
+            imageView.kf.setImage(with: URL(string: selectedItem.groImageUrl))
+        } else {
+            fatalError("category not found")
+        }
+    }
+    
+    private func setDelegate() {
+        itemListModalVC.itemDelegate = self
+    }
+    
+    //MARK: - Functional
+    //MARK: Notification
+    private func setNotification() {
+        let Notification = NotificationCenter.default
+        
+        Notification.addObserver(self, selector: #selector(didCompletePurchase), name: .purchaseCompleted, object: nil)
+        Notification.addObserver(self, selector: #selector(updateCredit), name: .creditUpdated, object: nil)
+    }
+    
+    @objc
+    func didCompletePurchase() {
+        groView.purchaseButton.isHidden = true
+        callGetCredit()
+    }
+    @objc
+    func updateCredit() {
+        callGetCredit()
+    }
+    
+    //MARK: Event
+    @objc
+    private func didTapZoomButton(_ sender: UIButton) {
+        sender.isSelected.toggle()
+        showModalView(isZoomedOut: sender.isSelected)
+    }
+    
+    @objc
+    private func didTapBackButton() {
+    
+    }
+    
+    @objc
+    private func didTapMyItemButton(_ sender: UIButton) {
+        sender.isSelected.toggle()
+        
+        if sender.isSelected {
+            groView.zoomButton.isSelected = false // 줌 버튼 상태 초기화
+            showModalView(isZoomedOut: !sender.isSelected)
+        }
+        
+        let imageName = sender.isSelected ?
+        "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
+        itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
+        
+        itemListModalVC.updateToMyItems(sender.isSelected)
+        groView.purchaseButton.isHidden = true
+    }
+    
+    @objc
+    private func didTapPurchaseButton() {
+        guard let item = selectedItem else { return }
+        
+        let isShortage = item.price > currentCredit
+        let purchaseModalVC = PurchaseModalViewController(
+            isShortage: isShortage,
+            credit: item.price,
+            itemId: item.id
+        )
+        
+        purchaseModalVC.modalPresentationStyle = .pageSheet
+        if let sheet = purchaseModalVC.sheetPresentationController {
+            //지원할 크기 지정
+            if #available(iOS 16.0, *) {
+                sheet.detents = [
+                    .custom{ context in
+                        0.32 * context.maximumDetentValue
+                    }
+                ]
+            } else { sheet.detents = [.medium()] }
+            sheet.prefersGrabberVisible = true
+        }
+        present(purchaseModalVC, animated: true, completion: nil)
+    }
+    
+    //MARK: - UI 업데이트 함수
+    private func showModalView(isZoomedOut: Bool) {
+        updateItemListPosition(isZoomedOut: isZoomedOut)
+        updateButtonStackViewPosition(isZoomedOut: isZoomedOut)
+        updateZoomButtonImage(isZoomedOut: isZoomedOut)
+        updateGroImageViewTopConstraint(isZoomedOut: isZoomedOut)
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    private func updateItemListPosition(isZoomedOut: Bool) {
+        let offset = isZoomedOut ? 500 : 0
+        self.itemListBottomConstraint?.update(offset: offset)
+    }
+    
+    private func updateButtonStackViewPosition(isZoomedOut: Bool) {
+        groView.buttonStackView.snp.remakeConstraints {
+            let bottomConstraint = isZoomedOut
+            ? groView.purchaseButton.snp.top
+            : itemListModalVC.view.snp.top
+            $0.bottom.equalTo(bottomConstraint).offset(-24)
+            $0.trailing.equalToSuperview().inset(24)
+        }
+    }
+    
+    private func updateZoomButtonImage(isZoomedOut: Bool) {
+        let imageName = isZoomedOut ? "GrowIT_ZoomIn" : "GrowIT_ZoomOut"
+        groView.zoomButton.configuration?.image = UIImage(named: imageName)
+    }
+    
+    private func updateGroImageViewTopConstraint(isZoomedOut: Bool) {
+        let inset = isZoomedOut ? 178 : 68
+        groView.groImageViewTopConstraint?.update(inset: inset)
+    }
+    
+    private func setInitialState() {
+        groView.buttonStackView.snp.remakeConstraints {
+            $0.bottom.equalTo( itemListModalVC.view.snp.top).offset(-24)
+            $0.trailing.equalToSuperview().inset(24)
+        }
+    }
     //MARK: - 컴포넌트추가
     private func setView() {
         addChild(itemListModalVC)
@@ -49,80 +284,8 @@ class GroViewController: UIViewController {
         itemListModalVC.view.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalToSuperview().multipliedBy(0.47)
-            self.itemListBottomConstraint = $0.bottom.equalToSuperview().offset(500).constraint
+            self.itemListBottomConstraint = $0.bottom.equalToSuperview().offset(0).constraint
         }
-    }
-    
-    //MARK: - 기능
-    @objc private func didTapZoomButton(_ sender: UIButton) {
-        sender.isSelected.toggle()
-        
-        // 상태에 따라 동작 분기
-        updateItemListPosition(isZoomedOut: sender.isSelected)
-        updateButtonStackViewPosition(isZoomedOut: sender.isSelected)
-        updateZoomButtonImage(isZoomedOut: sender.isSelected)
-        updateGroImageViewTopConstraint(isZoomedOut: sender.isSelected)
-        
-        // 레이아웃 업데이트 애니메이션
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    @objc private func didTapPurchaseButton() {
-        let purchaseModalVC = PurchaseModalViewController()
-        purchaseModalVC.modalPresentationStyle = .pageSheet
-        
-        if let sheet = purchaseModalVC.sheetPresentationController {
-            //지원할 크기 지정
-            if #available(iOS 16.0, *) {
-                sheet.detents = [
-                    .custom{ context in
-                        0.32 * context.maximumDetentValue
-                    }
-                ]
-            } else {
-                sheet.detents = [.medium()]
-            }
-            sheet.prefersGrabberVisible = true
-        }
-        present(purchaseModalVC, animated: true, completion: nil)
-    }
-    
-    @objc private func didTapMyItemButton(_ sender: UIButton) {
-        sender.isSelected.toggle()
-        let imageName = sender.isSelected ? "GrowIT_MyItem_On" : "GrowIT_MyItem_Off"
-        itemShopHeader.myItemButton.configuration?.image = UIImage(named: imageName)
-        
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    //MARK: - UI 업데이트 함수
-    private func updateItemListPosition(isZoomedOut: Bool) {
-        let offset = isZoomedOut ? 0 : 500
-        self.itemListBottomConstraint?.update(offset: offset)
-    }
-    
-    private func updateButtonStackViewPosition(isZoomedOut: Bool) {
-        groView.buttonStackView.snp.remakeConstraints {
-            let bottomConstraint = isZoomedOut
-            ? itemListModalVC.view.snp.top
-            : groView.purchaseButton.snp.top
-            $0.bottom.equalTo(bottomConstraint).offset(-24)
-            $0.trailing.equalToSuperview().inset(24)
-        }
-    }
-    
-    private func updateZoomButtonImage(isZoomedOut: Bool) {
-        let imageName = isZoomedOut ? "GrowIT_ZoomOut" : "GrowIT_ZoomIn"
-        groView.zoomButton.configuration?.image = UIImage(named: imageName)
-    }
-    
-    private func updateGroImageViewTopConstraint(isZoomedOut: Bool) {
-        let inset = isZoomedOut ? 40 : 168
-        groView.groImageViewTopConstraint?.update(inset: inset)
     }
     
 }

@@ -9,6 +9,7 @@ import UIKit
 
 class ItemBackgroundModalViewController: UIViewController {
     weak var delegate: ItemBackgroundModalDelegate?
+    private var selectedBackground: Int = 0
 
     //MARK: - Views
     private lazy var itemBackgroundModalView = ItemBackgroundModalView().then {
@@ -19,6 +20,7 @@ class ItemBackgroundModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = itemBackgroundModalView
+        ToastSecond.show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "캐릭터를 생성해 주세요!", font: .heading3SemiBold(), in: self.view)
         
         setDelegate()
     }
@@ -32,7 +34,7 @@ class ItemBackgroundModalViewController: UIViewController {
     //MARK: - 기능
     @objc
     private func nextVC() {
-        let nextVC = GroSetNameViewController()
+        let nextVC = GroSetNameViewController(selectedBackground: selectedBackground)
         navigationController?.pushViewController(nextVC, animated: true)
     }
 }
@@ -55,6 +57,10 @@ extension ItemBackgroundModalViewController: UICollectionViewDataSource {
         cell.itemBackGroundView.backgroundColor = item.backgroundColor
         cell.itemImageView.image = item.Item
         
+        cell.itemImageView.snp.remakeConstraints {
+            $0.center.equalToSuperview()
+        }
+        
         return cell
     }
     
@@ -63,8 +69,25 @@ extension ItemBackgroundModalViewController: UICollectionViewDataSource {
 //MARK: - UICollectionViewDelegate
 extension ItemBackgroundModalViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedBackground = indexPath.row
         delegate?.updateBackgroundImage(to: indexPath.row)
     }
 }
 
-
+extension ItemBackgroundModalViewController: UICollectionViewDelegateFlowLayout {
+    // 동적 셀 너비 조정
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let itemRow: CGFloat = 3
+        let itemSpacing: CGFloat = 8
+        let aspectRatio: CGFloat = 140 / 122
+        
+        let availableWidth = collectionView.bounds.width - (itemSpacing * 2)
+        let itemWidth = floor(availableWidth / itemRow)
+        let itemHeight = itemWidth * aspectRatio
+        return CGSize(width: itemWidth, height: itemHeight)
+    }
+}

@@ -15,6 +15,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
         super.init(frame: frame)
         diaryTextField.delegate = self
         setupUI()
+        setTodayDate()
     }
     
     required init?(coder: NSCoder) {
@@ -33,25 +34,33 @@ class TextDiaryView: UIView, UITextViewDelegate {
         $0.textColor = .primary600
     }
     
-    // 추후 드롭다운으로 수정 예정
-    private let dateLabel = UILabel().then {
-        $0.text = "2025년 1월 6일"
+    let dateLabel = UILabel().then {
+        $0.text = "2025년 1월 30일"
         $0.font = .heading2Bold()
         $0.textColor = .gray900
     }
     
     let dropDownButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "arrowtriangle.down.fill"), for: .normal)
+        $0.setImage(UIImage(named: "dropdownIcon"), for: .normal)
         $0.backgroundColor = .clear
         $0.tintColor = .gray500
     }
     
     private let placeholder: String = "일기 내용을 입력하세요"
-    private let diaryTextField = UITextView().then {
+    let diaryTextField = UITextView().then {
         $0.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         $0.font = UIFont.body1Medium()
         $0.textColor = .gray300
         $0.text = "일기 내용을 입력하세요"
+        $0.layer.cornerRadius = 8
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+    }
+    
+    private let helpLabel = UILabel().then {
+        $0.text = "직접 작성하는 일기는 100자 이상 적어야 합니다"
+        $0.font = .detail2Regular()
+        $0.textColor = .gray500
     }
     
     let saveButton = AppButton(title: "내가 입력한 일기 저장하기").then {
@@ -121,11 +130,29 @@ class TextDiaryView: UIView, UITextViewDelegate {
             make.height.equalTo(360)
         }
         
+        addSubview(helpLabel)
+        helpLabel.snp.makeConstraints { make in
+            make.top.equalTo(diaryTextField.snp.bottom).offset(4)
+            make.leading.equalTo(diaryTextField.snp.leading)
+        }
+        
         addSubview(saveButton)
         saveButton.snp.makeConstraints { make in
             make.leading.equalTo(diaryTextField)
             make.centerX.equalTo(diaryTextField)
             make.bottom.equalToSuperview().offset(-40)
         }
+    }
+    
+    private func setTodayDate() {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 M월 d일"
+        formatter.locale = Locale(identifier: "ko_KR")
+        
+        dateLabel.text = formatter.string(from: Date())
+    }
+    
+    func updateDateLabel(_ date: String) {
+        dateLabel.text = date.formattedDate()
     }
 }

@@ -29,7 +29,7 @@ class ChallengeVerifyView: UIView {
         $0.contentMode = .scaleAspectFit
     }
     
-    private lazy var challengeName = makeLabel(title: "좋아하는 책 독서하기", color: .black, font: .heading1Bold())
+    private lazy var challengeName = makeLabel(title: "", color: .black, font: .heading1Bold())
     
     private lazy var subTitle = makeLabel(title: "챌린지를 인증하고 크레딧을 얻어 보세요!", color: .gray500, font: .body2Medium())
     
@@ -72,7 +72,7 @@ class ChallengeVerifyView: UIView {
         $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
         $0.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
         $0.returnKeyType = .done
-        $0.attributedText = NSAttributedString(string: "챌린지 소감을 간단하게 입력해 주세요", attributes: attributes)
+        $0.attributedText = NSAttributedString(string: "", attributes: attributes)
         $0.textColor = UIColor.gray300 // 플레이스홀더 색상처럼 보이게
     }
     
@@ -142,6 +142,10 @@ class ChallengeVerifyView: UIView {
         reviewTextView.textColor = textColor
         reviewTextView.backgroundColor = bgColor
         reviewTextView.layer.borderColor = borderColor.cgColor
+    }
+    
+    public func setChallengeName(name: String){
+        challengeName.text = name
     }
     
     // MARK: - addFunc & Constraints

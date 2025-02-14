@@ -32,18 +32,18 @@ class DiaryAllView: UIView {
     
     // 추후 드롭다운으로 수정 예정
     private let dateLabel = UILabel().then {
-        $0.text = "2025년 1월 6일"
+        $0.text = "2025년 1월 30일"
         $0.font = .heading2Bold()
         $0.textColor = .gray900
     }
     
     let dropDownButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "arrowtriangle.down.fill"), for: .normal)
+        $0.setImage(UIImage(named: "dropdownIcon"), for: .normal)
         $0.backgroundColor = .clear
         $0.tintColor = .gray500
     }
     
-    private let diaryCountLabel = UILabel().then {
+    let diaryCountLabel = UILabel().then {
         var count = 0
         let allText = "작성한 일기 수 \(count)"
         $0.text = allText
@@ -100,5 +100,11 @@ class DiaryAllView: UIView {
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-53)
         }
+    }
+    
+    func updateDiaryCount(_ count: Int) {
+        let allText = "작성한 일기 수 \(count)"
+        diaryCountLabel.text = allText
+        diaryCountLabel.setPartialTextStyle(text: allText, targetText: "\(count)", color: .primary700, font: .body2Medium())
     }
 }

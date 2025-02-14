@@ -112,7 +112,8 @@ class DiaryPostFixView: UIView {
     }
     
     // MARK: Configure
-    func configure(text: String) {
+    func configure(text: String, date: String) {
         textView.text = text
+        fixLabel.text = date
     }
 }

@@ -12,6 +12,8 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
     // MARK: Properties
     let voiceDiaryRecommendChallengeView = VoiceDiaryRecommendChallengeView()
     let navigationBarManager = NavigationManager()
+    private let diaryService = DiaryService()
+    
     private var buttonCount: Int = 0
     
     override func viewDidLoad() {
@@ -73,6 +75,7 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
         if buttonCount == 0 {
             Toast.show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "한 개 이상의 챌린지를 선택해 주세요", font: .heading3SemiBold())
         } else {
+            callPostVoiceDiary()
             let nextVC = VoiceDiaryEndViewController()
             nextVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(nextVC, animated: true)
@@ -100,4 +103,18 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
         navigationController?.popToRootViewController(animated: true)
     }
     
+    // MARK: Setup APIs
+    private func callPostVoiceDiary() {
+        diaryService.postVoiceDiary(data: DiaryVoiceRequestDTO(
+            chat: ""),
+            completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let data):
+                print("Success!!!!!!! \(data)")
+            case.failure(let error):
+                print("Error: \(error)")
+            }
+        })
+    }
 }

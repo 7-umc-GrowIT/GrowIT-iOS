@@ -5,31 +5,24 @@
 //  Created by 허준호 on 1/29/25.
 //
 
-//
-//  DiaryEndpoint.swift
-//  GrowIT
-//
-//  Created by 이수현 on 1/18/25.
-//
-
 import Foundation
 import Moya
 
 enum ChallengeEndpoint {
     // Get
     case getChallengeById(challengeId: Int)
-    case getAllChallenges(status: String, completed: Bool)
+    case getAllChallenges(dtype: String, completed: Bool)
     case getSummaryChallenge
     
     // Post
-    case postSaveChallenge(challengeId: Int)
-    case postProveChallenge(challengeId: Int)
+    case postSelectChallenge(challengeId: Int)
+    case postProveChallenge(challengeId: Int, data: ChallengeRequestDTO)
     
     // Delete
     case deleteChallengeById(challengeId: Int)
     
     // Put
-    case patchChallengeById(challengeId: Int)
+    case patchChallengeById(challengeId: Int, data: ChallengeRequestDTO)
 }
 
 extension ChallengeEndpoint: TargetType {
@@ -44,17 +37,15 @@ extension ChallengeEndpoint: TargetType {
         switch self {
         case.getChallengeById(let challengeId):
             return "/\(challengeId)"
-        case.getAllChallenges(status: let status, completed: let completed):
-            return ""
         case.getSummaryChallenge:
             return "/summary"
-        case.postSaveChallenge(let challengeId):
+        case.postSelectChallenge(let challengeId):
             return "/\(challengeId)/select"
-        case.postProveChallenge(let challengeId):
+        case.postProveChallenge(let challengeId, _):
             return "/\(challengeId)/prove"
         case.deleteChallengeById(let challengeId):
             return "/\(challengeId)"
-        case.patchChallengeById(let challengeId):
+        case.patchChallengeById(let challengeId, _):
             return "/\(challengeId)"
         default:
             return "/"
@@ -63,7 +54,7 @@ extension ChallengeEndpoint: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .postSaveChallenge, .postProveChallenge:
+        case .postSelectChallenge, .postProveChallenge:
             return .post
         case .deleteChallengeById:
             return .delete
@@ -76,17 +67,19 @@ extension ChallengeEndpoint: TargetType {
     
     public var task: Moya.Task {
         switch self {
-        case .postSaveChallenge(_), .postProveChallenge(_), .patchChallengeById(_), .deleteChallengeById(_), .getChallengeById(_), .getSummaryChallenge:
+        case .postSelectChallenge(_), .deleteChallengeById(_), .getChallengeById(_), .getSummaryChallenge:
             return .requestPlain
-        case .getAllChallenges(status: let status, completed: let completed):
+        case .postProveChallenge(_, let data), .patchChallengeById(_, let data):
+            return .requestJSONEncodable(data)
+        case .getAllChallenges(dtype: let dtype, completed: let completed):
             return .requestParameters(
-                parameters: ["status": status, "completed": completed],
+                parameters: ["dtype": dtype, "completed": completed],
                 encoding: URLEncoding.queryString)
         }
     }
     
     var headers: [String : String]? {
-        return [ "Content-type": "application/json" ]
+        return [ "Content-type": "application/json"]
     }
     
     

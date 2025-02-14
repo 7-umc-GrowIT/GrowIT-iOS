@@ -9,7 +9,8 @@ import UIKit
 
 class GradientButton: UIButton {
     private lazy var treeIcon = UIImageView().then {
-        $0.image = UIImage(named: "GrowIT_Tree")
+        $0.image = UIImage(named: "GrowIT_Tree")?.withRenderingMode(.alwaysTemplate)
+        $0.tintColor = .grayColor400
         $0.contentMode = .scaleAspectFill
         $0.snp.makeConstraints {
             $0.size.equalTo(28)
@@ -27,6 +28,7 @@ class GradientButton: UIButton {
         $0.axis = .horizontal
         $0.alignment = .center
         $0.spacing = 10
+        $0.isUserInteractionEnabled = false
     }
     
     //MARK: - init
@@ -44,14 +46,6 @@ class GradientButton: UIButton {
     
     private let gradientLayer = CAGradientLayer()
     
-    override var isEnabled: Bool {
-        didSet {
-            updateButtonColors()
-            title.textColor = isEnabled ? .white : .grayColor400
-            treeIcon.tintColor = isEnabled ? .white : .grayColor400
-        }
-    }
-    
     // MARK: - configure Button
     private func configure() {
         self.snp.makeConstraints { make in
@@ -62,27 +56,25 @@ class GradientButton: UIButton {
         buttonContentView.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
-        // 버튼 터치인식 설정
+        
         isUserInteractionEnabled = true
-        [treeIcon, title].forEach {
-            $0.isUserInteractionEnabled = false
-        }
     }
     
     private func configureGradientLayer() {
-            gradientLayer.colors = [UIColor.grayColor100!.cgColor, UIColor.grayColor100!.cgColor]
-            gradientLayer.cornerRadius = 16
-            layer.insertSublayer(gradientLayer, at: 0) // 가장 뒤에 삽입
-    }
-    
-    private func updateButtonColors() {
-        gradientLayer.colors = isEnabled ?
-        [UIColor.primaryColor400!.cgColor, UIColor.primaryColor600!.cgColor]
-        : [UIColor.grayColor100!.cgColor, UIColor.grayColor100!.cgColor]
+        gradientLayer.colors = [UIColor.grayColor100!.cgColor, UIColor.grayColor100!.cgColor]
+        gradientLayer.cornerRadius = 16
+        layer.insertSublayer(gradientLayer, at: 0) // 가장 뒤에 삽입
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer.frame = bounds
+    }
+    
+    func setButtonState(isEnabled: Bool, enabledColors: [CGColor], disabledColors: [CGColor], enabledTitleColor: UIColor, disabledTitleColor: UIColor) {
+        self.isEnabled = isEnabled
+        gradientLayer.colors = isEnabled ? enabledColors : disabledColors
+        title.textColor = isEnabled ? enabledTitleColor : disabledTitleColor
+        treeIcon.tintColor = isEnabled ? enabledTitleColor : disabledTitleColor
     }
 }

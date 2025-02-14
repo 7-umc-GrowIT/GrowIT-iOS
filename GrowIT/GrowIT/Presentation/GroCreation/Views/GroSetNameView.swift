@@ -1,4 +1,3 @@
-//
 //  GroSetNameView.swift
 //  GrowIT
 //
@@ -32,15 +31,8 @@ class GroSetNameView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private lazy var nickNameLabel = UILabel().then {
-        $0.text = "닉네임"
-        $0.font = UIFont.heading3Bold()
-        $0.textColor = UIColor.grayColor900
-        $0.textAlignment = .left
-        $0.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
-    private lazy var nickNameTextField = CustomTextField().then {
+    var nickNameTextField = CustomTextField(frame: .zero, isPasswordField: false).then {
+        $0.setTitleLabel("닉네임")
         $0.setPlaceholder("닉네임을 입력해주세요")
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -52,7 +44,7 @@ class GroSetNameView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private lazy var startButton = GradientButton().then {
+    var startButton = GradientButton().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -80,10 +72,8 @@ class GroSetNameView: UIView {
     private func configureGradientLayer() {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = self.bounds
-        // 그라데이션 될 색 지정
         gradientLayer.colors = gradientColors
-        // 뷰에 gradientLayer추가
-        self.layer.insertSublayer(gradientLayer, at: 0) // 레이어를 가장 뒤에 삽입
+        self.layer.insertSublayer(gradientLayer, at: 0)
     }
     
     private func configureIconImage() {
@@ -92,7 +82,6 @@ class GroSetNameView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        // 레이아웃 변경 시 gradientLayer 크기 업데이트
         self.layer.sublayers?.forEach { layer in
             if let gradientLayer = layer as? CAGradientLayer {
                 gradientLayer.frame = self.bounds
@@ -102,7 +91,9 @@ class GroSetNameView: UIView {
     
     //MARK: - 컴포넌트 추가
     private func setView() {
-        addSubviews([shapeIcon, subtitleLabel, titleLabel, nickNameLabel, nickNameTextField, groImageView, startButton])
+        addSubviews([
+            shapeIcon, subtitleLabel, titleLabel, nickNameTextField, groImageView, startButton
+        ])
     }
     
     //MARK: - 레이아웃 설정
@@ -123,20 +114,17 @@ class GroSetNameView: UIView {
             $0.leading.equalToSuperview().inset(24)
         }
         
-        nickNameLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(32)
-            $0.leading.equalToSuperview().inset(24)
-        }
-        
         nickNameTextField.snp.makeConstraints {
-            $0.top.equalTo(nickNameLabel.snp.bottom).offset(8)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(32)
+            $0.height.equalTo(80)
             $0.horizontalEdges.equalToSuperview().inset(24)
         }
         
         groImageView.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(164)
+            $0.top.equalTo(safeAreaLayoutGuide).offset(194)
             $0.centerX.equalToSuperview()
-            $0.size.equalTo(CGSize(width: 778, height: 584))
+            $0.width.equalToSuperview().multipliedBy(1.3)
+            $0.height.equalTo(groImageView.snp.width)
         }
         
         startButton.snp.makeConstraints {
@@ -144,7 +132,5 @@ class GroSetNameView: UIView {
             $0.horizontalEdges.equalToSuperview().inset(24)
             $0.height.equalTo(60)
         }
-        
-        
     }
 }

@@ -18,6 +18,10 @@ class ChallengeVerifyViewController: UIViewController {
     private var uploadImage: UIImage? // 인증샷 이미지
     private var isImageSelected: Bool = false // 이미지 인증샷 유무
     private var isReviewValidate: Bool = false // 한줄소감 유효성 검증
+    private lazy var challengeService = ChallengeService()
+    private lazy var s3Service = S3Service()
+    var challenge: UserChallenge?
+    private lazy var imageData: Data? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +29,7 @@ class ChallengeVerifyViewController: UIViewController {
         view.backgroundColor = .gray50
         
         setupNavigationBar() // 네비게이션 바 설정 함수
-        setupImagePicker() // 이미지 선택 관련 함수
+        openImagePicker() // 이미지 선택 관련 함수
         setupDismissKeyboardGesture() // 키보드 해제 함수
         
         challengeVerifyView.reviewTextView.delegate = self
@@ -33,9 +37,23 @@ class ChallengeVerifyViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleImage(_:)), name: NSNotification.Name("ImageSelected"), object: nil)
         
+        if let challenge = challenge{
+            challengeVerifyView.setChallengeName(name: challenge.title)
+        }
+        
+        setupInitialTextViewState()
+        
     }
+    
+    private func setupInitialTextViewState() {
+        challengeVerifyView.reviewTextView.text = "챌린지 소감을 간단하게 입력해주세요"
+        challengeVerifyView.reviewTextView.textColor = UIColor.gray300  // 초기 텍스트 색상을 구분하기 쉬운 색상으로 설정
+    }
+    
     @objc func handleImage(_ notification: Notification) {
         if let userInfo = notification.userInfo, let image = userInfo["image"] as? UIImage {
+            isImageSelected = true
+            imageData = image.pngData()
             challengeVerifyView.imageUploadCompleted(image)
             challengeVerifyView.imageContainer.superview?.layoutIfNeeded()
         }
@@ -66,18 +84,20 @@ class ChallengeVerifyViewController: UIViewController {
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
-    private func setupImagePicker() {
-        imagePicker.delegate = self
-        imagePicker.sourceType = .photoLibrary
+    private func openImagePicker() {
+        //imagePicker.delegate = self
+        //imagePicker.sourceType = .photoLibrary
         
         let imageContainerTabGesture = UITapGestureRecognizer(target: self, action: #selector(imageContainerTapped))
         challengeVerifyView.imageContainer.addGestureRecognizer(imageContainerTabGesture)
     }
     
+    /// 뒤로가기 버튼 이벤트
     @objc private func prevVC() {
         navigationController?.popViewController(animated: true)
     }
     
+    /// 이미지 영역 터치 이벤트
     @objc private func imageContainerTapped() {
         let challengeImageModalController = ChallengeImageModalController()
         challengeImageModalController.modalPresentationStyle = .pageSheet
@@ -111,25 +131,7 @@ class ChallengeVerifyViewController: UIViewController {
         self.present(challengeImageModalController, animated: true, completion: nil)
     }
     
-    private func openImagePicker(sourceType: UIImagePickerController.SourceType) {
-        imagePicker.sourceType = sourceType
-        present(imagePicker, animated: true, completion: nil)
-    }
-    
-    private func showPermissionDeniedAlert() {
-        let alert = UIAlertController(title: "권한 필요", message: "사진 앨범 접근 권한이 필요합니다. 설정에서 이 앱의 사진 접근 권한을 허용해주세요.", preferredStyle: .alert)
-        let settingsAction = UIAlertAction(title: "설정으로 이동", style: .default) { _ in
-            if let settingsUrl = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(settingsUrl) {
-                UIApplication.shared.open(settingsUrl, completionHandler: nil)
-            }
-        }
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        alert.addAction(settingsAction)
-        alert.addAction(cancelAction)
-        present(alert, animated: true, completion: nil)
-    }
-    
-    // 바깥 영역 터치 시 키보드 숨기기
+    /// 바깥 영역 터치 시 키보드 숨기기
     private func setupDismissKeyboardGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
@@ -140,19 +142,20 @@ class ChallengeVerifyViewController: UIViewController {
         view.endEditing(true)
     }
     
+    /// 인증하기 버튼 터치 이벤트
     @objc private func challengeVerifyButtonTapped() {
         
-        if(uploadImage == nil){
+        if(!isImageSelected){
+            print("여기 출력됨")
             isImageSelected = false
             Toast.show(image: UIImage(named: "challengeToastIcon") ?? UIImage(), message: "인증샷을 업로드해 주세요", font: .heading3SemiBold())
         }else{
             if(isReviewValidate){
-                navigationController?.popViewController(animated: false)
-                Toast.show(image: UIImage(named: "challengeToastIcon") ?? UIImage(), message: "챌린지 인증을 완료했어요", font: .heading3SemiBold())
+                getPresignedUrl()
             }else{
-                if(reviewLength > 0 && reviewLength < 50){
+                if(reviewLength > 0 || reviewLength < 50){
                     isReviewValidate = false
-                    challengeVerifyView.validateTextView(errorMessage: "챌린지 한줄소감은 50자 이상 적어야 합니다", textColor: .negative400, bgColor: .negative50, borderColor: .negative400, hintColor: .negative400)
+                    challengeVerifyView.validateTextView(errorMessage: "챌린지 한줄소감은 50자 이상 100자 이하 적어야 합니다", textColor: .negative400, bgColor: .negative50, borderColor: .negative400, hintColor: .negative400)
                 }else{
                     challengeVerifyView.reviewTextView.text = ""
                     isReviewValidate = false
@@ -160,27 +163,96 @@ class ChallengeVerifyViewController: UIViewController {
                     challengeVerifyView.validateTextView(errorMessage: "챌린지 한줄소감은 필수로 입력해야 합니다", textColor: .negative400, bgColor: .negative50, borderColor: .negative400, hintColor: .negative400)
                 }
             }
-            
         }
-        
-    }
-}
-
-extension ChallengeVerifyViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[.originalImage] as? UIImage {
-            uploadImage = image
-            if let uploadImage = uploadImage {
-                challengeVerifyView.imageUploadCompleted(uploadImage)
-                challengeVerifyView.imageContainer.superview?.layoutIfNeeded()
-            }
-            
-        }
-        dismiss(animated: true, completion: nil)
     }
     
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
+    /// S3 Presigned URL 요청 API
+    private func getPresignedUrl(){
+        let fileName = UUID().uuidString
+        s3Service.putS3UploadUrl(fileName: "\(fileName).png", completion: {
+            [weak self] result in
+            guard let self = self else {return}
+            switch result{
+            case .success(let data):
+                print(data)
+                if let image = imageData{
+                    putImageToS3(presignedUrl: data.presignedUrl, imageData: image, fileName: "\(fileName).png")
+                }
+               
+            case .failure(let error):
+                print("Presigned URl 요청 에러 \(error)")
+            }
+        })
+    }
+    
+    /// S3에 이미지 업로드 API
+    private func putImageToS3(presignedUrl: String, imageData: Data, fileName: String){
+        var request = URLRequest(url: URL(string: presignedUrl)!)
+        request.httpMethod = "PUT"
+        request.setValue("image/png", forHTTPHeaderField: "Content-Type")
+        request.httpBody = imageData
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let response = response as? HTTPURLResponse,
+                  error == nil else {
+                print("Error during the upload: \(error!.localizedDescription)")
+                return
+            }
+
+            if response.statusCode == 200 {
+                print("Upload successful")
+                self.getS3ImageUrl(fileName: fileName)
+            } else {
+                print("Upload failed with status: \(response.statusCode)")
+            }
+        }
+        task.resume()
+    }
+    
+    /// S3 업로드 이미지 URL 받기 API
+    private func getS3ImageUrl(fileName: String){
+        s3Service.getS3DownloadUrl(fileName: fileName, completion: { [weak self] result in
+            guard let self = self else {return}
+            switch result{
+            case .success(let data):
+                print("저장할 이미지 url은 \(data.components(separatedBy: "?").first!)")
+                saveChallengeVerify(imageUrl: data.components(separatedBy: "?").first!)
+            case .failure(let error):
+                print("S3 이미지 URL 반환 에러: \(error)")
+            }
+        })
+    }
+    
+    /// 챌린지 인증 저장 API
+    private func saveChallengeVerify(imageUrl: String){
+        challengeService.postProveChallenge(challengeId: challenge!.id, data: ChallengeRequestDTO(certificationImageUrl: imageUrl, thoughts: challengeVerifyView.reviewTextView.text), completion: { [weak self] result in
+            guard let self = self else {return}
+            switch result{
+            case .success(let data):
+                print(data)
+                print("인증 저장 성공!!!")
+                navigationController?.popViewController(animated: false)
+                Toast.show(image: UIImage(named: "challengeToastIcon") ?? UIImage(), message: "챌린지 인증을 완료했어요", font: .heading3SemiBold())
+            case .failure(let error):
+                print("챌린지 인증 저장 에러: \(error)")
+            }
+        })
+    }
+    
+    /// 주어진 URL에서 쿼리 파라미터를 제거하고 반환합니다.
+    func removeQueryParameters(from urlString: String) -> String {
+        guard let url = URL(string: urlString),
+              var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            print("Invalid URL")
+            return urlString
+        }
+
+        // 쿼리 파라미터 제거
+        urlComponents.query = nil
+            
+        print("제거하고 저장되는 url: \(urlComponents.string ?? urlString)")
+        // 새로운 URL 문자열을 반환
+        return urlComponents.string ?? urlString
     }
 }
 
@@ -196,7 +268,7 @@ extension ChallengeVerifyViewController: UITextViewDelegate{
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == UIColor.gray300 || textView.textColor == UIColor.negative400{
+        if textView.text == "챌린지 소감을 간단하게 입력해 주세요"{
                 textView.text = nil
                 textView.textColor = .gray900
             }
@@ -204,14 +276,17 @@ extension ChallengeVerifyViewController: UITextViewDelegate{
     
     func textViewDidChange(_ textView: UITextView) {
         reviewLength = textView.text?.count ?? 0
-        print(reviewLength)
         
-       if(reviewLength < 50){
+        if(reviewLength < 50 || reviewLength > 100){
            isReviewValidate = false
-           challengeVerifyView.validateTextView(errorMessage: "챌린지 한줄소감은 50자 이상 적어야 합니다", textColor: .negative400, bgColor: .negative50, borderColor: .negative400, hintColor: .negative400)
+           challengeVerifyView.validateTextView(errorMessage: "챌린지 한줄소감은 50자 이상 100자 이하 적어야 합니다", textColor: .negative400, bgColor: .negative50, borderColor: .negative400, hintColor: .negative400)
+            challengeVerifyView.challengeVerifyButton.setButtonState(isEnabled: false, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
         }else{
             isReviewValidate = true
             challengeVerifyView.validateTextView(errorMessage: "챌린지 한줄소감을 50자 이상 적어 주세요", textColor: .gray900, bgColor: .white, borderColor: .black.withAlphaComponent(0.1), hintColor: .gray500)
+            if(isReviewValidate && isImageSelected){
+                challengeVerifyView.challengeVerifyButton.setButtonState(isEnabled: true, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
+            }
         }
     }
     
@@ -220,7 +295,7 @@ extension ChallengeVerifyViewController: UITextViewDelegate{
         
         if(reviewLength == 0){
             isReviewValidate = false
-            challengeVerifyView.reviewTextView.text = "챌린지 소감을 간단하게 입력해주세요"
+            challengeVerifyView.reviewTextView.text = "챌린지 소감을 간단하게 입력해 주세요"
             challengeVerifyView.validateTextView(errorMessage: "챌린지 한줄소감은 필수로 입력해야 합니다", textColor: .negative400, bgColor: .negative50, borderColor: .negative400, hintColor: .negative400)
         }
     }

@@ -15,13 +15,15 @@ enum DiaryEndpoint {
     case getDiaryDates(year: Int, month: Int)
     
     // Post
-    case postVoiceDiary(data: DiaryRequestDTO)
-    case postTextDiary(Data: DiaryRequestDTO)
+    case postVoiceDiary(data: DiaryVoiceRequestDTO)
+    case postTextDiary(data: DiaryRequestDTO)
+    case postDiaryDate(data: DiaryVoiceDateRequestDTO)
     
     // Delete
     case deleteDiary(diaryId: Int)
     
-    // Put
+    // Patch
+    case patchFixDiary(diaryId: Int, data: DiaryPatchDTO)
 }
 
 extension DiaryEndpoint: TargetType {
@@ -38,10 +40,12 @@ extension DiaryEndpoint: TargetType {
             return "/text"
         case.postVoiceDiary:
             return "/voice"
-        case.deleteDiary(let diaryId), .getDiaryID(let diaryId):
+        case.deleteDiary(let diaryId), .getDiaryID(let diaryId), .patchFixDiary(let diaryId, _):
             return "/\(diaryId)"
         case.getDiaryDates:
             return "/dates"
+        case .postDiaryDate:
+            return "/summary"
         default:
             return "/"
         }
@@ -49,10 +53,12 @@ extension DiaryEndpoint: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .postTextDiary, .postVoiceDiary:
+        case .postTextDiary, .postVoiceDiary, .postDiaryDate:
             return .post
         case .deleteDiary:
             return .delete
+        case .patchFixDiary:
+            return .patch
         default :
             return .get
         }
@@ -60,7 +66,13 @@ extension DiaryEndpoint: TargetType {
     
     public var task: Moya.Task {
         switch self {
-        case .postTextDiary(let data), .postVoiceDiary(let data):
+        case .postTextDiary(let data):
+            return .requestJSONEncodable(data)
+        case .postVoiceDiary(let data):
+            return .requestJSONEncodable(data)
+        case .patchFixDiary(_, let data):
+            return .requestJSONEncodable(data)
+        case .postDiaryDate(let data):
             return .requestJSONEncodable(data)
         case .deleteDiary(_):
             return  .requestPlain
@@ -78,7 +90,10 @@ extension DiaryEndpoint: TargetType {
     }
     
     var headers: [String : String]? {
-        return [ "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdGVzdDEyMzRAZXhhbXBsZS5jb20iLCJyb2xlcyI6IlVTRVIiLCJpZCI6MTMsImV4cCI6MTc0MDc5MTQ2MX0.t6amua232pYb7KB72ds5CIl4LsPjVU03_cRy4NoKJ_A", "Content-type": "application/json", ]
+        return [
+                "Content-Type": "application/json",
+                "Authorization" : ("Bearer ")
+            ]
     }
     
     

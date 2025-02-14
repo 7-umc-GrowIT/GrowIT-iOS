@@ -11,9 +11,7 @@ import SnapKit
 
 class PurchaseButton: UIButton {
     // MARK: - Properties
-    var credit: Int = 0 {
-        didSet { updateUI() }
-    }
+    private lazy var credit: Int = 0
     
     // MARK: - UI Components
     private lazy var creditIcon = UIImageView().then {
@@ -45,9 +43,9 @@ class PurchaseButton: UIButton {
     }
     
     // MARK: - init
-    init(credit: Int = 0) {
-        self.credit = credit
+    init(credit: Int) {
         super.init(frame: .zero)
+        self.credit = credit
         configure()
     }
     
@@ -61,12 +59,10 @@ class PurchaseButton: UIButton {
         buttonContentView.setCustomSpacing(10, after: creditLabel)
         addSubview(buttonContentView)
         
-        // Layout
         buttonContentView.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
         
-        // Button configuration
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .black
         self.configuration = config
@@ -80,11 +76,10 @@ class PurchaseButton: UIButton {
         [buttonContentView, creditIcon, creditLabel, purchaseLabel].forEach {
             $0.isUserInteractionEnabled = false
         }
-        updateUI()
     }
     
     // MARK: - UI Update
-    func updateUI() {
+    func updateCredit(_ credit: Int) {
         creditLabel.text = String(credit)
     }
 }

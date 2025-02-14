@@ -8,6 +8,7 @@
 import UIKit
 
 class ItemShopHeader: UIView {
+    // MARK: - Properties
     private lazy var headerStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.distribution = .equalCentering
@@ -34,9 +35,17 @@ class ItemShopHeader: UIView {
     }
     
     private lazy var creditView = UIView().then {
-        $0.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        $0.backgroundColor = UIColor.black.withAlphaComponent(0.6)
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 16
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    private lazy var creditStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.distribution = .equalSpacing
+        $0.spacing = 12
+        $0.alignment = .center
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -47,7 +56,6 @@ class ItemShopHeader: UIView {
     }
     
     private lazy var creditLabel = UILabel().then {
-        $0.text = "1200"
         $0.textColor = UIColor.white
         $0.font = UIFont.heading2Bold()
         $0.textAlignment = .center
@@ -65,23 +73,23 @@ class ItemShopHeader: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func updateCredit(_ credit: Int) {
+        creditLabel.text = String(credit)
+    }
+    
     //MARK: - 컴포넌트 추가
     private func setView() {
-        creditView.addSubviews([creditIcon, creditLabel])
+        creditStackView.addArrangedSubViews([creditIcon, creditLabel])
+        creditView.addSubview(creditStackView)
         headerStackView.addArrangedSubViews([backButton, creditView, myItemButton])
         self.addSubview(headerStackView)
     }
     
     //MARK: - 레이아웃 설정
     private func setConstraints() {
-        creditIcon.snp.makeConstraints {
+        creditStackView.snp.makeConstraints {
+            $0.horizontalEdges.equalToSuperview().inset(16)
             $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().inset(12)
-        }
-        
-        creditLabel.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(12)
         }
         
         backButton.snp.makeConstraints {
@@ -93,7 +101,6 @@ class ItemShopHeader: UIView {
         }
         
         creditView.snp.makeConstraints {
-            $0.width.equalTo(117)
             $0.height.equalTo(48)
         }
         

@@ -9,31 +9,22 @@ import UIKit
 import Then
 import SnapKit
 
-class CustomChallengeListCell: UITableViewCell{
+class CustomChallengeListCell: UICollectionViewCell{
     static let identifier: String = "CustomChallengeList"
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         self.backgroundColor = .clear
-        self.selectionStyle = .none
         
         addStack()
         addComponent()
         constraints()
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-//        self.name.text = nil
-//        self.time.text = nil
-//        self.button.titleLabel?.text = nil
-        
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     // MARK: - Property
     
     private lazy var box = UIView().then{
@@ -51,11 +42,14 @@ class CustomChallengeListCell: UITableViewCell{
         $0.contentMode = .scaleAspectFit
     }
     
-    private lazy var name = UILabel().then{
-        $0.text = "좋아하는 책 독서하기"
+    public lazy var name = UILabel().then{
+        $0.text = ""
         $0.textColor = .gray900
         $0.font = .heading3Bold()
+        $0.numberOfLines = 0
+        $0.lineBreakMode = .byWordWrapping
         $0.adjustsFontSizeToFitWidth = true
+        $0.minimumScaleFactor = 0.5
     }
     
     private lazy var clock = UIImageView().then{
@@ -64,29 +58,22 @@ class CustomChallengeListCell: UITableViewCell{
     }
     
     private lazy var time = UILabel().then{
-        $0.text = "1시간"
+        $0.text = ""
         $0.textColor = .primary600
         $0.font = .body2Medium()
     }
     
     
-    private lazy var button = UIButton().then{
-        $0.setTitle("인증 미완료", for: .normal)
-        $0.setTitleColor(.negative400, for: .normal)
-        //$0.titleLabel?.font = .detail1Medium()
+    private lazy var buttonContainer = UIView().then{
         $0.backgroundColor = .negative50
         $0.layer.cornerRadius = 16
-        $0.titleLabel?.adjustsFontSizeToFitWidth = true
-        
-        var configuration = UIButton.Configuration.plain()
-        configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = UIFont.detail1Medium() // 폰트를 적절하게 설정
-            return outgoing
-        }
-        configuration.contentInsets = .init(top: 7, leading: 16, bottom: 7, trailing: 16)
-        $0.configuration = configuration
-        $0.clipsToBounds = true
+    }
+    
+    private lazy var buttonLabel = UILabel().then{
+        $0.text = ""
+        $0.textColor = .negative400
+        $0.font = .detail1Medium()
+        $0.adjustsFontSizeToFitWidth = true
     }
 
     // MARK: - Stack
@@ -111,18 +98,20 @@ class CustomChallengeListCell: UITableViewCell{
     private func addComponent(){
         [box].forEach(self.addSubview)
         
-        [icon, name, timeStack, button].forEach(box.addSubview)
+        [icon, name, timeStack, buttonContainer].forEach(box.addSubview)
+        buttonContainer.addSubview(buttonLabel)
     }
     
     private func constraints(){
         box.snp.makeConstraints{
             $0.horizontalEdges.equalToSuperview()
             //$0.top.equalToSuperview().offset(8)
-            $0.height.equalTo(100)
+            //$0.height.equalTo(100)
         }
         
         icon.snp.makeConstraints{
-            $0.verticalEdges.equalToSuperview().inset(30)
+            //$0.top.equalToSuperview().offset(30)
+            $0.centerY.equalToSuperview()
             $0.left.equalToSuperview().offset(24)
             $0.width.height.equalTo(40)
         }
@@ -130,31 +119,63 @@ class CustomChallengeListCell: UITableViewCell{
         name.snp.makeConstraints{
             $0.top.equalToSuperview().offset(24.5)
             $0.left.equalTo(icon.snp.right).offset(12)
+            //$0.right.equalTo(buttonContainer.snp.left).inset(15)
+            //$0.bottom.equalTo(timeStack.snp.top).inset(8)
+            $0.width.equalToSuperview().multipliedBy(0.5)
+            //$0.height.greaterThanOrEqualToSuperview().multipliedBy(0.22)
         }
         
         timeStack.snp.makeConstraints{
+            $0.top.equalTo(name.snp.bottom).offset(8)
             $0.bottom.equalToSuperview().inset(24.5)
             $0.left.equalTo(icon.snp.right).offset(12)
         }
         
-        button.snp.makeConstraints{
+        buttonContainer.snp.makeConstraints{
             $0.centerY.equalToSuperview()
             $0.right.equalToSuperview().inset(24)
-//            $0.height.equalTo(32)
-//            $0.width.equalTo(85)
-        }
-    }
-    
-    public func figure(status: String){
-        if(status == "완료"){
-            self.button.setTitle("인증 완료", for: .normal)
-            self.button.setTitleColor(.positive400, for: .normal)
-            self.button.backgroundColor = .positive50
-        }else{
-            self.button.setTitle("인증 미완료", for: .normal)
-            self.button.setTitleColor(.negative400, for: .normal)
-            self.button.backgroundColor = .negative50
+            $0.width.equalToSuperview().multipliedBy(0.222)
+            $0.height.equalToSuperview().multipliedBy(0.32)
         }
         
+        buttonLabel.snp.makeConstraints{
+            $0.center.equalToSuperview()
+            $0.width.equalToSuperview().multipliedBy(0.623)
+        }
+        
+    }
+    
+    public func figure(challenge: UserChallenge){
+        self.name.text = challenge.title
+        self.time.text = challenge.time.formattedTime
+       
+        var width: CGFloat = 0.0
+        var textWidth: CGFloat = 0.0
+        
+        if(challenge.completed){
+            self.buttonLabel.text = "인증 완료"
+            self.buttonLabel.textColor = .positive400
+            self.buttonContainer.backgroundColor = .positive50
+            width = 0.196
+            textWidth = 0.573
+        }else{
+            self.buttonLabel.text = "인증 미완료"
+            self.buttonLabel.textColor = .negative400
+            self.buttonContainer.backgroundColor = .negative50
+            width = 0.222
+            textWidth = 0.623
+        }
+        
+        buttonContainer.snp.remakeConstraints{
+            $0.centerY.equalToSuperview()
+            $0.right.equalToSuperview().inset(24)
+            $0.width.equalToSuperview().multipliedBy(width)
+            $0.height.equalToSuperview().multipliedBy(0.32)
+        }
+        
+        buttonLabel.snp.remakeConstraints{
+            $0.center.equalToSuperview()
+            $0.width.equalToSuperview().multipliedBy(textWidth)
+        }
     }
 }

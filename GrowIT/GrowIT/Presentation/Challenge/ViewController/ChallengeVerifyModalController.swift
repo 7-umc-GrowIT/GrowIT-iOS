@@ -7,19 +7,21 @@
 
 import UIKit
 
+
 protocol ChallengeVerifyModalDelegate: AnyObject {
     func didRequestVerification()
 }
 
 class ChallengeVerifyModalController: UIViewController {
     weak var delegate: ChallengeVerifyModalDelegate?
+    var challengeId: Int?
     
     private lazy var challengeVerifyModal = ChallengeVerifyModal()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = challengeVerifyModal
         view.backgroundColor = .white
-        
+
         challengeVerifyModal.exitBtn.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         challengeVerifyModal.deleteBtn.addTarget(self, action: #selector(deleteBtnTapped), for: .touchUpInside)
         challengeVerifyModal.verifyBtn.addTarget(self, action: #selector(verifyBtnTapped), for: .touchUpInside)
@@ -27,7 +29,10 @@ class ChallengeVerifyModalController: UIViewController {
     
     @objc private func deleteBtnTapped() {
         let nextVC = ChallengeDeleteModalController()
-        
+        //print("인증모달에서 id 출력: \(challengeId)")
+        if let id = challengeId{
+            nextVC.challengeId = id
+        }
         nextVC.modalPresentationStyle = .pageSheet
         
         if let sheet = nextVC.sheetPresentationController {
@@ -75,4 +80,8 @@ extension ChallengeVerifyModalController: UISheetPresentationControllerDelegate 
         //크기 변경 됐을 경우
         print(sheetPresentationController.selectedDetentIdentifier == .large ? "large" : "medium")
     }
+}
+
+extension Notification.Name {
+    static let closeModalAndMoveVC = Notification.Name("closeModalAndMoveVC")
 }
