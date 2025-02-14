@@ -22,13 +22,17 @@ final class DiaryService: NetworkManager {
     }
     
     /// Post Text Diary API
-    func postTextDiary(data: DiaryRequestDTO, completion: @escaping (Result<DiaryPostResponseDTO, NetworkError>) -> Void) {
-        request(target: .postTextDiary(data: data), decodingType: DiaryPostResponseDTO.self, completion: completion)
+    func postTextDiary(data: DiaryRequestDTO, completion: @escaping (Result<DiaryTextPostResponseDTO, NetworkError>) -> Void) {
+        request(target: .postTextDiary(data: data), decodingType: DiaryTextPostResponseDTO.self, completion: completion)
     }
     
     /// Post Voice Diary API
-    func postVoiceDiary(data: DiaryRequestDTO, completion: @escaping (Result<DiaryPostResponseDTO, NetworkError>) -> Void) {
-        request(target: .postVoiceDiary(data: data), decodingType: DiaryPostResponseDTO.self, completion: completion)
+    func postVoiceDiary(data: DiaryVoiceRequestDTO, completion: @escaping (Result<DiaryVoicePostResponseDTO, NetworkError>) -> Void) {
+        request(target: .postVoiceDiary(data: data), decodingType: DiaryVoicePostResponseDTO.self, completion: completion)
+    }
+    
+    func postVoiceDiaryDate(data: DiaryVoiceDateRequestDTO, completion: @escaping (Result<DiaryTextPostResponseDTO, NetworkError>) -> Void) {
+        request(target: .postDiaryDate(data: data), decodingType: DiaryTextPostResponseDTO.self, completion: completion)
     }
     
     /// Diary Id를 받아 Diary를 삭제하는 API

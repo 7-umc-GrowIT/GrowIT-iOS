@@ -15,8 +15,9 @@ enum DiaryEndpoint {
     case getDiaryDates(year: Int, month: Int)
     
     // Post
-    case postVoiceDiary(data: DiaryRequestDTO)
+    case postVoiceDiary(data: DiaryVoiceRequestDTO)
     case postTextDiary(data: DiaryRequestDTO)
+    case postDiaryDate(data: DiaryVoiceDateRequestDTO)
     
     // Delete
     case deleteDiary(diaryId: Int)
@@ -43,6 +44,8 @@ extension DiaryEndpoint: TargetType {
             return "/\(diaryId)"
         case.getDiaryDates:
             return "/dates"
+        case .postDiaryDate:
+            return "/summary"
         default:
             return "/"
         }
@@ -50,7 +53,7 @@ extension DiaryEndpoint: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .postTextDiary, .postVoiceDiary:
+        case .postTextDiary, .postVoiceDiary, .postDiaryDate:
             return .post
         case .deleteDiary:
             return .delete
@@ -63,9 +66,13 @@ extension DiaryEndpoint: TargetType {
     
     public var task: Moya.Task {
         switch self {
-        case .postTextDiary(let data), .postVoiceDiary(let data):
+        case .postTextDiary(let data):
+            return .requestJSONEncodable(data)
+        case .postVoiceDiary(let data):
             return .requestJSONEncodable(data)
         case .patchFixDiary(_, let data):
+            return .requestJSONEncodable(data)
+        case .postDiaryDate(let data):
             return .requestJSONEncodable(data)
         case .deleteDiary(_):
             return  .requestPlain
@@ -84,7 +91,8 @@ extension DiaryEndpoint: TargetType {
     
     var headers: [String : String]? {
         return [
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization" : ("Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsc29vQGcuY29tIiwicm9sZXMiOiJVU0VSIiwidXNlcklkIjo3MiwiZXhwIjoxNzM5NTQwNTM0fQ.NGWiIjJQEqorUJlVT90wL2qDtlKnWos-0zFMKVn64b8")
             ]
     }
     

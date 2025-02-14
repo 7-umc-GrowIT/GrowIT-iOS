@@ -29,7 +29,7 @@ class HomeView: UIView {
 
     
     // 하단 캐릭터 영역
-    private lazy var characterArea = HomeCharacterView()
+    var characterArea = HomeCharacterView()
     
     
     // MARK: - Function

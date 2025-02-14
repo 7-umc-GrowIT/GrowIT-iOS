@@ -24,7 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         // 실제 첫 화면이 되는 MainViewController 인스턴스 생성
 
-        let vc = GroSetBackgroundViewController()
+        let vc = HomeViewController()
         
         // NavigationController을 사용할 경우, MainViewController를 rootViewController로 갖는 NavigationController을 생성해야한다.
         let navigationController = UINavigationController(rootViewController: vc)
@@ -44,7 +44,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 window.rootViewController = navigationController
             }
         
-        // window 표시.
+        // window 표시
         self.window = window
         // makeKeyAndVisible() 메서드 호출
         window.makeKeyAndVisible()

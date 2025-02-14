@@ -11,11 +11,11 @@ class HomeCharacterView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor(named: "homeBg")
         
         addStackView()
         addComponents()
         constraints()
+        setGroLayer()
     }
     
     required init?(coder: NSCoder) {
@@ -24,10 +24,10 @@ class HomeCharacterView: UIView {
     
     // MARK: - Property
     
-    // 배경 별그림
-    private lazy var backgroundStar = UIImageView().then{
-        $0.image = UIImage(named: "homeBgStar")
+    // 배경
+    var backgroundImageView = UIImageView().then{
         $0.contentMode = .scaleToFill
+        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     // 크레딧 아이콘
@@ -50,15 +50,29 @@ class HomeCharacterView: UIView {
     private lazy var friendContainer = makeContainer()
     
     // 캐릭터 이미지
-    private lazy var homeCharacter = UIImageView().then{
-        $0.image = UIImage(named: "homeCharacter")
+    private lazy var groFrameView = UIView().then {
+        $0.backgroundColor = .clear
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+
+    var groFaceImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
+        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    // 캐릭터 그림자
-    private lazy var characterShadow = UIImageView().then{
-        $0.image = UIImage(named: "shadow")
+    var groFlowerPotImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    var groAccImageView = UIImageView().then {
+        $0.contentMode = .scaleAspectFit
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    var groObjectImageView = UIImageView().then {
+        $0.contentMode = .scaleAspectFit
+        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     // 하단 그라디언트 뷰
@@ -101,6 +115,14 @@ class HomeCharacterView: UIView {
         view.clipsToBounds = true
         return view
     }
+    
+    private func setGroLayer() {
+        groFlowerPotImageView.layer.zPosition = 0
+        groFaceImageView.layer.zPosition = 1
+        groAccImageView.layer.zPosition = 2
+        groObjectImageView.layer.zPosition = 3
+    }
+    
     // MARK: - add Function & Constraints
     
     private func addStackView(){
@@ -110,13 +132,19 @@ class HomeCharacterView: UIView {
     private func addComponents(){
         creditContainer.addSubview(creditBoxStack)
         friendContainer.addSubview(friendIcon)
-        [backgroundStar, creditContainer, friendContainer, characterShadow, homeCharacter, bottomGradientView].forEach(self.addSubview)
+        [backgroundImageView, groFrameView, creditContainer, friendContainer, bottomGradientView].forEach(self.addSubview)
         
+        groFrameView.addSubviews([
+            groFaceImageView,
+            groFlowerPotImageView,
+            groAccImageView,
+            groObjectImageView
+        ])
     }
     
     private func constraints(){
         
-        backgroundStar.snp.makeConstraints {
+        backgroundImageView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
         
@@ -139,15 +167,17 @@ class HomeCharacterView: UIView {
             $0.height.width.equalTo(28)
         }
         
-        
-        homeCharacter.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(self.frame.height / 3)
+        groFrameView.snp.makeConstraints {
+            $0.width.equalToSuperview().multipliedBy(1.3)
+            $0.height.equalTo(groFrameView.snp.width)
             $0.centerX.equalToSuperview()
+            $0.top.equalToSuperview().offset(62)
         }
         
-        characterShadow.snp.makeConstraints{
-            $0.bottom.equalTo(homeCharacter.snp.bottom).offset(-30)
-            $0.centerX.equalToSuperview()
+        [groFaceImageView, groFlowerPotImageView, groAccImageView, groObjectImageView].forEach {
+            $0.snp.makeConstraints {
+                $0.edges.equalToSuperview()
+            }
         }
         
         bottomGradientView.snp.makeConstraints {

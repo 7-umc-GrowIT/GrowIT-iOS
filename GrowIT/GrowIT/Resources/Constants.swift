@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct Constants {
     
@@ -20,5 +21,11 @@ struct Constants {
         static let authURL = "\(baseURL)/auth"
         static let userURL = "\(baseURL)/users"
         static let challengeURL = "\(baseURL)/challenges"
+    }
+    
+    public struct Screen {
+        static let ScreenWidth = UIScreen.main.bounds.width
+        static let ScreenHeight = UIScreen.main.bounds.height
+        static let CalenderRatio = 366.0 / 932.0
     }
 }
