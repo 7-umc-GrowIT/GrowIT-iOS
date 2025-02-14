@@ -107,13 +107,12 @@ class ChallengeVerifyModal: UIView {
         }
         
         title2.snp.makeConstraints {
-            $0.top.equalTo(title1.snp.bottom)
+            $0.top.equalTo(title1.snp.bottom).offset(16)
             $0.left.equalToSuperview().offset(24)
-            $0.height.equalTo(80)
         }
         
         btnStack.snp.makeConstraints{
-            $0.top.equalTo(title2.snp.bottom)
+            $0.top.equalTo(title2.snp.bottom).offset(40)
             $0.horizontalEdges.equalToSuperview().inset(24)
             $0.height.equalTo(60)
         }

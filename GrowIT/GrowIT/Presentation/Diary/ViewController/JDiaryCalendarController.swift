@@ -18,6 +18,7 @@ class JDiaryCalendarController: UIViewController {
     private lazy var diaryService = DiaryService()
     private lazy var callendarDiaries : [DiaryDateDTO] = []
     private var numberOfWeeksInMonth = 0  // 주 수를 저장하는 변수
+    private var cellWidth: Double = 0
     private lazy var isDark: Bool = false
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -73,11 +74,10 @@ class JDiaryCalendarController: UIViewController {
         jDiaryCalendar.nextMonthBtn.addTarget(self, action: #selector(nextMonthTapped), for: .touchUpInside)
         
         getDiaryDates()
-        
     }
     
     private func getDiaryDates(){
-        diaryService.fetchDiaryDates(year: 2025, month: 1, completion: { [weak self] result in
+        diaryService.fetchDiaryDates(year: currentYear!, month: currentMonthIndex! + 1, completion: { [weak self] result in
             guard let self = self else {return}
             switch result{
             case.success(let data):
@@ -128,6 +128,19 @@ class JDiaryCalendarController: UIViewController {
         
     }
     
+//    private func adjustCalendarHeightBasedOnWeeks() {
+//        // 셀 높이 계산 (예: 각 셀의 높이가 collectionView의 width / 7)
+//        let cellHeight = jDiaryCalendar.calendarCollectionView.frame.width / 7
+//        
+//        // 전체 높이 계산 (주의 수 * 셀 높이 + 필요한 패딩 또는 섹션 헤더 높이)
+//        let totalHeight = CGFloat(numberOfWeeksInMonth) * cellHeight + 12 + 32 + 12 // 여기서 12, 32, 12는 추가 패딩을 가정한 값입니다.
+//        
+//        jDiaryCalendar.calendarBg.snp.updateConstraints { make in
+//            make.height.equalTo(totalHeight)
+//        }
+//        view.layoutIfNeeded() // 레이아웃 업데이트를 위해 호출
+//    }
+    
     func isLeapYear() -> Bool { //윤달 계산
         let year = currentCalendar.component(.year, from: currentDate)
         return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0
@@ -141,15 +154,9 @@ class JDiaryCalendarController: UIViewController {
     }
 
     private func adjustCalendarHeightBasedOnWeeks() {
-        if numberOfWeeksInMonth == 6 {
-            jDiaryCalendar.calendarBg.snp.updateConstraints { make in
-                make.height.equalTo(418)
-            }
-        } else {
-            // 다른 주 수에 대한 높이 설정 필요시 추가
-            jDiaryCalendar.calendarBg.snp.updateConstraints { make in
-                make.height.equalTo(366)  // 예시 높이
-            }
+        let totalHeight = CGFloat(numberOfWeeksInMonth) * cellWidth + 88
+        jDiaryCalendar.calendarBg.snp.updateConstraints { make in
+            make.height.equalTo(totalHeight)
         }
         view.layoutIfNeeded()  // 즉시 레이아웃을 업데이트하여 변경 사항 적용
     }
@@ -238,7 +245,8 @@ func collectionView(_ collectionView: UICollectionView, layout collectionViewLay
         //let paddingSpace = 16 * 2 // 좌우 패딩
         let availableWidth = collectionView.frame.width
         let widthPerItem = availableWidth / 7
-        
+        cellWidth = widthPerItem
+    
         return CGSize(width: widthPerItem, height: widthPerItem) // 셀의 너비와 높이를 동일하게 설정
     }
     

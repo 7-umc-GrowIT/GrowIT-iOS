@@ -80,15 +80,15 @@ class HomeTopNavbarView: UIView {
         }
         
         itemShopBtn.snp.makeConstraints {
-            $0.width.height.equalTo(34)
+            $0.width.height.equalTo(36)
         }
         
         settingBtn.snp.makeConstraints {
-            $0.width.height.equalTo(34)
+            $0.width.height.equalTo(36)
         }
         
         topNavIconsStackView.snp.makeConstraints {
-            $0.top.equalTo(self.safeAreaLayoutGuide).offset(13)
+            $0.top.equalTo(self.safeAreaLayoutGuide).offset(12)
             $0.right.equalToSuperview()
         }
     }

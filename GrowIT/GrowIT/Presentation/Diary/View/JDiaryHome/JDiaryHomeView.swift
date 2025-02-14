@@ -27,7 +27,7 @@ class JDiaryHomeView: UIView {
     // MARK: - Property
     
     // 일기 홈화면 스크롤뷰
-    private lazy var diaryHomeScrollView = UIScrollView().then{
+    public lazy var diaryHomeScrollView = UIScrollView().then{
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
         $0.contentOffset = CGPoint(x: 0, y: 0)
