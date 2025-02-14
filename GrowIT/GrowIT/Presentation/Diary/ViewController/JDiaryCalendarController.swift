@@ -312,15 +312,18 @@ func collectionView(_ collectionView: UICollectionView, layout collectionViewLay
             
             if let result = callendarDiaries.first(where: {$0.date == formattedDate}){
                 print("selectedDiaryId: \(result.diaryId)")
-                // diaryService.fetchDiary(diaryId: result.diaryId, completion: { [weak self] result in
-                //     guard let self = self else {return}
-                //     switch result{
-                //     case.success(let data):
-                //     case.failure(let error):
-                //         print("Error: \(error)")
-                //     }
-                // })
-                //let diaryPostFixVC = DiaryPostFixViewController(text: <#String#>)
+                 diaryService.fetchDiary(diaryId: result.diaryId, completion: { [weak self] result in
+                     guard let self = self else {return}
+                     switch result{
+                     case.success(let data):
+                         let diaryPostFixVC = DiaryPostFixViewController(text: data.content, date: data.date, diaryId: data.diaryId)
+                         diaryPostFixVC.modalPresentationStyle = .fullScreen
+                         presentPageSheet(viewController: diaryPostFixVC, detentFraction: 0.65)
+                     case.failure(let error):
+                         print("Error: \(error)")
+                     }
+                 })
+                
                 
                 
             }

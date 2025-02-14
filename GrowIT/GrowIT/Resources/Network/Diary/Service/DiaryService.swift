@@ -41,8 +41,8 @@ final class DiaryService: NetworkManager {
     }
     
     /// Diary Id를 받아 특정 일기를 조회하는 API
-    func fetchDiary(diaryId: Int, completion: @escaping (Result<DiaryGetDatesResponseDTO, NetworkError>) -> Void) {
-        request(target: .getDiaryID(diaryId: diaryId), decodingType: DiaryGetDatesResponseDTO.self, completion: completion)
+    func fetchDiary(diaryId: Int, completion: @escaping (Result<DiaryTextPostResponseDTO, NetworkError>) -> Void) {
+        request(target: .getDiaryID(diaryId: diaryId), decodingType: DiaryTextPostResponseDTO.self, completion: completion)
     }
     
     /// 월별 일기 수 조회 API
