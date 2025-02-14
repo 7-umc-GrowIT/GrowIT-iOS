@@ -69,7 +69,7 @@ class DiaryAllViewController: UIViewController, UITableViewDelegate {
     private func callGetAllDiaries() {
         diaryService.fetchAllDiaries(
             year: 2025,
-            month: 1,
+            month: 2,
             completion: { [weak self] result in
                 guard let self = self else { return }
                 switch result {

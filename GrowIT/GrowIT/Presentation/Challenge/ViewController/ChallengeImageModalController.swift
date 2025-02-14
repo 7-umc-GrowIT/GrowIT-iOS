@@ -114,17 +114,21 @@ extension ChallengeImageModalController : UIImagePickerControllerDelegate, UINav
             uploadImage = image
             if let uploadImage = uploadImage {
                 NotificationCenter.default.post(name: NSNotification.Name("ImageSelected"), object: nil, userInfo: ["image": image])
-//                challengeVerifyView.imageUploadCompleted(uploadImage)
-//                challengeVerifyView.imageContainer.superview?.layoutIfNeeded()
+                
             }
             
         }
-        UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)
-//        dismiss(animated: true, completion: nil)
-//        dismiss(animated: true, completion: nil)
+        // 이미지 피커를 닫은 후 모달 뷰 컨트롤러도 닫기
+        picker.dismiss(animated: true) {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
+        // 이미지 피커를 닫은 후 모달 뷰 컨트롤러도 닫기
+        picker.dismiss(animated: true) {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 }
+

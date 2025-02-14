@@ -35,7 +35,7 @@ class LoginViewController: UIViewController {
     // 뒤로 가기 버튼 함수
     @objc func emailLoginBtnTap() {
         let emailLoginVC = EmailLoginViewController()
-        self.navigationController?.pushViewController(emailLoginVC, animated: true)
+        navigationController?.pushViewController(emailLoginVC, animated: true)
     }
     
     func navigateToEmailLogin() {

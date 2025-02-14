@@ -8,6 +8,7 @@
 import UIKit
 import Then
 import SnapKit
+import Lottie
 
 class JDiaryHomeBanner: UIView {
 
@@ -17,6 +18,8 @@ class JDiaryHomeBanner: UIView {
         addStack()
         addComponents()
         constraints()
+        
+        postImage.play()
     }
     
     required init?(coder: NSCoder) {
@@ -27,13 +30,19 @@ class JDiaryHomeBanner: UIView {
     
     private lazy var bannerBg = UIImageView().then{
         $0.image = UIImage(named: "jDiaryHomeBanner")
-        $0.contentMode = .scaleAspectFit
+        $0.contentMode = .scaleToFill
         $0.isUserInteractionEnabled = true
     }
     
     private lazy var title = makeLabel(title: "오늘의 일기 작성하기", font: .subHeading1(), color: .gray900)
     
     private lazy var subTitle = makeLabel(title: "간편하게 대화하고 내 감정을 기록해요", font: .body2Medium(), color: .primary600)
+    
+    private lazy var postImage = LottieAnimationView(name: "Diary").then {
+        $0.frame = CGRect(x: 0, y: 0, width: 162, height: 153)
+        $0.contentMode = .scaleAspectFit
+        $0.loopMode = .loop
+    }
     
     private lazy var diaryWriteIcon = UIImageView().then{
         $0.image = UIImage(named: "diaryIcon")
@@ -86,7 +95,7 @@ class JDiaryHomeBanner: UIView {
     
     private func addComponents(){
         addSubview(bannerBg)
-        [titleStack, diaryWriteButton, diaryDirectWriteButton].forEach(bannerBg.addSubview)
+        [titleStack, postImage, diaryWriteButton, diaryDirectWriteButton].forEach(bannerBg.addSubview)
         diaryWriteButton.addSubview(diaryWriteStack)
     }
     
@@ -101,12 +110,18 @@ class JDiaryHomeBanner: UIView {
             $0.left.equalToSuperview().offset(24)
         }
         
+        postImage.snp.makeConstraints{
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalToSuperview().inset(5)
+        }
+        
         diaryWriteStack.snp.makeConstraints{
             $0.verticalEdges.equalToSuperview().inset(17)
             $0.centerX.equalToSuperview()
         }
         
         diaryWriteButton.snp.makeConstraints{
+            //$0.top.equalTo(postImage.snp.bottom).offset(23)
             $0.bottom.equalToSuperview().inset(68)
             $0.horizontalEdges.equalToSuperview().inset(24)
         }
