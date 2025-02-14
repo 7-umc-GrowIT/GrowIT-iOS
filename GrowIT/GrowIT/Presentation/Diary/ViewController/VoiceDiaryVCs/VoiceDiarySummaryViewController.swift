@@ -7,11 +7,13 @@
 
 import UIKit
 
-class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate {
+class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate, VoiceDiaryRecordDelegate {
     
     // MARK: Properties
     let voiceDiarySummaryView = VoiceDiarySummaryView()
     let navigationBarManager = NavigationManager()
+    
+    weak var delegate: VoiceDiaryRecordDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,5 +78,11 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
     
     func didTapExitButton() {
         navigationController?.popToRootViewController(animated: true)
+    }
+    
+    func didFinishRecording(diaryContent: String) {
+        DispatchQueue.main.async() {
+            self.voiceDiarySummaryView.configure(text: diaryContent)
+        }
     }
 }
