@@ -15,7 +15,6 @@ class GroSetNameViewController: UIViewController {
     private let selectedBackground: Int
     let selectedColors: [CGColor]
     var selectedIcon = UIImage()
-    
     var groName: String?
     
     // MARK: - Data
@@ -44,7 +43,14 @@ class GroSetNameViewController: UIViewController {
             case .success(let data):
                 print("Success: \(data)")
             case .failure(let error):
-                print("Error \(error)")
+                switch error {
+                case .serverError(_, let message):
+                    if message == "이미 사용 중인 닉네임입니다." {
+                        groSetNameView.nickNameTextField.setError(message: "다른 닉네임과 중복되는 닉네임입니다")
+                    }
+                default:
+                    break
+                }
             }
         })
     }
@@ -75,21 +81,23 @@ class GroSetNameViewController: UIViewController {
         super.viewDidLoad()
         self.view = groSetNameView
         updateNextButtonState()
-        
-        groSetNameView.nickNameTextField.onClearButtonTapped = { [weak self] in
-            self?.updateNextButtonState()
-        }
     }
     
     //MARK: - 기능
     @objc
     private func textFieldsDidChange() {
-        groName = groSetNameView.nickNameTextField.textField.text ?? ""
+        guard let groName = groSetNameView.nickNameTextField.textField.text else { return }
+        isValidName = groName.count >= 2 && groName.count <= 8
+        
+        if !isValidName {
+            groSetNameView.nickNameTextField.setError(message: "닉네임은 2~8자 이내로 작성해야 합니다")
+        } else {
+            groSetNameView.nickNameTextField.clearError()
+        }
         updateNextButtonState()
     }
     
     private func updateNextButtonState() {
-        isValidName = groSetNameView.nickNameTextField.validationRule?(groName ?? "") ?? false
         groSetNameView.startButton.isEnabled = isValidName
         
         groSetNameView.startButton.setButtonState(
