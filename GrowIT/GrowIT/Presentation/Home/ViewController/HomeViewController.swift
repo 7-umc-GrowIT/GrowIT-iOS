@@ -8,12 +8,15 @@
 import UIKit
 
 class HomeViewController: UIViewController {
+    let groService = GroService()
     
     private lazy var gradientView = UIView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = homeview
+        callGetGroImage()
+        
         navigationController?.navigationBar.isHidden = true
     }
     
@@ -21,6 +24,37 @@ class HomeViewController: UIViewController {
         super.viewDidLayoutSubviews()
 
         //setupGradientView()
+    }
+    
+    // MARK: - NetWork
+    func callGetGroImage() {
+        groService.getGroImage(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                homeview.characterArea.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl))
+                let equippedItems = data.equippedItems
+                
+                let categoryImageViews: [String: UIImageView] = [
+                    "BACKGROUND": homeview.characterArea.backgroundImageView,
+                    "OBJECT": homeview.characterArea.groObjectImageView,
+                    "PLANT": homeview.characterArea.groFlowerPotImageView,
+                    "HEAD_ACCESSORY": homeview.characterArea.groAccImageView
+                ]
+                
+                for item in equippedItems {
+                    if let imageView = categoryImageViews[item.category] {
+                        imageView.kf.setImage(with: URL(string: item.itemImageUrl))
+                    } else {
+                        fatalError("category not found")
+                    }
+                }
+                
+                
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        })
     }
     
     private func setupGradientView() {
