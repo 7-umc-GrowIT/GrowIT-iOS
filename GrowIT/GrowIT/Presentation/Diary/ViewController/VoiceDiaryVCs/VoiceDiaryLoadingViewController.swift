@@ -13,6 +13,8 @@ class VoiceDiaryLoadingViewController: UIViewController {
     let voiceDiaryLoadingView = VoiceDiaryLoadingView()
     let navigationBarManager = NavigationManager()
     
+    weak var delegate: VoiceDiaryRecordDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -55,6 +57,9 @@ class VoiceDiaryLoadingViewController: UIViewController {
     private func navigateToNextScreen() {
         let nextVC = VoiceDiarySummaryViewController()
         nextVC.hidesBottomBarWhenPushed = true
+        
+        nextVC.delegate = self.delegate
+        
         navigationController?.pushViewController(nextVC, animated: true)
     }
 }
