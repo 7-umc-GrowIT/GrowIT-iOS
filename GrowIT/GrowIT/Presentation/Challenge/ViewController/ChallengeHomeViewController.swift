@@ -30,6 +30,7 @@ class ChallengeHomeViewController: UIViewController {
         setCustomSegment()
         setupChallengeHomeArea()
         setupChallengeStatusArea()
+        setupNotifications()
         
         challengeHomeAreaVC.view.isHidden = false
         challengeStatusAreaVC.view.isHidden = true
@@ -65,6 +66,20 @@ class ChallengeHomeViewController: UIViewController {
         challengeHomeView.updateUnderlinePosition(button: challengeHomeView.challengeHomeBtn, animated: false)
     }
     
+    private func setupNotifications(){
+        NotificationCenter.default.addObserver(self, selector: #selector(moveChallengeVerfiyVC(_:)), name: .closeModalAndMoveVC, object: nil)
+    
+    }
+    
+    @objc private func moveChallengeVerfiyVC(_ notification: Notification) {
+        if let userInfo = notification.userInfo, let challenge = userInfo["challenge"] as? UserChallenge{
+            let nextVC = ChallengeVerifyViewController()
+            nextVC.challenge = challenge
+            navigationController?.pushViewController(nextVC, animated: true)
+        }
+        
+    }
+    
     @objc private func challengeHomeBtnTapped(){
         challengeHomeView.updateUnderlinePosition(button: challengeHomeView.challengeHomeBtn, animated: true)
         challengeHomeView.challengeHomeBtn.setTitleColor(.primary600, for: .normal)
@@ -72,6 +87,8 @@ class ChallengeHomeViewController: UIViewController {
         
         challengeHomeAreaVC.view.isHidden = false
         challengeStatusAreaVC.view.isHidden = true
+        
+        challengeStatusAreaVC.refreshData()
     }
     
     @objc private func challengeStatusBtnTapped(){
@@ -81,5 +98,7 @@ class ChallengeHomeViewController: UIViewController {
         
         challengeHomeAreaVC.view.isHidden = true
         challengeStatusAreaVC.view.isHidden = false
+        
+        challengeHomeAreaVC.refreshData()
     }
 }

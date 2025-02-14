@@ -45,4 +45,5 @@ class AppButton: UIButton {
         self.backgroundColor = isEnabled ? enabledColor : disabledColor
         self.setTitleColor(isEnabled ? enabledTitleColor : disabledTitleColor, for: .normal)
     }
+    
 }
