@@ -34,9 +34,6 @@ class GroSetNameView: UIView {
     var nickNameTextField = CustomTextField(frame: .zero, isPasswordField: false).then {
         $0.setTitleLabel("닉네임")
         $0.setPlaceholder("닉네임을 입력해주세요")
-        $0.setValidationRule { text in
-            text.count >= 2 && text.count <= 8
-        }
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -124,7 +121,7 @@ class GroSetNameView: UIView {
         }
         
         groImageView.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(164)
+            $0.top.equalTo(safeAreaLayoutGuide).offset(194)
             $0.centerX.equalToSuperview()
             $0.width.equalToSuperview().multipliedBy(1.3)
             $0.height.equalTo(groImageView.snp.width)
