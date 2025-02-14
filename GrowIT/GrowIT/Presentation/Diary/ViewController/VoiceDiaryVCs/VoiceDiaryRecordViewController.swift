@@ -15,6 +15,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     let navigationBarManager = NavigationManager()
     private var speechAPIProvider = SpeechAPIProvider()
     private var audioRecorder: AVAudioRecorder?
+    private var audioPlayer: AVAudioPlayer?
     private var isRecording = false // 녹음 상태 관리
     
     private let diaryService = DiaryService()
@@ -74,8 +75,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
         voiceDiaryRecordView.endButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         voiceDiaryRecordView.recordButton.addTarget(self, action: #selector(beginRecord), for: .touchUpInside)
         
-        let animationTap = UITapGestureRecognizer(target: self, action: #selector(stopRecord))
-        voiceDiaryRecordView.recordAnimation.addGestureRecognizer(animationTap)
+        voiceDiaryRecordView.loadingButton.addTarget(self, action: #selector(stopRecord), for: .touchUpInside)
     }
     
     // MARK: @objc methods
@@ -196,15 +196,39 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
         }
     }
     
+    // MARK: Setup TTS
+    private func synthesizeSpeech(text: String) {
+        speechAPIProvider.synthesizeSpeech(text: text) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let audioData):
+                    self?.playAudio(data: audioData)
+                case .failure(let error):
+                    print("TTS 변환 실패: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func playAudio(data: Data) {
+        do {
+            audioPlayer = try AVAudioPlayer(data: data)
+            audioPlayer?.play()
+        } catch {
+            print("음성 파일 재생 실패: \(error.localizedDescription)")
+        }
+    }
+    
     // MARK: Setup APIs
     private func callPostVoiceDiary(userVoice: String) {
         diaryService.postVoiceDiary(
-            data: DiaryRequestDTO(content: userVoice, date: "2025-1-30"),
+            data: DiaryVoiceRequestDTO(chat: userVoice),
             completion: { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let data):
-                    print("Success: \(data)")
+                    print("Success: \(data.chat)")
+                    self.synthesizeSpeech(text: data.chat)
                 case .failure(let error):
                     print("Error: \(error)")
                 }

@@ -134,11 +134,11 @@ class VoiceDiaryRecordView: UIView {
         $0.isUserInteractionEnabled = true
     }
     
-    let recordAnimation = LottieAnimationView(name: "Loading").then {
-        $0.loopMode = .loop
-        $0.contentMode = .scaleAspectFit
-        $0.alpha = 0
-        $0.isUserInteractionEnabled = true
+    let loadingButton = LoadingButton().then {
+        $0.backgroundColor = .primary500
+        $0.isHidden = true
+        $0.layer.cornerRadius = 40
+        $0.clipsToBounds = true
     }
     
     // MARK: Setup UI
@@ -182,8 +182,8 @@ class VoiceDiaryRecordView: UIView {
             make.width.height.equalTo(80)
         }
         
-        addSubview(recordAnimation)
-        recordAnimation.snp.makeConstraints { make in
+        addSubview(loadingButton)
+        loadingButton.snp.makeConstraints { make in
             make.edges.equalTo(recordButton)
         }
         
@@ -202,26 +202,13 @@ class VoiceDiaryRecordView: UIView {
     
     private func setupActions() {
         recordButton.addTarget(self, action: #selector(toggleRecording), for: .touchUpInside)
-        
-        let animationTap = UITapGestureRecognizer(target: self, action: #selector(toggleRecording))
-        recordAnimation.addGestureRecognizer(animationTap)
-        
+        loadingButton.addTarget(self, action: #selector(toggleRecording), for: .touchUpInside)
     }
     
     @objc private func toggleRecording() {
-        if isRecording {
-            recordButton.alpha = 1
-            recordAnimation.alpha = 0
-            recordAnimation.stop()
-            
-            bringSubviewToFront(recordButton)
-        } else {
-            recordButton.alpha = 0
-            recordAnimation.alpha = 1
-            recordAnimation.play()
-            
-            bringSubviewToFront(recordAnimation)
-        }
-        isRecording.toggle()
+        let isCurrentlyRecording = !recordButton.isHidden
+        
+        recordButton.isHidden = isCurrentlyRecording
+        loadingButton.isHidden = !isCurrentlyRecording
     }
 }

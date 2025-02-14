@@ -12,33 +12,41 @@ import SnapKit
 
 class LoadingButton: UIButton {
     
-    private let animationView: LottieAnimationView = {
-        let animation = LottieAnimationView(name: "Loading") // Lottie 파일 이름
-        animation.loopMode = .loop
-        animation.contentMode = .scaleAspectFit
-        animation.isHidden = true
-        return animation
-    }()
+    let micImage = LottieAnimationView(name: "Loading").then {
+        $0.loopMode = .loop
+        $0.contentMode = .scaleAspectFit
+        $0.isUserInteractionEnabled = false
+    }
     
     private let innerCircle = UIView().then {
         $0.backgroundColor = .white
-        
+        $0.layer.cornerRadius = 35
+        $0.clipsToBounds = true
+        $0.isUserInteractionEnabled = false
     }
     
     override init(frame: CGRect) {
-            super.init(frame: frame)
-            setupUI()
-        }
-        
-        required init?(coder: NSCoder) {
-            super.init(coder: coder)
-            setupUI()
-        }
+        super.init(frame: frame)
+        setupUI()
+        micImage.play()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupUI()
+        micImage.play()
+    }
     
     private func setupUI() {
-        addSubview(animationView)
-        animationView.snp.makeConstraints { make in
-            make.
+        addSubview(innerCircle)
+        innerCircle.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(5)
+        }
+        
+        innerCircle.addSubview(micImage)
+        micImage.snp.makeConstraints { make in
+            make.centerX.centerY.equalToSuperview()
+            make.edges.equalToSuperview()
         }
     }
 }
