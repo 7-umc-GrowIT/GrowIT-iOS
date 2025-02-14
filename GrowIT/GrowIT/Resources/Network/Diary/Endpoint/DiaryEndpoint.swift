@@ -17,6 +17,7 @@ enum DiaryEndpoint {
     // Post
     case postVoiceDiary(data: DiaryVoiceRequestDTO)
     case postTextDiary(data: DiaryRequestDTO)
+    case postDiaryDate(data: )
     
     // Delete
     case deleteDiary(diaryId: Int)

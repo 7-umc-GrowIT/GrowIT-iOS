@@ -118,4 +118,6 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
         })
     }
     
+    private func 
+    
 }

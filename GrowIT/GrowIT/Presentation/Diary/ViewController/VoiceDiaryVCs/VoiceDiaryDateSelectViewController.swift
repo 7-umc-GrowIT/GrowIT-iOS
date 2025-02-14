@@ -110,5 +110,6 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
     
     func didSelectDate(_ date: String) {
         voiceDiaryDateSelectView.updateDateLabel(date)
+        calVC.view.isHidden = true
     }
 }
