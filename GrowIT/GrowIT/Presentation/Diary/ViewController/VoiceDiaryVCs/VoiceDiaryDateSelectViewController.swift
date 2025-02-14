@@ -55,6 +55,7 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
             make.top.equalTo(voiceDiaryDateSelectView.dateView.snp.bottom).offset(8)
             make.leading.equalToSuperview()
             make.centerX.equalToSuperview()
+            make.height.equalTo(Constants.Screen.ScreenHeight * (Constants.Screen.CalenderRatio))
         }
         calVC.view.isHidden = true
     }
@@ -81,9 +82,19 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
     }
     
     @objc func nextVC() {
-        let nextVC = VoiceDiaryRecordViewController()
-        nextVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(nextVC, animated: true)
+        if voiceDiaryDateSelectView.dateSelectLabel.text == "일기 날짜를 선택해 주세요" {
+            let v = voiceDiaryDateSelectView
+            v.dateLabel.textColor = .negative400
+            v.dateView.layer.borderColor = UIColor.negative400.cgColor
+            v.toggleButton.tintColor = .negative400
+            v.dateSelectLabel.textColor = .negative400
+            v.warningLabel.isHidden = false
+        } else {
+            let nextVC = VoiceDiaryRecordViewController()
+            nextVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(nextVC, animated: true)
+        }
+        
     }
     
     @objc func labelTapped() {
@@ -98,6 +109,7 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
     }
     
     func didSelectDate(_ date: String) {
-        voiceDiaryDateSelectView.updateDateLabel(date) // ✅ `VoiceDiaryDateSelectView`의 메서드 호출
+        voiceDiaryDateSelectView.updateDateLabel(date)
+        calVC.view.isHidden = true
     }
 }

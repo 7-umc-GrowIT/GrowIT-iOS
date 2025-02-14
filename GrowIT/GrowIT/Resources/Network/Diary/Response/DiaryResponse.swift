@@ -7,10 +7,14 @@
 
 import Foundation
 
-struct DiaryPostResponseDTO: Decodable {
+struct DiaryTextPostResponseDTO: Decodable {
     let diaryId: Int
     let content: String
     let date: String
+}
+
+struct DiaryVoicePostResponseDTO: Decodable {
+    let chat: String
 }
 
 struct DiaryGetDatesResponseDTO: Decodable {

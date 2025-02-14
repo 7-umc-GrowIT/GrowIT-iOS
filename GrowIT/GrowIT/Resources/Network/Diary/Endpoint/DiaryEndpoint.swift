@@ -15,8 +15,9 @@ enum DiaryEndpoint {
     case getDiaryDates(year: Int, month: Int)
     
     // Post
-    case postVoiceDiary(data: DiaryRequestDTO)
+    case postVoiceDiary(data: DiaryVoiceRequestDTO)
     case postTextDiary(data: DiaryRequestDTO)
+    case postDiaryDate(data: )
     
     // Delete
     case deleteDiary(diaryId: Int)
@@ -63,7 +64,9 @@ extension DiaryEndpoint: TargetType {
     
     public var task: Moya.Task {
         switch self {
-        case .postTextDiary(let data), .postVoiceDiary(let data):
+        case .postTextDiary(let data):
+            return .requestJSONEncodable(data)
+        case .postVoiceDiary(let data):
             return .requestJSONEncodable(data)
         case .patchFixDiary(_, let data):
             return .requestJSONEncodable(data)

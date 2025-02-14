@@ -105,9 +105,8 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
     
     // MARK: Setup APIs
     private func callPostVoiceDiary() {
-        diaryService.postVoiceDiary(data: DiaryRequestDTO(
-            content: UserDefaults.standard.string(forKey: "VoiceDiary") ?? "잘못된 전달입니다",
-            date: UserDefaults.standard.string(forKey: "VoiceDate") ?? "잘못된 전달입니다"),
+        diaryService.postVoiceDiary(data: DiaryVoiceRequestDTO(
+            chat: ""),
             completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -118,5 +117,7 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
             }
         })
     }
+    
+    private func 
     
 }

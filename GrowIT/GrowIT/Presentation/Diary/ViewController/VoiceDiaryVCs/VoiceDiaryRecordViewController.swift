@@ -15,7 +15,9 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     let navigationBarManager = NavigationManager()
     private var speechAPIProvider = SpeechAPIProvider()
     private var audioRecorder: AVAudioRecorder?
+    private var audioPlayer: AVAudioPlayer?
     private var isRecording = false // 녹음 상태 관리
+    
     private let diaryService = DiaryService()
     
     override func viewDidLoad() {
@@ -29,7 +31,6 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        startRecording()
     }
     
     private func observeRemainingTime() {
@@ -72,6 +73,9 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     // MARK: Setup Actions
     private func setupActions() {
         voiceDiaryRecordView.endButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        voiceDiaryRecordView.recordButton.addTarget(self, action: #selector(beginRecord), for: .touchUpInside)
+        
+        voiceDiaryRecordView.loadingButton.addTarget(self, action: #selector(stopRecord), for: .touchUpInside)
     }
     
     // MARK: @objc methods
@@ -98,6 +102,14 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
             nextVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(nextVC, animated: true)
         }
+    }
+    
+    @objc func beginRecord() {
+        startRecording()
+    }
+    
+    @objc func stopRecord() {
+        stopRecording()
     }
     
     func didTapExitButton() {
@@ -184,15 +196,39 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
         }
     }
     
+    // MARK: Setup TTS
+    private func synthesizeSpeech(text: String) {
+        speechAPIProvider.synthesizeSpeech(text: text) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let audioData):
+                    self?.playAudio(data: audioData)
+                case .failure(let error):
+                    print("TTS 변환 실패: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func playAudio(data: Data) {
+        do {
+            audioPlayer = try AVAudioPlayer(data: data)
+            audioPlayer?.play()
+        } catch {
+            print("음성 파일 재생 실패: \(error.localizedDescription)")
+        }
+    }
+    
     // MARK: Setup APIs
     private func callPostVoiceDiary(userVoice: String) {
         diaryService.postVoiceDiary(
-            data: DiaryRequestDTO(content: userVoice, date: "2025-1-30"),
+            data: DiaryVoiceRequestDTO(chat: userVoice),
             completion: { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let data):
-                    print("Success: \(data)")
+                    print("Success: \(data.chat)")
+                    self.synthesizeSpeech(text: data.chat)
                 case .failure(let error):
                     print("Error: \(error)")
                 }
