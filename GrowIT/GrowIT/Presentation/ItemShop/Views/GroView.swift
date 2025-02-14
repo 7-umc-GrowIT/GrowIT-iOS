@@ -14,7 +14,6 @@ class GroView: UIView {
     var groImageViewTopConstraint: Constraint?
     
     var backgroundImageView = UIImageView().then {
-        $0.image = UIImage(named: "GrowIT_Background_Star")
         $0.contentMode = .scaleAspectFill
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -25,7 +24,6 @@ class GroView: UIView {
     }
 
     var groFaceImageView = UIImageView().then {
-        $0.image = UIImage(named: "Gro_Face")
         $0.contentMode = .scaleAspectFit
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
