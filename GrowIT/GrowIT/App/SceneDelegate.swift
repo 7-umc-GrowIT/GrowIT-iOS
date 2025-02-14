@@ -54,11 +54,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let url = URLContexts.first?.url {
             if AuthApi.isKakaoTalkLoginUrl(url) {
-                print("✅ SceneDelegate: 카카오 로그인 URL 감지")
                 AuthController.handleOpenUrl(url: url)
             }
 
-            print("✅ SceneDelegate: handleAuthorizationCode 호출")
             KakaoLoginManager.shared.handleAuthorizationCode(from: url)
         }
     }
