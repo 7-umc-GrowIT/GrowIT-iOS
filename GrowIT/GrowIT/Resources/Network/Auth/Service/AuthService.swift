@@ -17,7 +17,8 @@ final class AuthService: NetworkManager {
     public init(provider: MoyaProvider<AuthorizationEndpoints>? = nil) {
         // 플러그인 추가
         let plugins: [PluginType] = [
-            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
+            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)), // 로그 플러그인
+            AuthPlugin()
         ]
         
         // provider 초기화
@@ -152,6 +153,11 @@ final class AuthService: NetworkManager {
                     // 토큰 저장 (UserDefaults 또는 Keychain 사용 가능)
                     UserDefaults.standard.set(decodedResponse.result.accessToken, forKey: "accessToken")
                     UserDefaults.standard.set(decodedResponse.result.refreshToken, forKey: "refreshToken")
+                    
+                    TokenManager.shared.saveTokens(
+                        accessToken: decodedResponse.result.accessToken,
+                        refreshToken: decodedResponse.result.refreshToken
+                    )
                     
                     completion(.success(decodedResponse))
                     

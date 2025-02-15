@@ -15,7 +15,8 @@ final class ChallengeService: NetworkManager {
     
     init(provider: MoyaProvider<ChallengeEndpoint>? = nil) {
         let plugins: [PluginType] = [
-            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose))
+            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)),
+            AuthPlugin()
         ]
         
         self.provider = provider ?? MoyaProvider<ChallengeEndpoint>(plugins: plugins)
