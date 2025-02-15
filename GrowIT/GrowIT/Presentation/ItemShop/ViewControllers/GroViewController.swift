@@ -202,7 +202,7 @@ class GroViewController: UIViewController, ItemListDelegate {
     
     @objc
     private func didTapBackButton() {
-    
+        navigationController?.popViewController(animated: true)
     }
     
     @objc
