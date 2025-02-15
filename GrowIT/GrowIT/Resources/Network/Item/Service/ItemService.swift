@@ -15,6 +15,7 @@ final class ItemService: NetworkManager {
     init(provider: MoyaProvider<ItemEndpoint>? = nil) {
         let plugins: [PluginType] = [
 //            NetworkLoggerPlugin(configuration: .init(logOptions: [.requestHeaders, .verbose]))
+            AuthPlugin()
         ]
         
         self.provider = provider ?? MoyaProvider<ItemEndpoint>(plugins: plugins)
