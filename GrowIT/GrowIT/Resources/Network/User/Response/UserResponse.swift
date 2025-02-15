@@ -13,8 +13,14 @@ struct UserPostResponseDTO: Decodable {
 }
 
 struct UserPatchResponseDTO: Decodable {
-
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: EmptyResult?
 }
+
+struct EmptyResult: Decodable {}
+
 
 struct UserGetCreditResponseDTO: Decodable {
     let currentCredit: Int

@@ -32,19 +32,13 @@ class SignUpCompleteView: UIView {
         $0.text = "회원가입 완료!\n그로우잇에 온 걸 환영해요!"
     }
     
-    public lazy var subLabel = UILabel().then {
-        $0.text = "로그인하고 바로 시작해 보세요"
-        $0.font = UIFont.heading3SemiBold()
-        $0.textColor = .gray500
-    }
-    
     public lazy var mainImage = UIImageView().then {
         $0.image = UIImage(named: "grow")
         $0.contentMode = .scaleAspectFill
     }
     
     public lazy var loginButton = AppButton(
-        title: "로그인하러 가기",
+        title: "그로 만들러 가기",
         titleColor: .white,
         isEnabled: true
     ).then {
@@ -54,7 +48,7 @@ class SignUpCompleteView: UIView {
     
     // MARK: - Constraints
     private func addComponents() {
-        [mainLabel, subLabel, mainImage, loginButton]
+        [mainLabel, mainImage, loginButton]
             .forEach(self.addSubview)
     }
     
@@ -62,11 +56,6 @@ class SignUpCompleteView: UIView {
         mainLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(148)
             $0.leading.equalToSuperview().offset(24)
-        }
-        
-        subLabel.snp.makeConstraints {
-            $0.top.equalTo(mainLabel.snp.bottom).offset(12)
-            $0.leading.equalTo(mainLabel)
         }
         
         mainImage.snp.makeConstraints {

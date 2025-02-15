@@ -12,14 +12,14 @@ class TermsService {
     
     private let provider = MoyaProvider<TermsEndpoints>()
     
-    func fetchTerms(completion: @escaping (Result<[Term], Error>) -> Void) {
+    func fetchTerms(completion: @escaping (Result<[TermsData], Error>) -> Void) {
         provider.request(.getTerms) { result in
             switch result {
             case .success(let response):
                 do {
                     let decodedResponse = try JSONDecoder().decode(TermsResponse.self, from: response.data)
                     if decodedResponse.isSuccess {
-                        completion(.success(decodedResponse.result))
+                        completion(.success(decodedResponse.result)) // 배열 형태로 변경
                     } else {
                         completion(.failure(NSError(domain: "", code: -3, userInfo: [NSLocalizedDescriptionKey: decodedResponse.message])))
                     }
@@ -52,6 +52,7 @@ class TermsService {
         }
     }
 }
+
 
 // 공통 응답 모델
 struct BaseResponse: Codable {
