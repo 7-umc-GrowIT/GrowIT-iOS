@@ -48,10 +48,14 @@ class ChallengeStatusArea: UIView {
     
     public lazy var challengeStatusNum = makeLabel(title: "4", color: .primary700, font: .body2SemiBold())
     
-    public lazy var challengeAllList = UITableView(frame: .zero).then{
-        $0.register(CustomChallengeListCell.self, forCellReuseIdentifier: CustomChallengeListCell.identifier)
-        $0.separatorStyle = .none
+    public lazy var challengeAllList = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then{
+        $0.minimumLineSpacing = 8
+        $0.scrollDirection = .vertical
+    }).then{
+        $0.register(CustomChallengeListCell.self, forCellWithReuseIdentifier: CustomChallengeListCell.identifier)
         $0.backgroundColor = .clear
+        $0.showsVerticalScrollIndicator = false
+        $0.isScrollEnabled = true
     }
     
     // MARK: - Func

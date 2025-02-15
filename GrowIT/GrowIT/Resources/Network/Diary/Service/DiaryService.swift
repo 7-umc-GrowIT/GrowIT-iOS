@@ -15,7 +15,8 @@ final class DiaryService: NetworkManager {
     
     init(provider: MoyaProvider<DiaryEndpoint>? = nil) {
         let plugins: [PluginType] = [
-            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose))
+            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)),
+            AuthPlugin()
         ]
         
         self.provider = provider ?? MoyaProvider<DiaryEndpoint>(plugins: plugins)
@@ -31,14 +32,18 @@ final class DiaryService: NetworkManager {
         request(target: .postVoiceDiary(data: data), decodingType: DiaryVoicePostResponseDTO.self, completion: completion)
     }
     
+    func postVoiceDiaryDate(data: DiaryVoiceDateRequestDTO, completion: @escaping (Result<DiaryTextPostResponseDTO, NetworkError>) -> Void) {
+        request(target: .postDiaryDate(data: data), decodingType: DiaryTextPostResponseDTO.self, completion: completion)
+    }
+    
     /// Diary Id를 받아 Diary를 삭제하는 API
     func deleteDiary(diaryId: Int, completion: @escaping (Result<DiaryDeleteResponseDTO, NetworkError>) -> Void) {
         request(target: .deleteDiary(diaryId: diaryId), decodingType: DiaryDeleteResponseDTO.self, completion: completion)
     }
     
     /// Diary Id를 받아 특정 일기를 조회하는 API
-    func fetchDiary(diaryId: Int, completion: @escaping (Result<DiaryGetDatesResponseDTO, NetworkError>) -> Void) {
-        request(target: .getDiaryID(diaryId: diaryId), decodingType: DiaryGetDatesResponseDTO.self, completion: completion)
+    func fetchDiary(diaryId: Int, completion: @escaping (Result<DiaryTextPostResponseDTO, NetworkError>) -> Void) {
+        request(target: .getDiaryID(diaryId: diaryId), decodingType: DiaryTextPostResponseDTO.self, completion: completion)
     }
     
     /// 월별 일기 수 조회 API

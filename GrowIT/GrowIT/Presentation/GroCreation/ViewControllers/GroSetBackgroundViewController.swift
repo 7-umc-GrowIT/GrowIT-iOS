@@ -107,9 +107,9 @@ class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDeleg
     // MARK: - ItemBackgroundModalDelegate 구현
     func updateBackgroundImage(to index: Int) {
         let images: [UIImage?] = [
-            UIImage.growITBackgroundStar,
-            UIImage.growITBackgroundTree,
-            UIImage.growITBackgroundHeart
+//            UIImage.growITBackgroundStar,
+//            UIImage.growITBackgroundTree,
+//            UIImage.growITBackgroundHeart
         ]
         groView.backgroundImageView.image = images[index]
         selectedBackground = index

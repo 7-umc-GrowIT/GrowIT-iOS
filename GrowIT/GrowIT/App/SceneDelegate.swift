@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import KakaoSDKAuth
+import KakaoSDKCommon
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -14,25 +16,51 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        // 앱 시작 시 로그아웃 처리
+        TokenManager.shared.clearTokens()
  
         // 화면을 구성하는 UIWindow 인스턴스 생성
         let window = UIWindow(windowScene: windowScene)
         // 실제 첫 화면이 되는 MainViewController 인스턴스 생성
 
-        let vc = HomeViewController()
+        let vc = LoginViewController()
         
         // NavigationController을 사용할 경우, MainViewController를 rootViewController로 갖는 NavigationController을 생성해야한다.
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.isNavigationBarHidden = true
         // UIWindow의 시작 ViewController를 생성한 NavigationController로 지정
         window.rootViewController = navigationController
+        
+        if let accessToken = TokenManager.shared.getAccessToken() {
+                let homeVC = HomeViewController()
+                let navigationController = UINavigationController(rootViewController: homeVC)
+                navigationController.isNavigationBarHidden = true
+                window.rootViewController = navigationController
+            } else {
+                let loginVC = LoginViewController()
+                let navigationController = UINavigationController(rootViewController: loginVC)
+                navigationController.isNavigationBarHidden = true
+                window.rootViewController = navigationController
+            }
+        
         // window 표시
         self.window = window
         // makeKeyAndVisible() 메서드 호출
         window.makeKeyAndVisible()
         
     }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            if AuthApi.isKakaoTalkLoginUrl(url) {
+                AuthController.handleOpenUrl(url: url)
+            }
 
+            KakaoLoginManager.shared.handleAuthorizationCode(from: url)
+        }
+    }
+    
       
     
     func sceneDidDisconnect(_ scene: UIScene) {

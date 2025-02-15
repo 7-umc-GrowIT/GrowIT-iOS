@@ -11,6 +11,7 @@ import Moya
 enum AuthorizationEndpoints {
     case postVerification(data: EmailVerifyRequest)
     case postEmailSignUp(data: EmailSignUpRequest)
+    case postSocialSignUp(data: SocialSignUpRequest)
     case postReissueToken(data: ReissueTokenRequest)
     case postKakaoLogin(code: String)
     case postEmailLogin(data: EmailLoginRequest)
@@ -32,13 +33,15 @@ extension AuthorizationEndpoints: TargetType {
         case .postVerification:
             return "/verification"
         case .postEmailSignUp:
-            return "/users"
+            return "/signup"
+        case .postSocialSignUp:
+            return "/signup/social"
         case .postReissueToken:
             return "/reissue"
         case .postKakaoLogin:
             return "/login/kakao"
         case .postEmailLogin:
-            return "/login/email"
+            return "/login"
         case .postSendEmailVerification:
             return "/email"
         case .patchSignOut:
@@ -81,6 +84,8 @@ extension AuthorizationEndpoints: TargetType {
             return .requestPlain
         case .fetchSignUpTerms:
             return .requestPlain
+        case .postSocialSignUp(data: let data):
+            return .requestJSONEncodable(data)
         }
     }
     

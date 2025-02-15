@@ -27,6 +27,16 @@ class ChallengeCompleteView: UIView {
     
     private lazy var grabberIcon = makeIcon(name: "grabberIcon")
     
+    private lazy var scrollView = UIScrollView(frame: self.bounds).then{
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+        $0.contentOffset = CGPoint(x: 0, y: 0)
+        $0.contentSize = contentView.bounds.size
+    }
+    
+    private lazy var contentView = UIView().then{
+        $0.backgroundColor = .clear
+    }
     private lazy var titleIcon = makeIcon(name: "challengeCompleteIcon")
     
     private lazy var title = makeLabel(title: "챌린지 인증완료!", color: .primary600, font: .heading1Bold()).then{
@@ -39,30 +49,31 @@ class ChallengeCompleteView: UIView {
     
     private lazy var challengeIcon = makeIcon(name: "challengeListIcon")
     
-    private lazy var challengeName = makeLabel(title: "좋아하는 책 독서하기", color: .gray900, font: .heading3Bold())
+    private lazy var challengeName = makeLabel(title: "", color: .gray900, font: .heading3Bold())
     
     private lazy var clockIcon = makeIcon(name: "timeIcon")
     
-    private lazy var challengeTime = makeLabel(title: "1시간", color: .primary600, font: .body2Medium())
+    private lazy var challengeTime = makeLabel(title: "", color: .primary600, font: .body2Medium())
     
-    private lazy var challengeDate = makeLabel(title: "2024년 12월 15일 인증", color: .gray500, font: .body2Medium()).then{
+    private lazy var challengeVerifyDate = makeLabel(title: "", color: .gray500, font: .body2Medium()).then{
         $0.textAlignment = .right
     }
     
     private lazy var imageLabel = makeLabel(title: "챌린지 인증샷", color: .gray900, font: .heading3Bold())
     
-    private lazy var imageContainer = UIImageView().then{
+    public lazy var imageContainer = UIImageView().then{
         $0.image = UIImage()
         $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 8
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        $0.isUserInteractionEnabled = true
     }
     
     private lazy var reviewLabel = makeLabel(title: "챌린지 한줄소감", color: .gray900, font: .heading3Bold())
     
-    private lazy var reviewContainer = UITextView().then{
+    public lazy var reviewContainer = UITextView().then{
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 8 // 원하는 줄 간격 값
 
@@ -72,8 +83,9 @@ class ChallengeCompleteView: UIView {
             .foregroundColor: UIColor.gray900 // 텍스트 색상
         ]
         
-        $0.textColor = .gray900
-        $0.font = .body1Medium()
+        $0.text = ""
+//        $0.textColor = .gray900
+//        $0.font = .body1Medium()
         $0.backgroundColor = .white
         $0.isScrollEnabled = false
         $0.clipsToBounds = true
@@ -81,19 +93,18 @@ class ChallengeCompleteView: UIView {
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
         $0.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
+        $0.attributedText = NSAttributedString(string: "", attributes: attributes)
         $0.returnKeyType = .done
-        $0.attributedText = NSAttributedString(string: "챌린지 소감을 간단하게 입력해 주세요", attributes: attributes)
-        $0.textColor = UIColor.gray300 // 플레이스홀더 색상처럼 보이게
-        $0.isEditable = false
     }
     
-    private lazy var reviewHintText = makeLabel(title: "챌린지 한줄소감을 50자 이상 적어 주세요", color: .gray500, font: .detail2Regular()).then{
-        $0.isHidden = true
-    }
+    private lazy var reviewHintText = makeLabel(title: "챌린지 한줄소감을 50자 이상 적어 주세요", color: .gray500, font: .detail2Regular())
     
     public lazy var challengeExitButton = makeButton(title: "나가기", textColor: .gray400, bgColor: .gray100)
     
-    public lazy var challengeUpdateButton = makeButton(title: "수정하기", textColor: .gray400, bgColor: .gray100)
+    public lazy var challengeUpdateButton = AppButton(title: "수정하기", titleColor: .gray400, isEnabled: false,  icon: "").then{
+        $0.backgroundColor = .gray100
+    }
+    
     
     // MARK: - Stack
     private lazy var titleStack = makeStack(axis: .vertical, spacing: 8)
@@ -107,6 +118,8 @@ class ChallengeCompleteView: UIView {
     private lazy var buttonStack = makeStack(axis: .horizontal, spacing: 8).then{
         $0.distribution = .fillEqually
     }
+    
+    private lazy var challengeCompleteStack = makeStack(axis: .vertical, spacing: 0)
     
     // MARK: - Func
     
@@ -152,25 +165,69 @@ class ChallengeCompleteView: UIView {
         return button
     }
     
-    public func setEditMode(isEditMode: Bool){ // 한줄소감 텍스트뷰 편집모드 세팅
-        self.reviewContainer.isEditable = isEditMode
+    public func setupChallenge(challenge: ChallengeDTO){
+        challengeName.text = challenge.title
+        challengeTime.text = challenge.time.formattedTime
+        reviewContainer.text = challenge.thoughts
+        
+        var dateList : [String] = []
+        let fullDate = challenge.certificationDate.split(separator: "T")[0]
+        fullDate.split(separator: "-").forEach { (element) in
+            dateList.append(String(element))
+        }
+        
+        challengeVerifyDate.text = dateList[0] + "년 " + dateList[1] + "월 " + dateList[2] + "일 인증"
+    }
+    
+    public func updateImage(image: UIImage){
+        imageContainer.image = image
+        imageContainer.contentMode = .scaleAspectFill
+    }
+    
+    public func setUpdateBtnActivate(_ activate: Bool){
+        challengeUpdateButton.setButtonState(isEnabled: activate, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
+        self.layoutIfNeeded()
+    }
+    
+    public func validateTextView(errorMessage: String, textColor: UIColor, bgColor:UIColor, borderColor: UIColor, hintColor: UIColor){
+        reviewHintText.text = errorMessage
+        reviewHintText.textColor = hintColor
+        reviewLabel.textColor = textColor
+        reviewContainer.textColor = textColor
+        reviewContainer.backgroundColor = bgColor
+        reviewContainer.layer.borderColor = borderColor.cgColor
     }
     
     // MARK: - addFunc & Constraints
     
     private func addStack(){
-        [challengeLabel, challengeContainer, challengeDate].forEach(challengeStack.addArrangedSubview)
+        [challengeLabel, challengeContainer, challengeVerifyDate].forEach(challengeStack.addArrangedSubview)
         [imageLabel, imageContainer].forEach(imageStack.addArrangedSubview)
         [reviewLabel, reviewContainer].forEach(reviewStack.addArrangedSubview)
         [challengeExitButton, challengeUpdateButton].forEach(buttonStack.addArrangedSubview)
+        [titleIcon, title, challengeStack, imageStack, reviewStack, reviewHintText, buttonStack].forEach(challengeCompleteStack.addArrangedSubview)
     }
     
     private func addComponents(){
-        [grabberIcon, titleIcon, title, challengeStack, imageStack, reviewStack, reviewHintText, buttonStack].forEach(addSubview)
+        self.addSubview(scrollView)
+        [grabberIcon, titleIcon, title, challengeStack, imageStack, reviewStack, reviewHintText, buttonStack].forEach(contentView.addSubview)
+        scrollView.addSubview(contentView)
         [challengeIcon, challengeName, clockIcon, challengeTime].forEach(challengeContainer.addSubview)
     }
     
     private func constraints(){
+        
+        
+        
+        scrollView.snp.makeConstraints{
+            $0.edges.equalToSuperview()
+        }
+        
+        contentView.snp.makeConstraints{
+            $0.edges.equalToSuperview()
+            $0.width.equalTo(scrollView.snp.width)
+            
+        }
         
         grabberIcon.snp.makeConstraints{
             $0.top.equalToSuperview().offset(24)
@@ -180,8 +237,8 @@ class ChallengeCompleteView: UIView {
         }
         
         titleIcon.snp.makeConstraints{
-            $0.left.equalToSuperview().offset(24)
             $0.top.equalTo(grabberIcon.snp.bottom).offset(24)
+            $0.left.equalToSuperview().offset(24)
             $0.width.height.equalTo(28)
         }
         
@@ -245,6 +302,7 @@ class ChallengeCompleteView: UIView {
             $0.top.equalTo(reviewHintText.snp.bottom).offset(40)
             //$0.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom).inset(20)
             $0.horizontalEdges.equalToSuperview().inset(24)
+            $0.bottom.equalToSuperview()
             $0.height.equalTo(60)
         }
     }

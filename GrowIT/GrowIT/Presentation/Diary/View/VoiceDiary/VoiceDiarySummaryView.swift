@@ -72,7 +72,7 @@ class VoiceDiarySummaryView: UIView {
     }
     
     let diaryTextView = UITextView().then {
-        $0.text = "오늘은 평소보다 조금 더 차분한 하루를 보냈다. 아침에 일어나 창밖을 보니 햇살이 눈부시게 비치고 있었다. 차가운 겨울 공기 속에서도 따뜻한 햇살이 포근하게 느껴졌다. 오후에는 간단히 산책을 나갔다. 겨울 특유의 청량한 공기를 마시며 걷다 보니, 머릿속이 맑아지고 새로운 아이디어도 떠올랐다. 저녁에는 따뜻한 차 한 잔과 함께 하루를 정리하며 감사한 마음으로 마무리했다.오늘은 평소보다 조금 더 차분한 하루를 보냈다. 아침에 일어나 창밖을 보니 햇살이 눈부시게 비치고 있었다. 차가운 겨울 공기 속에서도 따뜻한 햇살이 포근하게 느껴졌다. 오후에는 간단히 산책을 나갔다. 겨울 특유의 청량한 공기를 마시며 걷다 보니, 머릿속이 맑아지고 새로운 아이디어도 떠올랐다. 저녁에는 따뜻한 차 한 잔과 함께 하루를 정리하며 감사한 마음으로 마무리했다.오늘은 평소보다 조금 더 차분한 하루를 보냈다. 아침에 일어나 창밖을 보니 햇살이 눈부시게 비치고 있었다. 차가운 겨울 공기 속에서도 따뜻한 햇살이 포근하게 느껴졌다. 오후에는 간단히 산책을 나갔다. 겨울 특유의 청량한 공기를 마시며 걷다 보니, 머릿속이 맑아지고 새로운 아이디어도 떠올랐다. 저녁에는 따뜻한 차 한 잔과 함께 하루를 정리하며 감사한 마음으로 마무리했다."
+        $0.text = ""
         $0.textColor = .white
         $0.font = .body1Medium()
         $0.isEditable = false
@@ -166,6 +166,10 @@ class VoiceDiarySummaryView: UIView {
             make.centerX.equalToSuperview()
             make.top.equalTo(saveButton.snp.bottom).offset(8)
         }
+    }
+    
+    func configure(text: String) {
+        diaryTextView.text = text
     }
 
 }

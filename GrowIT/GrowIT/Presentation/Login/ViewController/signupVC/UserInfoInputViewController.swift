@@ -17,13 +17,9 @@ class UserInfoInputViewController: UIViewController {
     let authService = AuthService()
     
     // 이전 화면에서 전달받을 데이터
-    var email: String = ""
-    var isVerified: Bool = false
-    var agreeTerms: [UserTermDTO] = []
-    // 약관 데이터를 전달받기 위한 변수
-    var termsList: [Term] = []
-    var optionalTermsList: [Term] = []
-    var agreedTerms: [String: Bool] = [:]
+   var email: String = ""
+   var isVerified: Bool = false
+   var agreeTerms: [UserTermDTO] = [] // 약관 데이터 (termId 기반)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +31,7 @@ class UserInfoInputViewController: UIViewController {
         print("✅ 사용자 정보 입력 화면으로 전달된 인증 여부: \(isVerified)")
         print("✅ 사용자 정보 입력 화면으로 전달된 약관 목록: \(agreeTerms)") // 디버깅용 로그
         
-        // ✅ 약관 데이터가 정상적으로 유지되었는지 확인
+        // 약관 데이터가 정상적으로 유지되었는지 확인
         if agreeTerms.isEmpty {
             print("❌ 약관 데이터가 전달되지 않았습니다.")
         }
@@ -129,29 +125,34 @@ class UserInfoInputViewController: UIViewController {
         // 버튼 상태 업데이트
         nextButtonState()
     }
+ 
     
     @objc private func nextButtonTap() {
         let name = "입력받은 사용자 이름"
         let password = "입력받은 비밀번호"
 
-        let mappedUserTerms = agreeTerms
+        // 필수 약관 ID를 TermsAgreeViewController에서 전달받은 값으로 설정
+        let mandatoryTermIds: Set<Int> = Set(agreeTerms.filter { $0.termId <= 10 && $0.termId >= 7 }.map { $0.termId })
 
-        let requiredTermIds: Set<Int> = [1, 2, 3, 4]
-        let agreedTermIds = Set(mappedUserTerms.map { $0.termId })
+        // 사용자가 동의한 약관 ID 목록 (agreed == true)
+        let agreedTermIds = Set(agreeTerms.filter { $0.agreed }.map { $0.termId })
 
-        guard requiredTermIds.isSubset(of: agreedTermIds) else {
-            print("❌ 필수 약관 (1~4)에 대한 동의가 필요합니다.")
+        print("✅ 필수 약관 ID 목록 (실제 사용해야 하는 값): \(mandatoryTermIds)")
+        print("✅ 사용자가 동의한 약관 ID 목록: \(agreedTermIds)")
+
+        // 필수 약관이 모두 동의되었는지 확인
+        guard mandatoryTermIds.isSubset(of: agreedTermIds) else {
+            print("❌ 필수 약관 (\(mandatoryTermIds))에 대한 동의가 필요합니다.")
             return
         }
-
-        print("✅ 최종 약관 동의 상태: \(mappedUserTerms)")
+        print("✅ 최종 약관 동의 상태: \(agreeTerms)")
         
         let request = EmailSignUpRequest(
             isVerified: isVerified,
             email: email,
             name: name,
             password: password,
-            userTerms: mappedUserTerms
+            userTerms: agreeTerms
         )
         
         authService.signUp(type: "email", data: request) { result in

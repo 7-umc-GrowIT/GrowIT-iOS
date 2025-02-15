@@ -8,6 +8,10 @@
 import UIKit
 import AVFoundation
 
+protocol VoiceDiaryRecordDelegate: AnyObject {
+    func didFinishRecording(diaryContent: String)
+}
+
 class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate, AVAudioRecorderDelegate {
     
     // MARK: Properties
@@ -17,6 +21,8 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     private var audioRecorder: AVAudioRecorder?
     private var audioPlayer: AVAudioPlayer?
     private var isRecording = false // 녹음 상태 관리
+    
+    weak var delegate: VoiceDiaryRecordDelegate?
     
     private let diaryService = DiaryService()
     
@@ -98,8 +104,10 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
             )
         } else {
             stopRecording()
+            callPostVoiceDiaryDate()
             let nextVC = VoiceDiaryLoadingViewController()
             nextVC.hidesBottomBarWhenPushed = true
+            nextVC.delegate = self.delegate
             navigationController?.pushViewController(nextVC, animated: true)
         }
     }
@@ -227,9 +235,27 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
                 guard let self = self else { return }
                 switch result {
                 case .success(let data):
-                    print("Success: \(data.chat)")
                     self.synthesizeSpeech(text: data.chat)
                 case .failure(let error):
+                    print("Error: \(error)")
+                }
+            })
+    }
+    
+    private func callPostVoiceDiaryDate() {
+        let date = UserDefaults.standard.string(forKey: "VoiceDate") ?? ""
+        diaryService.postVoiceDiaryDate(
+            data: DiaryVoiceDateRequestDTO(
+                date: date),
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case.success(let data):
+                    print("Success!!!!!!! \(data)")
+                    DispatchQueue.main.async {
+                        self.delegate?.didFinishRecording(diaryContent: data.content)
+                    }
+                case.failure(let error):
                     print("Error: \(error)")
                 }
             })
