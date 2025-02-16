@@ -123,22 +123,35 @@ class EmailLoginViewController: UIViewController {
         
         authService.loginEmail(data: loginRequest) { [weak self] result in
             guard let self = self else { return }
-            
+
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    print("로그인 성공 액세스 토큰: \(response.result.accessToken)")
-                    
-                    // 토큰 저장 (로그인 유지)
-                    UserDefaults.standard.set(response.result.accessToken, forKey: "accessToken")
-                    
-                    // 로그인 성공 후 다음 화면으로 이동
-                    self.moveToNextScreen()
+                    if response.isSuccess {
+                        // ✅ 옵셔널 해제 없이 바로 접근 가능
+                        let tokenData = response.result
+
+                        print("✅ 로그인 성공! 액세스 토큰: \(tokenData.accessToken)")
+
+                        // 토큰 저장
+                        UserDefaults.standard.set(tokenData.accessToken, forKey: "accessToken")
+                        UserDefaults.standard.set(tokenData.refreshToken, forKey: "refreshToken")
+
+                        print("🔒 AccessToken 저장됨: \(tokenData.accessToken)")
+                        print("🔒 RefreshToken 저장됨: \(tokenData.refreshToken)")
+
+                        // 로그인 성공 후 다음 화면으로 이동
+                        self.moveToNextScreen()
+                    } else {
+                        print("❌ 로그인 실패: \(response.message)")
+                    }
+
                 case .failure(let error):
-                    print("로그인 실패: \(error)")
+                    print("❌ 로그인 요청 실패: \(error.localizedDescription)")
                 }
             }
         }
+
     }
     
     

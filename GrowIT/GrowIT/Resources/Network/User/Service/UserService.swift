@@ -31,12 +31,29 @@ final class UserService: NetworkManager {
     }
     
     // 비밀번호 변경 API
+    // 비밀번호 변경 API
     func patchUserPassword(data: UserPatchRequestDTO, completion: @escaping(Result<UserPatchResponseDTO, NetworkError>) -> Void) {
-        request(
-            target: .patchPassword(data: data),
-            decodingType: UserPatchResponseDTO.self,
-            completion: completion
-        )
+        // AuthPlugin 없이 새로운 provider 생성
+        let provider = MoyaProvider<UserEndpoint>()
+        
+        provider.request(.patchPassword(data: data)) { result in
+            switch result {
+            case .success(let response):
+                if (200...299).contains(response.statusCode) {
+                    let successResponse = UserPatchResponseDTO(
+                        isSuccess: true,
+                        code: "COMMON200",
+                        message: "성공입니다.",
+                        result: nil
+                    )
+                    completion(.success(successResponse))
+                } else {
+                    completion(.failure(.serverError(statusCode: response.statusCode, message: "서버 에러")))
+                }
+            case .failure(let error):
+                completion(.failure(.networkError(message: error.localizedDescription)))
+            }
+        }
     }
 
     // 현재 보유중인 크레딧 조회 API

@@ -30,6 +30,7 @@ class ChangePasswordViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("비밀번호 변경 화면 진입 시 토큰: \(TokenManager.shared.getAccessToken() ?? "없음")")
         setupView()
         setupActions()
         updateSendCodeButtonState()
@@ -199,6 +200,7 @@ class ChangePasswordViewController: UIViewController {
     
     // MARK: - API
     private func handlePasswordChange() {
+        print("비밀번호 변경 API 호출 직전 토큰: \(TokenManager.shared.getAccessToken() ?? "없음")")
         guard let email = changePasswordView.emailTextField.textField.text,
               let newPassword = changePasswordView.newPwdTextField.textField.text,
               let passwordCheck = changePasswordView.pwdCheckTextField.textField.text else {
