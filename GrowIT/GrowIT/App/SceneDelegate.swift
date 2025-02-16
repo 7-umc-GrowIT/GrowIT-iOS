@@ -32,17 +32,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // UIWindow의 시작 ViewController를 생성한 NavigationController로 지정
         window.rootViewController = navigationController
         
-//        if let accessToken = TokenManager.shared.getAccessToken() {
-//                let homeVC = HomeViewController()
-//                let navigationController = UINavigationController(rootViewController: homeVC)
-//                navigationController.isNavigationBarHidden = true
-//                window.rootViewController = navigationController
-//            } else {
-//                let loginVC = LoginViewController()
-//                let navigationController = UINavigationController(rootViewController: loginVC)
-//                navigationController.isNavigationBarHidden = true
-//                window.rootViewController = navigationController
-//            }
+        if let accessToken = TokenManager.shared.getAccessToken() {
+                let homeVC = HomeViewController()
+                let navigationController = UINavigationController(rootViewController: homeVC)
+                navigationController.isNavigationBarHidden = true
+                window.rootViewController = navigationController
+            } else {
+                let loginVC = LoginViewController()
+                let navigationController = UINavigationController(rootViewController: loginVC)
+                navigationController.isNavigationBarHidden = true
+                window.rootViewController = navigationController
+            }
         
         // window 표시
         self.window = window
