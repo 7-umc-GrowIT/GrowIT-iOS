@@ -26,13 +26,17 @@ class HomeViewController: UIViewController {
         //setupGradientView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        callGetGroImage()
+    }
+    
     // MARK: - NetWork
     func callGetGroImage() {
         groService.getGroImage(completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let data):
-                homeview.characterArea.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl))
+                homeview.characterArea.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
                 let equippedItems = data.equippedItems
                 
                 let categoryImageViews: [String: UIImageView] = [
@@ -44,12 +48,11 @@ class HomeViewController: UIViewController {
                 
                 for item in equippedItems {
                     if let imageView = categoryImageViews[item.category] {
-                        imageView.kf.setImage(with: URL(string: item.itemImageUrl))
+                        imageView.kf.setImage(with: URL(string: item.itemImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
                     } else {
                         fatalError("category not found")
                     }
                 }
-                
                 
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
@@ -77,6 +80,12 @@ class HomeViewController: UIViewController {
         gradientView.layer.addSublayer(gradientLayer)
     }
 
-    private lazy var homeview = HomeView()
+    private lazy var homeview = HomeView().then {
+        $0.topNavBar.itemShopBtn.addTarget(self, action: #selector(goToItemShop), for: .touchUpInside)
+    }
 
+    @objc private func goToItemShop() {
+        let itemShopVC = GroViewController()
+        navigationController?.pushViewController(itemShopVC, animated: true)
+    }
 }

@@ -16,5 +16,8 @@ struct UserPostRequestDTO: Codable {
 
 struct UserPatchRequestDTO: Codable {
     let isVerified: Bool
-    let email, password, passwordCheck: String
+    let email: String
+    let password: String
+    let passwordCheck: String
 }
+

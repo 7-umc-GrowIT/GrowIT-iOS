@@ -18,6 +18,8 @@ class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
         
         setupViewControllers()
         setupCustomTabBar()
+        
+        navigationController?.navigationBar.isHidden = true
     }
     
     private func setupViewControllers() {

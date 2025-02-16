@@ -67,8 +67,8 @@ extension UserEndpoint: TargetType {
         return [
             "Content-type": "application/json",
             "accept": "*/*",
-            // 테스트용 임시토큰
-            "Authorization": "Bearer "
+//            // 테스트용 임시토큰
+//            "Authorization": "Bearer "
         ]
     }
 }

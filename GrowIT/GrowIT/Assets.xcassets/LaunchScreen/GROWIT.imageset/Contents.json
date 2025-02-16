@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "State=Error.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Brand Logo.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

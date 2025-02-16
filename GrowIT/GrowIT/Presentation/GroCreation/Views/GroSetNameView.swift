@@ -44,7 +44,7 @@ class GroSetNameView: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    var startButton = GradientButton().then {
+    lazy var nextButton = GradientButton().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -92,7 +92,7 @@ class GroSetNameView: UIView {
     //MARK: - 컴포넌트 추가
     private func setView() {
         addSubviews([
-            shapeIcon, subtitleLabel, titleLabel, nickNameTextField, groImageView, startButton
+            shapeIcon, subtitleLabel, titleLabel, nickNameTextField, groImageView, nextButton
         ])
     }
     
@@ -127,7 +127,7 @@ class GroSetNameView: UIView {
             $0.height.equalTo(groImageView.snp.width)
         }
         
-        startButton.snp.makeConstraints {
+        nextButton.snp.makeConstraints {
             $0.bottom.equalTo(safeAreaLayoutGuide).inset(20)
             $0.horizontalEdges.equalToSuperview().inset(24)
             $0.height.equalTo(60)

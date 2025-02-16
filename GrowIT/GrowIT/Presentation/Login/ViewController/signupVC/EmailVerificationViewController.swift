@@ -28,6 +28,8 @@ class EmailVerificationViewController: UIViewController {
         print("✅ 전달된 약관 목록: \(agreeTerms)")
         setupView()
         setupActions()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+            view.addGestureRecognizer(tapGesture)
     }
     
     // MARK: - Setup View
@@ -277,6 +279,10 @@ class EmailVerificationViewController: UIViewController {
         print("✅ 이메일 인증에서 전달된 약관 목록: \(agreeTerms)")
 
         self.navigationController?.pushViewController(userInfoVC, animated: true)
+    }
+    
+    @objc private func dismissKeyboard() {
+            view.endEditing(true)
     }
     
 }

@@ -35,7 +35,7 @@ class LoginView: UIView {
     
     // 로고 이미지
     private lazy var logoImageView = UIImageView().then {
-        $0.image = UIImage(named: "loginTitle")
+        $0.image = UIImage(named: "GROWIT")
         $0.contentMode = .scaleAspectFill
     }
     
