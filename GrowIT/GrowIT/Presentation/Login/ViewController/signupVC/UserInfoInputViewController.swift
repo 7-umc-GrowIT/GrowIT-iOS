@@ -128,8 +128,18 @@ class UserInfoInputViewController: UIViewController {
  
     
     @objc private func nextButtonTap() {
-        let name = "입력받은 사용자 이름"
-        let password = "입력받은 비밀번호"
+        guard let name = userInfoView.nameTextField.textField.text,
+              let password = userInfoView.passwordTextField.textField.text,
+              !name.isEmpty, !password.isEmpty else {
+            print("입력 값 누락: name이나 password가 비어있음")
+            return
+        }
+        
+        print("✅ 회원가입 시도")
+        print("- 이름: \(name)")
+        print("- 이메일: \(email)")
+        print("- 비밀번호: \(password)")
+        print("- 이메일 인증 여부: \(isVerified)")
 
         // 필수 약관 ID를 TermsAgreeViewController에서 전달받은 값으로 설정
         let mandatoryTermIds: Set<Int> = Set(agreeTerms.filter { $0.termId <= 10 && $0.termId >= 7 }.map { $0.termId })
@@ -137,7 +147,7 @@ class UserInfoInputViewController: UIViewController {
         // 사용자가 동의한 약관 ID 목록 (agreed == true)
         let agreedTermIds = Set(agreeTerms.filter { $0.agreed }.map { $0.termId })
 
-        print("✅ 필수 약관 ID 목록 (실제 사용해야 하는 값): \(mandatoryTermIds)")
+        print("✅ 필수 약관 ID 목록: \(mandatoryTermIds)")
         print("✅ 사용자가 동의한 약관 ID 목록: \(agreedTermIds)")
 
         // 필수 약관이 모두 동의되었는지 확인
@@ -145,7 +155,6 @@ class UserInfoInputViewController: UIViewController {
             print("❌ 필수 약관 (\(mandatoryTermIds))에 대한 동의가 필요합니다.")
             return
         }
-        print("✅ 최종 약관 동의 상태: \(agreeTerms)")
         
         let request = EmailSignUpRequest(
             isVerified: isVerified,
@@ -154,6 +163,12 @@ class UserInfoInputViewController: UIViewController {
             password: password,
             userTerms: agreeTerms
         )
+        
+        print("✅ 서버로 전송되는 최종 요청 데이터:")
+        print("- 이메일 인증 여부: \(request.isVerified)")
+        print("- 이메일: \(request.email)")
+        print("- 이름: \(request.name)")
+        print("- 약관 동의 상태: \(request.userTerms)")
         
         authService.signUp(type: "email", data: request) { result in
             switch result {
@@ -165,7 +180,6 @@ class UserInfoInputViewController: UIViewController {
                 print("❌ 회원가입 실패: \(error.localizedDescription)")
             }
         }
-
     }
     
     private func handleSignUpSuccess(accessToken: String) {
