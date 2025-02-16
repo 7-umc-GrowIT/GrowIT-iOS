@@ -23,6 +23,7 @@ class GroViewController: UIViewController, ItemListDelegate {
     //MARK: - Views
     private lazy var groView = GroView().then {
         $0.zoomButton.addTarget(self, action: #selector(didTapZoomButton), for: .touchUpInside)
+        $0.eraseButton.addTarget(self, action: #selector(didTapEraseButton), for: .touchUpInside)
         $0.purchaseButton.addTarget(self, action: #selector(didTapPurchaseButton), for: .touchUpInside)
     }
     
@@ -198,6 +199,26 @@ class GroViewController: UIViewController, ItemListDelegate {
     private func didTapZoomButton(_ sender: UIButton) {
         sender.isSelected.toggle()
         showModalView(isZoomedOut: sender.isSelected)
+    }
+    
+    @objc
+    private func didTapEraseButton() {
+        let categoriesToClear = ["OBJECT", "HEAD_ACCESSORY", "PLANT"]
+        
+        categoriesToClear.forEach { category in
+            if let itemId = categoryToEquippedId[category] {
+                callPatchItemState(itemId: itemId, status: "UNEQUIPPED")
+                categoryToEquippedId[category] = nil
+            }
+        }
+        
+        let defaultFlowerPotId = 1
+        categoryToEquippedId["PLANT"] = defaultFlowerPotId
+        callPatchItemState(itemId: defaultFlowerPotId, status: "EQUIPPED")
+        
+        groView.groAccImageView.image = nil
+        groView.groObjectImageView.image = nil
+        groView.groFlowerPotImageView.image = UIImage(named: "Gro_FlowerPot")
     }
     
     @objc
