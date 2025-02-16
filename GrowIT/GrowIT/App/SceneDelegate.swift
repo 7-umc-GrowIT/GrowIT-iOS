@@ -24,7 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         // 실제 첫 화면이 되는 MainViewController 인스턴스 생성
 
-        let vc = LoginViewController()
+        let vc = CustomTabBarController()
         
         // NavigationController을 사용할 경우, MainViewController를 rootViewController로 갖는 NavigationController을 생성해야한다.
         let navigationController = UINavigationController(rootViewController: vc)
@@ -32,17 +32,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // UIWindow의 시작 ViewController를 생성한 NavigationController로 지정
         window.rootViewController = navigationController
         
-        if let accessToken = TokenManager.shared.getAccessToken() {
-                let homeVC = HomeViewController()
-                let navigationController = UINavigationController(rootViewController: homeVC)
-                navigationController.isNavigationBarHidden = true
-                window.rootViewController = navigationController
-            } else {
-                let loginVC = LoginViewController()
-                let navigationController = UINavigationController(rootViewController: loginVC)
-                navigationController.isNavigationBarHidden = true
-                window.rootViewController = navigationController
-            }
+//        if let accessToken = TokenManager.shared.getAccessToken() {
+//                let homeVC = HomeViewController()
+//                let navigationController = UINavigationController(rootViewController: homeVC)
+//                navigationController.isNavigationBarHidden = true
+//                window.rootViewController = navigationController
+//            } else {
+//                let loginVC = LoginViewController()
+//                let navigationController = UINavigationController(rootViewController: loginVC)
+//                navigationController.isNavigationBarHidden = true
+//                window.rootViewController = navigationController
+//            }
         
         // window 표시
         self.window = window
