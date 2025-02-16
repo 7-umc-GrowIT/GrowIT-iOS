@@ -114,7 +114,6 @@ class GroViewController: UIViewController, ItemListDelegate {
     func didSelectItem(_ isPurchased: Bool, selectedItem: ItemList?) {
         groView.purchaseButton.isHidden = isPurchased
         guard let selectedItem = selectedItem else { return }
-        groView.purchaseButton.updateCredit(selectedItem.price)
         
         let category = selectedItem.category
         let newItemId = selectedItem.id
@@ -122,33 +121,41 @@ class GroViewController: UIViewController, ItemListDelegate {
         
         if currentItemId == newItemId { return }
         
-        // 착용 아이템 해제
+        // 구매하지 않은 경우 UI만 변경
+        if !isPurchased {
+            if let imageView = getImageViewForCategory(category) {
+                imageView.kf.setImage(with: URL(string: selectedItem.groImageUrl))
+            }
+            groView.purchaseButton.updateCredit(selectedItem.price)
+            return
+        }
+        
+        // 기존 착용 아이템 해제
         if let currentItemId = currentItemId {
             callPatchItemState(itemId: currentItemId, status: "UNEQUIPPED")
         }
         
         // 새로운 아이템 착용
         categoryToEquippedId[category] = newItemId
-        if isPurchased {
-            callPatchItemState(itemId: newItemId, status: "EQUIPPED")
-        }
+        callPatchItemState(itemId: newItemId, status: "EQUIPPED")
         
+        if let imageView = getImageViewForCategory(category) {
+            imageView.kf.setImage(with: URL(string: selectedItem.groImageUrl))
+        }
+    }
+    
+    private func setDelegate() {
+        itemListModalVC.itemDelegate = self
+    }
+    
+    private func getImageViewForCategory(_ category: String) -> UIImageView? {
         let categoryImageViews: [String: UIImageView] = [
             "BACKGROUND": groView.backgroundImageView,
             "OBJECT": groView.groObjectImageView,
             "PLANT": groView.groFlowerPotImageView,
             "HEAD_ACCESSORY": groView.groAccImageView
         ]
-        
-        if let imageView = categoryImageViews[category] {
-            imageView.kf.setImage(with: URL(string: selectedItem.groImageUrl))
-        } else {
-            fatalError("category not found")
-        }
-    }
-    
-    private func setDelegate() {
-        itemListModalVC.itemDelegate = self
+        return categoryImageViews[category]
     }
     
     //MARK: - Functional
@@ -161,10 +168,26 @@ class GroViewController: UIViewController, ItemListDelegate {
     }
     
     @objc
-    func didCompletePurchase() {
+    func didCompletePurchase(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let itemId = userInfo["itemId"] as? Int,
+              let category = userInfo["category"] as? String else {
+            return
+        }
+        
+        // 기존 착용 아이템 해제
+        if let currentItemId = categoryToEquippedId[category] {
+            callPatchItemState(itemId: currentItemId, status: "UNEQUIPPED")
+        }
+        
+        // 새 아이템 착용
+        categoryToEquippedId[category] = itemId
+        callPatchItemState(itemId: itemId, status: "EQUIPPED")
+        
         groView.purchaseButton.isHidden = true
         callGetCredit()
     }
+    
     @objc
     func updateCredit() {
         callGetCredit()

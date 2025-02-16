@@ -92,7 +92,7 @@ class PurchaseModalView: UIView {
         cancleButton.snp.makeConstraints {
             $0.top.equalTo(subtitleLabel.snp.bottom).offset(40)
             $0.leading.equalToSuperview().inset(24)
-            $0.width.equalTo(88)
+            $0.width.equalTo(88).priority(.low)
             $0.height.equalTo(60)
         }
         
@@ -100,7 +100,7 @@ class PurchaseModalView: UIView {
             $0.top.equalTo(subtitleLabel.snp.bottom).offset(40)
             $0.leading.equalTo(cancleButton.snp.trailing).offset(8)
             $0.trailing.equalToSuperview().inset(24)
-            $0.width.equalTo(286)
+            $0.width.equalTo(286).priority(.low)
             $0.height.equalTo(60)
         }
     }

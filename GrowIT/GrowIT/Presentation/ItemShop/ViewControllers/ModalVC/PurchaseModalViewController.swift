@@ -35,6 +35,7 @@ class PurchaseModalViewController: UIViewController {
                 print("Success: \(data)")
                 DispatchQueue.main.async {
                     self.setNotification()
+                    self.handlePurchaseSuccess(itemId: self.itemId, category: "ITEM_CATEGORY")  // category는 서버 응답 기반으로 지정
                     self.dismiss(animated: true, completion: nil)
                 }
             case .failure(let error):
@@ -63,8 +64,18 @@ class PurchaseModalViewController: UIViewController {
     private func setNotification() {
         let Notification = NotificationCenter.default
         
-        Notification.post(name: .purchaseCompleted, object: nil)
         Notification.post(name: .creditUpdated, object: nil)
+    }
+    
+    private func handlePurchaseSuccess(itemId: Int, category: String) {
+        NotificationCenter.default.post(
+            name: .purchaseCompleted,
+            object: nil,
+            userInfo: [
+                "itemId": itemId,
+                "category": category
+            ]
+        )
     }
     
     //MARK: event

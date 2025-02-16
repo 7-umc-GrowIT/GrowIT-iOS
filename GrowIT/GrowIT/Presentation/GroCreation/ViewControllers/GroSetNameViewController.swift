@@ -86,8 +86,8 @@ class GroSetNameViewController: UIViewController {
     //MARK: - 기능
     @objc
     private func textFieldsDidChange() {
-        guard let groName = groSetNameView.nickNameTextField.textField.text else { return }
-        isValidName = groName.count >= 2 && groName.count <= 8
+        groName = groSetNameView.nickNameTextField.textField.text ?? ""
+        isValidName = groName!.count >= 2 && groName!.count <= 8
         
         if !isValidName {
             groSetNameView.nickNameTextField.setError(message: "닉네임은 2~8자 이내로 작성해야 합니다")
