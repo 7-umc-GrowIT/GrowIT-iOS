@@ -165,7 +165,7 @@ class EmailLoginViewController: UIViewController {
     
     // 로그인 성공 후 다음 화면으로 이동
     private func moveToNextScreen() {
-        let homeVC = HomeViewController()
+        let homeVC = CustomTabBarController()
         self.navigationController?.pushViewController(homeVC, animated: true)
     }
     

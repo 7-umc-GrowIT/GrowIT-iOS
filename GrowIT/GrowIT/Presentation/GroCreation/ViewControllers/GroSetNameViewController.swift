@@ -120,7 +120,7 @@ class GroSetNameViewController: UIViewController {
     private func nextVC() {
         callPostGroCreate()
         
-        let homeVC = HomeViewController()
+        let homeVC = CustomTabBarController()
         let navigationController = UINavigationController(rootViewController: homeVC)
         
         // 루트 뷰 컨트롤러 교체
