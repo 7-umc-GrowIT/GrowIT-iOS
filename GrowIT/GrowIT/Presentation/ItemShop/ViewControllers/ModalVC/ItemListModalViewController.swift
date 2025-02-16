@@ -64,10 +64,10 @@ class ItemListModalViewController: UIViewController {
     }
     
     // MARK: - NetWork
-    func callGetItems() {
+    func callGetItems(completion: (() -> Void)? = nil) {
         let previousItemId = Set(self.shopItems.map { $0.id })
         
-        itemService.getItemList(category: category, completion: { [weak self] result in
+        itemService.getItemList(category: category) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -75,20 +75,22 @@ class ItemListModalViewController: UIViewController {
                 self.shopItems = data.itemList
                 self.myItems = data.itemList.filter { $0.purchased }
                 
-                // 다른 아이템일 때 이미지 업데이트
-                let newItemId = Set(shopItems.map{$0.id})
+                let newItemId = Set(self.shopItems.map { $0.id })
                 if previousItemId != newItemId {
-                    self.shopItems = shopItems
                     DispatchQueue.main.async {
                         self.itemListModalView.itemCollectionView.reloadData()
+                        completion?()  // reloadData 완료 후 콜백 실행
                     }
+                } else {
+                    completion?() // 데이터 변화 없더라도 콜백 실행
                 }
-                
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
+                completion?()
             }
-        })
+        }
     }
+    
     
     //MARK: - Delegate Method
     private func setDelegate() {
@@ -115,7 +117,7 @@ class ItemListModalViewController: UIViewController {
                 }
             }
         }
-
+        
         itemListModalView.purchaseButton.isHidden = true
         let inset: CGFloat = 100
         itemListModalView.updateCollectionViewConstraints(forSuperviewInset: inset)
@@ -148,9 +150,25 @@ class ItemListModalViewController: UIViewController {
             selectedImages[selectedIndex].withRenderingMode(.alwaysOriginal),
             forSegmentAt: selectedIndex
         )
-        
         category = categories[selectedIndex]
-        callGetItems()
+        
+        // 데이터 로딩 완료 후 착용 중 아이템 선택
+        callGetItems { [weak self] in
+            guard let self = self else { return }
+            
+            // 마이 아이템 모드일 때만 착용 중 아이템 선택
+            if self.isMyItems {
+                DispatchQueue.main.async {
+                    for (index, item) in self.myItems.enumerated() {
+                        if let equippedItemId = self.itemDelegate?.categoryToEquippedId[item.category],
+                           equippedItemId == item.id {
+                            let indexPath = IndexPath(item: index, section: 0)
+                            self.itemListModalView.itemCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                        }
+                    }
+                }
+            }
+        }
         
         UIView.transition(
             with: itemListModalView.itemCollectionView,
@@ -214,7 +232,7 @@ extension ItemListModalViewController: UICollectionViewDataSource {
             cell.itemBackGroundView.backgroundColor = colorMapping[item.shopBackgroundColor] ?? .itemYellow
             cell.itemImageView.kf.setImage(with: URL(string: item.imageUrl))
             cell.updateSelectionState()
-
+            
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(

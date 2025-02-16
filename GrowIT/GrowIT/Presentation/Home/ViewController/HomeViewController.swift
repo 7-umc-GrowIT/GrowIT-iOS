@@ -26,6 +26,10 @@ class HomeViewController: UIViewController {
         //setupGradientView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        callGetGroImage()
+    }
+    
     // MARK: - NetWork
     func callGetGroImage() {
         groService.getGroImage(completion: { [weak self] result in
@@ -77,6 +81,12 @@ class HomeViewController: UIViewController {
         gradientView.layer.addSublayer(gradientLayer)
     }
 
-    private lazy var homeview = HomeView()
+    private lazy var homeview = HomeView().then {
+        $0.topNavBar.itemShopBtn.addTarget(self, action: #selector(goToItemShop), for: .touchUpInside)
+    }
 
+    @objc private func goToItemShop() {
+        let itemShopVC = GroViewController()
+        navigationController?.pushViewController(itemShopVC, animated: true)
+    }
 }
