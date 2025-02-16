@@ -26,6 +26,10 @@ class HomeViewController: UIViewController {
         //setupGradientView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        callGetGroImage()
+    }
+    
     // MARK: - NetWork
     func callGetGroImage() {
         groService.getGroImage(completion: { [weak self] result in
