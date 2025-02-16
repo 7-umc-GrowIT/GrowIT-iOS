@@ -27,6 +27,9 @@ class UserInfoInputViewController: UIViewController {
         setupActions()
         nextButtonState()
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+            view.addGestureRecognizer(tapGesture)
+        
         print("✅ 사용자 정보 입력 화면으로 전달된 이메일: \(email)")
         print("✅ 사용자 정보 입력 화면으로 전달된 인증 여부: \(isVerified)")
         print("✅ 사용자 정보 입력 화면으로 전달된 약관 목록: \(agreeTerms)") // 디버깅용 로그
@@ -58,13 +61,15 @@ class UserInfoInputViewController: UIViewController {
     
     // MARK: - Setup Actions
     private func setupActions() {
-        
         userInfoView.passwordTextField.textField.isSecureTextEntry = true
         userInfoView.passwordCheckTextField.textField.isSecureTextEntry = true
         
-        // 비밀번호 확인 필드에서만 액션 설정
+        // 두 필드 모두에 대해 변경 이벤트 감지
+        userInfoView.passwordTextField.textField.addTarget(
+            self, action: #selector(passwordFieldsDidChange), for: .editingChanged
+        )
         userInfoView.passwordCheckTextField.textField.addTarget(
-            self, action: #selector(passwordCheckFieldDidChange), for: .editingChanged
+            self, action: #selector(passwordFieldsDidChange), for: .editingChanged
         )
         
         userInfoView.nextButton.addTarget(self, action: #selector(nextButtonTap), for: .touchUpInside)
@@ -94,32 +99,35 @@ class UserInfoInputViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc private func passwordCheckFieldDidChange() {
+    @objc private func passwordFieldsDidChange() {
         guard let password = userInfoView.passwordTextField.textField.text,
               let confirmPassword = userInfoView.passwordCheckTextField.textField.text
         else { return }
         
-        if confirmPassword.isEmpty {
-            // 비밀번호 확인 필드가 비어 있으면 초기 상태 유지
-            userInfoView.passwordCheckTextField.clearError()
+        // 두 필드 모두 비어있으면 초기 상태로
+        if password.isEmpty && confirmPassword.isEmpty {
+            [userInfoView.passwordTextField, userInfoView.passwordCheckTextField].forEach {
+                $0.clearError()
+            }
             return
         }
         
-        if password == confirmPassword {
-            // 비밀번호가 일치
-            [userInfoView.passwordTextField, userInfoView.passwordCheckTextField].forEach {
-                $0.setSuccess()
-                $0.titleLabel.textColor = .gray900
-                $0.textField.textColor = .positive400
+        // 비밀번호 확인 필드가 비어있지 않을 때만 검증
+        if !confirmPassword.isEmpty {
+            if password == confirmPassword {
+                [userInfoView.passwordTextField, userInfoView.passwordCheckTextField].forEach {
+                    $0.setSuccess()
+                    $0.titleLabel.textColor = .gray900
+                    $0.textField.textColor = .positive400
+                }
+                userInfoView.passwordCheckTextField.errorLabel.text = "비밀번호가 일치합니다"
+                userInfoView.passwordCheckTextField.errorLabel.textColor = .positive400
+                userInfoView.passwordCheckTextField.errorLabel.isHidden = false
+            } else {
+                userInfoView.passwordCheckTextField.setError(message: "비밀번호가 일치하지 않습니다")
+                userInfoView.passwordCheckTextField.titleLabel.textColor = .negative400
+                userInfoView.passwordCheckTextField.textField.textColor = .negative400
             }
-            userInfoView.passwordCheckTextField.errorLabel.text = "비밀번호가 일치합니다"
-            userInfoView.passwordCheckTextField.errorLabel.textColor = .positive400
-            userInfoView.passwordCheckTextField.errorLabel.isHidden = false
-        } else {
-            // 비밀번호가 일치하지 않음
-            userInfoView.passwordCheckTextField.setError(message: "비밀번호가 일치하지 않습니다")
-            userInfoView.passwordCheckTextField.titleLabel.textColor = .negative400
-            userInfoView.passwordCheckTextField.textField.textColor = .negative400
         }
         
         // 버튼 상태 업데이트
@@ -187,6 +195,10 @@ class UserInfoInputViewController: UIViewController {
         
         moveToSignUpCompleteScreen()
     }
+    
+    @objc private func dismissKeyboard() {
+            view.endEditing(true)
+    }   
 
 
     func moveToSignUpCompleteScreen() {

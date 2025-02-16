@@ -24,6 +24,9 @@ class EmailLoginViewController: UIViewController {
         loadCheckBoxState()
         updateLoginButtonState()
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+        
         emailLoginView.changePwdButton.addTarget(self, action: #selector(
             changePwdBtnTap), for: .touchUpInside)
         
@@ -32,6 +35,7 @@ class EmailLoginViewController: UIViewController {
         
         emailLoginView.findEmailButton.addTarget(self, action: #selector(
             findEmailBtnTap), for: .touchUpInside
+                                                 
         )
     }
     
@@ -152,6 +156,10 @@ class EmailLoginViewController: UIViewController {
             }
         }
 
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     
