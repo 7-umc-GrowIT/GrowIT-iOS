@@ -68,7 +68,7 @@ class GroViewController: UIViewController, ItemListDelegate {
             guard let self = self else { return }
             switch result {
             case .success(let data):
-                groView.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl))
+                groView.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
                 let equippedItems = data.equippedItems
                 
                 let categoryImageViews: [String: UIImageView] = [
@@ -86,7 +86,7 @@ class GroViewController: UIViewController, ItemListDelegate {
                 
                 for item in equippedItems {
                     if let imageView = categoryImageViews[item.category] {
-                        imageView.kf.setImage(with: URL(string: item.itemImageUrl))
+                        imageView.kf.setImage(with: URL(string: item.itemImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
                     } else {
                         fatalError("category not found")
                     }
@@ -125,7 +125,7 @@ class GroViewController: UIViewController, ItemListDelegate {
         // 구매하지 않은 경우 UI만 변경
         if !isPurchased {
             if let imageView = getImageViewForCategory(category) {
-                imageView.kf.setImage(with: URL(string: selectedItem.groImageUrl))
+                imageView.kf.setImage(with: URL(string: selectedItem.groImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
             }
             groView.purchaseButton.updateCredit(selectedItem.price)
             return
@@ -141,7 +141,7 @@ class GroViewController: UIViewController, ItemListDelegate {
         callPatchItemState(itemId: newItemId, status: "EQUIPPED")
         
         if let imageView = getImageViewForCategory(category) {
-            imageView.kf.setImage(with: URL(string: selectedItem.groImageUrl))
+            imageView.kf.setImage(with: URL(string: selectedItem.groImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
         }
     }
     

@@ -230,7 +230,7 @@ extension ItemListModalViewController: UICollectionViewDataSource {
             let item = myItems[indexPath.row]
             cell.isOwnedLabel.text = "보유 중"
             cell.itemBackGroundView.backgroundColor = colorMapping[item.shopBackgroundColor] ?? .itemYellow
-            cell.itemImageView.kf.setImage(with: URL(string: item.imageUrl))
+            cell.itemImageView.kf.setImage(with: URL(string: item.imageUrl), options: [.transition(.fade(0.1)), .cacheOriginalImage])
             cell.updateSelectionState()
             
             return cell
@@ -243,7 +243,7 @@ extension ItemListModalViewController: UICollectionViewDataSource {
             let item = shopItems[indexPath.row]
             cell.creditLabel.text = String(item.price)
             cell.itemBackGroundView.backgroundColor = colorMapping[item.shopBackgroundColor] ?? .itemYellow
-            cell.itemImageView.kf.setImage(with: URL(string: item.imageUrl))
+            cell.itemImageView.kf.setImage(with: URL(string: item.imageUrl), options: [.transition(.fade(0.1)), .cacheOriginalImage])
             
             return cell
         }
