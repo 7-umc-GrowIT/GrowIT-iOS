@@ -36,6 +36,8 @@ class ChangePasswordViewController: UIViewController {
         updateCertificationButtonState()
         updatePasswordMatchState()
         updatePwdChangeBtnState()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
     
     // MARK: - Setup View
@@ -133,7 +135,7 @@ class ChangePasswordViewController: UIViewController {
             return
         }
 
-        // ✅ 인증번호 유효성 검사: 8자리 (영문 + 숫자)
+        // 인증번호 유효성 검사: 8자리 (영문 + 숫자)
         let isValidCode = isValidVerificationCode(codeText)
 
         if codeText.isEmpty {
@@ -144,7 +146,7 @@ class ChangePasswordViewController: UIViewController {
             changePasswordView.codeTextField.clearError()
         }
 
-        // ✅ 인증번호가 8자리일 때 버튼 활성화
+        // 인증번호가 8자리일 때 버튼 활성화
         changePasswordView.certificationButton.setButtonState(
             isEnabled: isValidCode,
             enabledColor: .black,
@@ -382,5 +384,9 @@ class ChangePasswordViewController: UIViewController {
     
     @objc private func changePwdButtonTapped() {
         handlePasswordChange()
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
