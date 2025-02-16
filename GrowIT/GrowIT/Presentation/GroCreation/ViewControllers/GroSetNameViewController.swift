@@ -81,6 +81,14 @@ class GroSetNameViewController: UIViewController {
         super.viewDidLoad()
         self.view = groSetNameView
         updateNextButtonState()
+        
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
+        self.view.endEditing(true)
     }
     
     //MARK: - 기능
