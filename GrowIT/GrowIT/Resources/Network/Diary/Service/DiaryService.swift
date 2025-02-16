@@ -67,5 +67,9 @@ final class DiaryService: NetworkManager {
     func patchFixDiary(diaryId: Int, data: DiaryPatchDTO, completion: @escaping (Result<DiaryPatchResponseDTO, NetworkError>) -> Void) {
         request(target: .patchFixDiary(diaryId: diaryId, data: data), decodingType: DiaryPatchResponseDTO.self, completion: completion)
     }
+    
+    func postVoiceDiaryAnalyze(diaryId: Int, completion: @escaping (Result<DiaryAnalyzeResponseDTO, NetworkError>) -> Void) {
+        request(target: .postDiaryAnalyze(diaryId: diaryId), decodingType: DiaryAnalyzeResponseDTO.self, completion: completion)
+    }
 }
 

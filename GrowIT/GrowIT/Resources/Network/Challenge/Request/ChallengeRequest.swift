@@ -11,3 +11,10 @@ struct ChallengeRequestDTO: Codable {
     let certificationImageUrl: String
     let thoughts: String
 }
+
+struct ChallengeSelectRequestDTO: Codable {
+    let challengeIds: [Int]
+    let dtype: String
+}
+
+typealias ChallengeSelectRequestListDTO = [ChallengeSelectRequestDTO]

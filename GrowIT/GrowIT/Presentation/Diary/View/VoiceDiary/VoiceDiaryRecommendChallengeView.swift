@@ -39,7 +39,7 @@ class VoiceDiaryRecommendChallengeView: UIView {
         $0.textColor = .gray100
     }
     
-    private let emoStackView = EmoStackView().then {
+    let emoStackView = EmoStackView().then {
         $0.axis = .horizontal
         $0.spacing = 8
         $0.distribution = .equalSpacing
@@ -115,6 +115,16 @@ class VoiceDiaryRecommendChallengeView: UIView {
         }
     }
     
+    func updateChallenges(_ challenges: [RecommendedChallenge]) {
+        let titles = challenges.prefix(3).map { $0.title }
+        let times = challenges.prefix(3).map { "\($0.time)분" }
+        
+        challengeStackView.updateChallengeTitles(titles: titles, times: times)
+    }
     
+    func updateEmo(emotionKeywords: [EmotionKeyword]) {
+        let keywords = emotionKeywords.prefix(3).map { $0.keyword }
+        emoStackView.updateLabels(with: keywords)
+    }
     
 }

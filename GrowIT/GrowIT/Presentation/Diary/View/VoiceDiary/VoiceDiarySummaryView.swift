@@ -172,4 +172,13 @@ class VoiceDiarySummaryView: UIView {
         diaryTextView.text = text
     }
 
+    func updateEmo(emotionKeywords: [EmotionKeyword]) {
+        let keywords = emotionKeywords.prefix(3).map { $0.keyword }
+        emoStackView.updateLabels(with: keywords)
+    }
+    
+    func updateDate(with date: String) {
+        dateLabel.text = date
+    }
+    
 }

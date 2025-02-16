@@ -22,9 +22,9 @@ final class ChallengeService: NetworkManager {
         self.provider = provider ?? MoyaProvider<ChallengeEndpoint>(plugins: plugins)
     }
     /// Post Select Challenge API
-    func postSelectChallenge(challengeId: Int, completion: @escaping (Result<ChallengeSelectResponseDTO, NetworkError>) -> Void) {
-        request(target: .postSelectChallenge(challengeId: challengeId), decodingType: ChallengeSelectResponseDTO.self, completion: completion)
-    }
+//    func postSelectChallenge(challengeId: Int, completion: @escaping (Result<ChallengeSelectResponseDTO, NetworkError>) -> Void) {
+//        request(target: .postSelectChallenge(challengeId: challengeId), decodingType: ChallengeSelectResponseDTO.self, completion: completion)
+//    }
     
     /// Post Prove Challenge API
     func postProveChallenge(challengeId: Int, data: ChallengeRequestDTO, completion: @escaping (Result<ChallengeDTO, NetworkError>) -> Void) {
@@ -56,5 +56,9 @@ final class ChallengeService: NetworkManager {
     func fetchChallengeStatus(dtype: String, completed: Bool, completion: @escaping (Result<ChallengeStatusResponseDTO, NetworkError>) -> Void){
         request(target: .getAllChallenges(dtype: dtype, completed: completed), decodingType: ChallengeStatusResponseDTO.self, completion: completion)
     }
-
+    
+    func postSelectedChallenge(data: [ChallengeSelectRequestDTO], completion: @escaping (Result<ChallengeSelectResponseDTO, NetworkError>) -> Void) {
+        request(target: .postSelectChallenge(data: data), decodingType: ChallengeSelectResponseDTO.self, completion: completion)
+    }
+    
 }
