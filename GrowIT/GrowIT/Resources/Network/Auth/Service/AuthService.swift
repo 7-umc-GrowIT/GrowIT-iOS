@@ -201,10 +201,17 @@ final class AuthService: NetworkManager {
                     // 📩 서버에서 받은 JSON 데이터 출력
                     let jsonString = String(data: response.data, encoding: .utf8)
                     print("📩 서버 응답 JSON: \(jsonString ?? "데이터 없음")")
-
+                    
                     // ✅ JSON 디코딩 시 오류 확인
                     let decodedResponse = try JSONDecoder().decode(SignUpResponse.self, from: response.data)
                     print("✅ 회원가입 성공! 액세스 토큰: \(decodedResponse.result.accessToken ?? "없음")")
+                    
+                    let accessToken = decodedResponse.result.accessToken
+                    let refreshToken = decodedResponse.result.refreshToken
+                    TokenManager.shared.saveTokens(accessToken: accessToken, refreshToken: refreshToken)
+                    print("✅ 회원가입 후 토큰 저장 완료")
+                    
+                    
                     completion(.success(decodedResponse))
                     
                 } catch {
