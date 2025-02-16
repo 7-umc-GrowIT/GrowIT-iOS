@@ -61,7 +61,7 @@ class GroSetNameViewController: UIViewController {
         iconImage: selectedIcon
     ).then {
         $0.nickNameTextField.textField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
-        $0.startButton.addTarget(self, action: #selector(didTapStartButton), for: .touchUpInside)
+        $0.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
     //MARK: - init
@@ -98,9 +98,9 @@ class GroSetNameViewController: UIViewController {
     }
     
     private func updateNextButtonState() {
-        groSetNameView.startButton.isEnabled = isValidName
+        groSetNameView.nextButton.isEnabled = isValidName
         
-        groSetNameView.startButton.setButtonState(
+        groSetNameView.nextButton.setButtonState(
             isEnabled: isValidName,
             enabledColors: [UIColor.primaryColor400!.cgColor, UIColor.primaryColor600!.cgColor],
             disabledColors: [UIColor.grayColor100!.cgColor, UIColor.grayColor100!.cgColor],
@@ -109,8 +109,16 @@ class GroSetNameViewController: UIViewController {
     }
     
     @objc
-    private func didTapStartButton() {
-        print("다음화면으로")
+    private func nextVC() {
         callPostGroCreate()
+        
+        let homeVC = HomeViewController()
+        let navigationController = UINavigationController(rootViewController: homeVC)
+        
+        // 루트 뷰 컨트롤러 교체
+        if let window = UIApplication.shared.windows.first {
+            window.rootViewController = navigationController
+            window.makeKeyAndVisible()
+        }
     }
 }
