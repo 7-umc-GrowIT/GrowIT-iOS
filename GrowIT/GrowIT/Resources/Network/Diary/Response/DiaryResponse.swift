@@ -46,3 +46,21 @@ struct DiaryPatchResponseDTO: Decodable {
 struct DiaryDeleteResponseDTO: Decodable {
     let message: String
 }
+
+struct DiaryAnalyzeResponseDTO: Decodable {
+    let emotionKeywords: [EmotionKeyword]
+    let recommendedChallenges: [RecommendedChallenge]
+}
+
+struct EmotionKeyword: Decodable {
+    let id: Int
+    let keyword: String
+}
+
+struct RecommendedChallenge: Decodable {
+    let id: Int
+    let title: String
+    let content: String
+    let time: Int
+    let type: String
+}

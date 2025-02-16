@@ -237,4 +237,16 @@ class VoiceDiaryhallengeStackView: UIStackView {
         }
     }
     
+    func updateChallengeTitles(titles: [String], times: [String]) {
+        let labels = [label1, label2, label3]
+        let timeLabels = [clockLabel1, clockLabel2, clockLabel3]
+        
+        for (index, title) in titles.enumerated() {
+            labels[index].text = title
+        }
+        
+        for (index, time) in times.enumerated() {
+            timeLabels[index].text = time
+        }
+    }
 }

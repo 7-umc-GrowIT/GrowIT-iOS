@@ -8,7 +8,7 @@
 import UIKit
 
 class EmoStackView: UIStackView {
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -92,6 +92,19 @@ class EmoStackView: UIStackView {
         
         [label1, label2, label3].forEach { label in
             label.textColor = titleColor
+        }
+    }
+    
+    func updateLabels(with keywords: [String]) {
+        let labels = [label1, label2, label3]
+        
+        for (index, keyword) in keywords.enumerated() {
+            labels[index].text = keyword
+        }
+        
+        // 나머지 라벨이 있으면 숨김 처리
+        for index in keywords.count..<labels.count {
+            labels[index].text = ""
         }
     }
     
