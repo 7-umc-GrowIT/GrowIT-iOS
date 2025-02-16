@@ -83,7 +83,7 @@ extension ChallengeEndpoint: TargetType {
     var headers: [String : String]? {
         return [
             "Content-Type": "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsc29vb0BnLmNvbSIsInJvbGVzIjoiVVNFUiIsInVzZXJJZCI6NzYsImV4cCI6MTczOTY3MjQxNH0.XUh9R_IyJrQqrt1x2VIcgSowIh941frUMM-O6rstepY"
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsc29vb0BnLmNvbSIsInJvbGVzIjoiVVNFUiIsInVzZXJJZCI6NzYsImV4cCI6MTczOTY3Njk3M30.6UqaSxBfaNQWPdGWGksENfdEx7Yjo9B6MKDB5eN3Rck"
         ]
     }
     

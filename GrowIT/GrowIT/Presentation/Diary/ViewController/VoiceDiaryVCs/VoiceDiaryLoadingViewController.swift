@@ -21,10 +21,6 @@ class VoiceDiaryLoadingViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupNavigationBar()
-        
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-//            self.navigateToNextScreen()
-//        }
     }
     
     // MARK: Setup Navigation Bar
