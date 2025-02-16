@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // 토큰 확인 후 화면 선택
                 let nextViewController: UIViewController
                 if let _ = TokenManager.shared.getAccessToken() {
-                    nextViewController = HomeViewController()
+                    nextViewController = CustomTabBarController()
                 } else {
                     nextViewController = LoginViewController()
                 }
