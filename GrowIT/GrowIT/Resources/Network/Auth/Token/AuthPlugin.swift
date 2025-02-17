@@ -33,4 +33,47 @@ final class AuthPlugin: PluginType {
         
         return request
     }
+    
+    // 토큰 재발급
+    func process(_ result: Result<Response, MoyaError>, target: TargetType) -> Result<Response, MoyaError> {
+            switch result {
+            case .success(let response):
+                if response.statusCode == 401 {
+                    guard let refreshToken = TokenManager.shared.getRefreshToken() else {
+                        print("RefreshToken이 없음. 자동 재발급 불가.")
+                        return result
+                    }
+
+                    let authService = AuthService()
+                    authService.reissueToken(refreshToken: refreshToken) { reissueResult in
+                        switch reissueResult {
+                        case .success(let response):
+                            let newAccessToken = response.result.accessToken
+                            print("성공 새로운 AccessToken: \(newAccessToken)")
+
+                            // 원래 요청을 다시 보낼 수 있도록 수정
+                            if let originalRequest = target as? AuthorizationEndpoints {
+                                MoyaProvider<AuthorizationEndpoints>().request(originalRequest) { retryResult in
+                                    switch retryResult {
+                                    case .success(let retryResponse):
+                                        print("원래 요청 재시도 성공 - Status: \(retryResponse.statusCode)")
+                                    case .failure(let error):
+                                        print("요청 재시도 실패: \(error)")
+                                    }
+                                }
+                            } else {
+                                print("실패")
+                            }
+                        case .failure(let error):
+                            print("토큰 재발급 실패: \(error)")
+                        }
+                    }
+                }
+            case .failure:
+                break
+            }
+            return result
+        }
 }
+
+

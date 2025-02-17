@@ -156,7 +156,7 @@ class ChangePasswordViewController: UIViewController {
         )
     }
 
-    // ✅ 인증번호 형식 검증 함수 추가
+    // 인증번호 형식 검증 함수 추가
     private func isValidVerificationCode(_ code: String) -> Bool {
         let codeRegex = "^[A-Za-z0-9]{8}$" // 영문+숫자로 8자리
         return NSPredicate(format: "SELF MATCHES %@", codeRegex).evaluate(with: code)
