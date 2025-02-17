@@ -36,7 +36,6 @@ struct UserTermDTO: Codable {
     }
 }
 
-
 struct ReissueTokenRequest: Codable {
     let refreshToken: String 
 }

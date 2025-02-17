@@ -156,7 +156,7 @@ class EmailVerificationViewController: UIViewController {
     
     @objc private func sendCodeButtonTapped() {
         guard let emailText = emailVerificationView.emailTextField.textField.text, !emailText.isEmpty else {
-            print("이메일을 입력하세요")
+            print("이메일 입력 필요")
             return
         }
         
@@ -271,12 +271,12 @@ class EmailVerificationViewController: UIViewController {
     @objc func nextButtonTap() {
         let userInfoVC = UserInfoInputViewController()
         
-        // ✅ 약관 동의 데이터를 올바르게 전달
+        // 약관 동의 데이터를 올바르게 전달
         userInfoVC.email = email
         userInfoVC.isVerified = true
         userInfoVC.agreeTerms = agreeTerms
 
-        print("✅ 이메일 인증에서 전달된 약관 목록: \(agreeTerms)")
+        print("이메일 인증에서 전달된 약관 목록: \(agreeTerms)")
 
         self.navigationController?.pushViewController(userInfoVC, animated: true)
     }
