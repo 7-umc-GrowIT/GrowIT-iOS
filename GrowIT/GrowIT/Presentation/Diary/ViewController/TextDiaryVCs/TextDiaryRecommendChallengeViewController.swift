@@ -11,7 +11,6 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
     
     //MARK: - Properties
     let textDiaryRecommendChallengeView = TextDiaryRecommendChallengeView()
-    
     let navigationBarManager = NavigationManager()
     
     private var recommendedChallenges: [RecommendedChallenge] = []
@@ -22,6 +21,10 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
     
     let diaryService = DiaryService()
     let challengeService = ChallengeService()
+    
+    private var challengeViews: [ChallengeItemView] {
+        return textDiaryRecommendChallengeView.challengeStackView.challengeViews
+    }
     
     init(diaryId: Int) {
         self.diaryId = diaryId
@@ -38,9 +41,7 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
         setupUI()
         setupNavigationBar()
         setupActions()
-        
         fetchDiaryAnalyze(diaryId: diaryId)
-        // textDiaryRecommendChallengeView.updateChallenges(recommendedChallenges)
     }
     
     //MARK: - Setup Navigation Bar
@@ -70,10 +71,9 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
     
     //MARK: - Setup Actions
     private func setupActions() {
-        textDiaryRecommendChallengeView.challengeStackView.button1.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        textDiaryRecommendChallengeView.challengeStackView.button2.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        textDiaryRecommendChallengeView.challengeStackView.button3.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        
+        challengeViews.forEach { challengeView in
+            challengeView.button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        }
         textDiaryRecommendChallengeView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
@@ -153,17 +153,10 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
     }
     
     func getSelectedChallenges() -> [ChallengeSelectRequestDTO] {
-        let buttons = [
-            textDiaryRecommendChallengeView.challengeStackView.button1,
-            textDiaryRecommendChallengeView.challengeStackView.button2,
-            textDiaryRecommendChallengeView.challengeStackView.button3
-        ]
-        
-        return buttons.enumerated().compactMap { index, button in
-            guard index < recommendedChallenges.count, button.isSelectedState() else { return nil }
+        return challengeViews.enumerated().compactMap { index, challengeView in
+            guard index < recommendedChallenges.count, challengeView.button.isSelectedState() else { return nil }
             let challenge = recommendedChallenges[index]
             return ChallengeSelectRequestDTO(challengeIds: [challenge.id], dtype: challenge.type)
         }
     }
-    
 }

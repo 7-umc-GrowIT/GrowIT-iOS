@@ -102,7 +102,6 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
             )
         } else {
             stopRecording()
-            // callPostVoiceDiaryDate()
             let nextVC = VoiceDiaryLoadingViewController()
             nextVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(nextVC, animated: true)
