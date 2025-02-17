@@ -15,38 +15,37 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = (scene as? UIWindowScene) else { return }
 
-            guard let windowScene = (scene as? UIWindowScene) else { return }
+        // LaunchScreenViewController를 첫 화면으로 설정
+        let window = UIWindow(windowScene: windowScene)
+        let launchVC = LaunchScreenViewController()
+        window.rootViewController = launchVC
+        self.window = window
+        window.makeKeyAndVisible()
 
-            // LaunchScreenViewController를 첫 화면으로 설정
-            let window = UIWindow(windowScene: windowScene)
-            let launchVC = LaunchScreenViewController()
-            window.rootViewController = launchVC
-            self.window = window
-            window.makeKeyAndVisible()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            
+            // 앱 시작 시 로그아웃 처리
+            //TokenManager.shared.clearTokens()
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                
-                // 앱 시작 시 로그아웃 처리
-                TokenManager.shared.clearTokens()
-
-                // 토큰 확인 후 화면 선택
-                let nextViewController: UIViewController
-                if let _ = TokenManager.shared.getAccessToken() {
-                    nextViewController = HomeViewController()
-                } else {
-                    nextViewController = LoginViewController()
-                }
-
-                // NavigationController 설정
-                let navigationController = UINavigationController(rootViewController: nextViewController)
-                navigationController.isNavigationBarHidden = true
-
-                // LaunchScreen → 다음 화면 전환
-                self.window?.rootViewController = navigationController
-                self.window?.makeKeyAndVisible()
+            // 토큰 확인 후 화면 선택
+            let nextViewController: UIViewController
+            if let _ = TokenManager.shared.getAccessToken() {
+                nextViewController = CustomTabBarController(initialIndex: 1)
+            } else {
+                nextViewController = LoginViewController()
             }
+
+            // NavigationController 설정
+            let navigationController = UINavigationController(rootViewController: nextViewController)
+            navigationController.isNavigationBarHidden = true
+
+            // LaunchScreen → 다음 화면 전환
+            self.window?.rootViewController = navigationController
+            self.window?.makeKeyAndVisible()
         }
+    }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let url = URLContexts.first?.url {

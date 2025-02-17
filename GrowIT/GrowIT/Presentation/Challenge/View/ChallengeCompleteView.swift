@@ -84,8 +84,8 @@ class ChallengeCompleteView: UIView {
         ]
         
         $0.text = ""
-//        $0.textColor = .gray900
-//        $0.font = .body1Medium()
+        $0.textColor = .gray900
+        $0.font = .body1Medium()
         $0.backgroundColor = .white
         $0.isScrollEnabled = false
         $0.clipsToBounds = true

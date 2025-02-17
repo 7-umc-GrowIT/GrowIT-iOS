@@ -160,6 +160,8 @@ class EmailVerificationViewController: UIViewController {
             return
         }
         
+        self.view.endEditing(true)
+        
         email = emailText
         
         let request = SendEmailVerifyRequest(email: emailText)
@@ -181,7 +183,7 @@ class EmailVerificationViewController: UIViewController {
         
         // 토스트 메시지 표시
         let toastImage = UIImage(named: "Style=Mail") ?? UIImage()
-        Toast.show(
+        CustomToast(containerWidth: 225).show(
             image: toastImage,
             message: "인증번호를 발송했어요",
             font: UIFont.heading3SemiBold()
@@ -251,7 +253,7 @@ class EmailVerificationViewController: UIViewController {
         
         // 토스트 메시지 표시
         let toastImage = UIImage(named: "Style=check") ?? UIImage()
-        Toast.show(
+        CustomToast(containerWidth: 258).show(
             image: toastImage,
             message: "인증번호 인증을 완료했어요",
             font: UIFont.heading3SemiBold()
