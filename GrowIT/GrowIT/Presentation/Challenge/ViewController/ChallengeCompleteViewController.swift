@@ -77,7 +77,7 @@ class ChallengeCompleteViewController: UIViewController {
     /// 수정하기 버튼 이벤트
     @objc private func updateBtnTapped(){
         if(!isReviewModified && !isImageModified){
-            ChallengeToast().show(image: UIImage(named: "toastAlertIcon") ?? UIImage(), message: "수정사항이 없습니다", font: .heading3SemiBold())
+            CustomToast().show(image: UIImage(named: "toastAlertIcon") ?? UIImage(), message: "수정사항이 없습니다", font: .heading3SemiBold())
         }else if(isReviewModified && !isImageModified){
             if let id = challengeId, let url = originalImageUrl{
                 print("출력한 url \(url)")
@@ -207,7 +207,7 @@ class ChallengeCompleteViewController: UIViewController {
             switch result {
             case .success(let data):
                 print(data)
-                ChallengeToast().show(image: UIImage(named: "notcheckedBox") ?? UIImage(), message: "챌린지를 수정했어요", font: .heading3SemiBold())
+                CustomToast().show(image: UIImage(named: "notcheckedBox") ?? UIImage(), message: "챌린지를 수정했어요", font: .heading3SemiBold())
                 dismiss(animated: true)
             case .failure(let error):
                 print("챌린지 수정 에러:\(error)")

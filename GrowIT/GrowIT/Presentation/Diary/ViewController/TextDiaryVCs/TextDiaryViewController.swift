@@ -13,6 +13,7 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     //MARK: - Properties
     let navigationBarManager = NavigationManager()
     let textDiaryView = TextDiaryView()
+    let diaryService = DiaryService()
     
     let calVC = JDiaryCalendarController()
     
@@ -63,15 +64,20 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     @objc func nextVC() {
         print(textDiaryView.saveButton.isEnabled)
         if textDiaryView.saveButton.isEnabled == false {
-            Toast.show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "일기를 더 작성해 주세요", font: .heading3SemiBold())
+            CustomToast(containerWidth: 232).show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "일기를 더 작성해 주세요", font: .heading3SemiBold())
         } else {
-            let userDiary = textDiaryView.diaryTextField.text
-            let date = textDiaryView.dateLabel.text
-            UserDefaults.standard.set(userDiary, forKey: "TextDiary")
-            UserDefaults.standard.set(date, forKey: "TextDate")
+            let userDiary = textDiaryView.diaryTextField.text ?? ""
+            let date = textDiaryView.dateLabel.text ?? ""
+            
             let nextVC = TextDiaryLoadingViewController()
             nextVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(nextVC, animated: true)
+            
+            callPostTextDiary(userDiary: userDiary, date: date) { diaryId in
+                DispatchQueue.main.async {
+                    nextVC.navigateToNextScreen(with: diaryId)
+                }
+            }
         }
     }
     
@@ -86,5 +92,42 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     
     func didSelectDate(_ date: String) {
         textDiaryView.updateDateLabel(date)
+    }
+    
+    // MARK: Setup APIs
+    func callPostTextDiary(userDiary: String, date: String, completion: @escaping (Int) -> Void) {
+        let convertedDate = convertDateFormat(from: date)
+        diaryService.postTextDiary(
+            data: DiaryRequestDTO(
+                content: userDiary,
+                date: convertedDate ?? ""),
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case.success(let data):
+                    print("Success!!!!!!! \(data)")
+                    DispatchQueue.main.async {
+                        completion(data.diaryId)
+                    }
+                case.failure(let error):
+                    print("Error: \(error)")
+                }
+            }
+        )
+    }
+    
+    func convertDateFormat(from originalDate: String) -> String? {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy년 M월 d일"
+        inputFormatter.locale = Locale(identifier: "ko_KR")
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "yyyy-MM-dd"
+
+        if let date = inputFormatter.date(from: originalDate) {
+            return outputFormatter.string(from: date)
+        } else {
+            return nil
+        }
     }
 }

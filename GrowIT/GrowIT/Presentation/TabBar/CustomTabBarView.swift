@@ -16,7 +16,7 @@ class CustomTabBarView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+      
         addStackView()
         addComponent()
         constraints()

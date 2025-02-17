@@ -31,7 +31,7 @@ class HomeTopNavbarView: UIView {
     }
     
     // 아이템샵 아이콘 버튼
-    private lazy var itemShopBtn = makeIconbutton(image: "shop")
+    lazy var itemShopBtn = makeIconbutton(image: "shop")
     
     // 환경설정 아이콘 버튼
     private lazy var settingBtn = makeIconbutton(image: "setting")

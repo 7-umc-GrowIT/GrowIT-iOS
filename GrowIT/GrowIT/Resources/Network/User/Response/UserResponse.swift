@@ -13,8 +13,20 @@ struct UserPostResponseDTO: Decodable {
 }
 
 struct UserPatchResponseDTO: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
 
+    enum CodingKeys: String, CodingKey {
+        case isSuccess = "isSuccess"
+        case code = "code"
+        case message = "message"
+    }
 }
+
+
+struct EmptyResult: Decodable {}
+
 
 struct UserGetCreditResponseDTO: Decodable {
     let currentCredit: Int

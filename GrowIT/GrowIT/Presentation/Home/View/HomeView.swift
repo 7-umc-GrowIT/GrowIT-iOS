@@ -25,7 +25,7 @@ class HomeView: UIView {
     // MARK: - Property
     
     // 상단 네비게이션 바
-    private lazy var topNavBar = HomeTopNavbarView()
+    lazy var topNavBar = HomeTopNavbarView()
 
     
     // 하단 캐릭터 영역

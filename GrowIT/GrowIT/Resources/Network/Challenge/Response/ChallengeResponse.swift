@@ -87,3 +87,15 @@ struct UserChallenge: Decodable{
     let time: Int
     let completed: Bool
 }
+
+struct ChallengeSelectResultDTO: Codable {
+    let selectedChallenges: [SelectedChallengeDTO]
+}
+
+struct SelectedChallengeDTO: Codable {
+    let id: Int
+    let dtype: String
+    let title: String
+    let content: String
+    let time: Int
+}

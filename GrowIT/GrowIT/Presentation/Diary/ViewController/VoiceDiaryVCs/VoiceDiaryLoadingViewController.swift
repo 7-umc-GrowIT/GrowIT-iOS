@@ -13,16 +13,14 @@ class VoiceDiaryLoadingViewController: UIViewController {
     let voiceDiaryLoadingView = VoiceDiaryLoadingView()
     let navigationBarManager = NavigationManager()
     
+    private var diaryContent: String?
+    
     weak var delegate: VoiceDiaryRecordDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupNavigationBar()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            self.navigateToNextScreen()
-        }
     }
     
     // MARK: Setup Navigation Bar
@@ -54,11 +52,11 @@ class VoiceDiaryLoadingViewController: UIViewController {
         // navigationController?.popViewController(animated: true)
     }
 
-    private func navigateToNextScreen() {
-        let nextVC = VoiceDiarySummaryViewController()
-        nextVC.hidesBottomBarWhenPushed = true
+    func navigateToNextScreen(with content: String, diaryId: Int, date: String) {
+        self.diaryContent = content
         
-        nextVC.delegate = self.delegate
+        let nextVC = VoiceDiarySummaryViewController(diaryContent: diaryContent ?? "", diaryId: diaryId, date: date)
+        nextVC.hidesBottomBarWhenPushed = true
         
         navigationController?.pushViewController(nextVC, animated: true)
     }

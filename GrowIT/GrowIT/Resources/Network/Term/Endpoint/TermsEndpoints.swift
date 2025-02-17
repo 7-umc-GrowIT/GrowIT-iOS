@@ -52,7 +52,7 @@ extension TermsEndpoints: TargetType {
     var headers: [String: String]? {
            switch self {
            case .getTerms, .agreeTerms:
-               return ["Content-Type": "application/json"] // ✅ `Authorization` 제거
+               return ["Content-Type": "application/json"]
            }
        }
 

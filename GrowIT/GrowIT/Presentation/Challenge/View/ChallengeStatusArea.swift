@@ -127,7 +127,7 @@ class ChallengeStatusArea: UIView {
         challengeAllList.snp.makeConstraints{
             $0.top.equalTo(challengeStatusLabelStack.snp.bottom).offset(12)
             $0.horizontalEdges.equalToSuperview().inset(24)
-            $0.bottom.equalToSuperview().inset(65)
+            $0.bottom.equalToSuperview().inset(65 + 100)
         }
     
     }

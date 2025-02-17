@@ -60,6 +60,12 @@ class JDiaryCalendarController: UIViewController {
         return calendar.component(.weekday, from: date)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getDiaryDates()
+        jDiaryCalendar.calendarCollectionView.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = jDiaryCalendar
@@ -73,7 +79,14 @@ class JDiaryCalendarController: UIViewController {
         jDiaryCalendar.backMonthBtn.addTarget(self, action: #selector(backMonthTapped), for: .touchUpInside)
         jDiaryCalendar.nextMonthBtn.addTarget(self, action: #selector(nextMonthTapped), for: .touchUpInside)
         
+        //getDiaryDates()
+    }
+    
+    
+    
+    func refreshData(){
         getDiaryDates()
+        
     }
     
     private func getDiaryDates(){
@@ -81,6 +94,7 @@ class JDiaryCalendarController: UIViewController {
             guard let self = self else {return}
             switch result{
             case.success(let data):
+                self.callendarDiaries.removeAll()
                 data?.diaryDateList.forEach{
                     self.callendarDiaries.append($0)
                 }
@@ -125,7 +139,7 @@ class JDiaryCalendarController: UIViewController {
         calculateWeeksInMonth()
         adjustCalendarHeightBasedOnWeeks()
         jDiaryCalendar.calendarCollectionView.reloadData()
-        
+        self.view.layoutIfNeeded()
     }
     
 //    private func adjustCalendarHeightBasedOnWeeks() {
@@ -318,6 +332,9 @@ func collectionView(_ collectionView: UICollectionView, layout collectionViewLay
                      case.success(let data):
                          let diaryPostFixVC = DiaryPostFixViewController(text: data.content, date: data.date, diaryId: data.diaryId)
                          diaryPostFixVC.modalPresentationStyle = .fullScreen
+                         diaryPostFixVC.onDismiss = { [weak self] in
+                             self?.getDiaryDates()
+                         }
                          presentPageSheet(viewController: diaryPostFixVC, detentFraction: 0.65)
                      case.failure(let error):
                          print("Error: \(error)")
@@ -332,4 +349,8 @@ func collectionView(_ collectionView: UICollectionView, layout collectionViewLay
         }
     }
     
+}
+
+extension Notification.Name {
+    static let deleteDiary = Notification.Name("deleteDiary")
 }

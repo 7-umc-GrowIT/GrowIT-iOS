@@ -15,6 +15,7 @@ final class UserService: NetworkManager {
     init(provider: MoyaProvider<UserEndpoint>? = nil) {
         let plugins: [PluginType] = [
 //            NetworkLoggerPlugin(configuration: .init(logOptions: [.requestHeaders, .verbose]))
+            AuthPlugin()
         ]
         
         self.provider = provider ?? MoyaProvider<UserEndpoint>(plugins: plugins)
@@ -31,12 +32,29 @@ final class UserService: NetworkManager {
     
     // 비밀번호 변경 API
     func patchUserPassword(data: UserPatchRequestDTO, completion: @escaping(Result<UserPatchResponseDTO, NetworkError>) -> Void) {
-        request(
-            target: .patchPassword(data: data),
-            decodingType: UserPatchResponseDTO.self,
-            completion: completion
-        )
+        let provider = MoyaProvider<UserEndpoint>(plugins: []) // AccessToken 플러그인 없이 실행
+
+        provider.request(.patchPassword(data: data)) { result in
+            switch result {
+            case .success(let response):
+                guard (200...299).contains(response.statusCode) else {
+                    completion(.failure(.serverError(statusCode: response.statusCode, message: "서버 에러")))
+                    return
+                }
+                do {
+                    let decodedResponse = try JSONDecoder().decode(UserPatchResponseDTO.self, from: response.data)
+                    completion(.success(decodedResponse))
+                } catch {
+                    completion(.failure(.decodingError))
+                }
+
+            case .failure(let error):
+                completion(.failure(.networkError(message: error.localizedDescription)))
+            }
+        }
     }
+
+
 
     // 현재 보유중인 크레딧 조회 API
     func getUserCredits(completion: @escaping(Result<UserGetCreditResponseDTO, NetworkError>) -> Void) {

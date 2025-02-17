@@ -17,13 +17,9 @@ class UserInfoInputViewController: UIViewController {
     let authService = AuthService()
     
     // 이전 화면에서 전달받을 데이터
-    var email: String = ""
-    var isVerified: Bool = false
-    var agreeTerms: [UserTermDTO] = []
-    // 약관 데이터를 전달받기 위한 변수
-    var termsList: [Term] = []
-    var optionalTermsList: [Term] = []
-    var agreedTerms: [String: Bool] = [:]
+   var email: String = ""
+   var isVerified: Bool = false
+   var agreeTerms: [UserTermDTO] = [] // 약관 데이터 (termId 기반)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,11 +27,14 @@ class UserInfoInputViewController: UIViewController {
         setupActions()
         nextButtonState()
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+            view.addGestureRecognizer(tapGesture)
+        
         print("✅ 사용자 정보 입력 화면으로 전달된 이메일: \(email)")
         print("✅ 사용자 정보 입력 화면으로 전달된 인증 여부: \(isVerified)")
         print("✅ 사용자 정보 입력 화면으로 전달된 약관 목록: \(agreeTerms)") // 디버깅용 로그
         
-        // ✅ 약관 데이터가 정상적으로 유지되었는지 확인
+        // 약관 데이터가 정상적으로 유지되었는지 확인
         if agreeTerms.isEmpty {
             print("❌ 약관 데이터가 전달되지 않았습니다.")
         }
@@ -62,13 +61,15 @@ class UserInfoInputViewController: UIViewController {
     
     // MARK: - Setup Actions
     private func setupActions() {
-        
         userInfoView.passwordTextField.textField.isSecureTextEntry = true
         userInfoView.passwordCheckTextField.textField.isSecureTextEntry = true
         
-        // 비밀번호 확인 필드에서만 액션 설정
+        // 두 필드 모두에 대해 변경 이벤트 감지
+        userInfoView.passwordTextField.textField.addTarget(
+            self, action: #selector(passwordFieldsDidChange), for: .editingChanged
+        )
         userInfoView.passwordCheckTextField.textField.addTarget(
-            self, action: #selector(passwordCheckFieldDidChange), for: .editingChanged
+            self, action: #selector(passwordFieldsDidChange), for: .editingChanged
         )
         
         userInfoView.nextButton.addTarget(self, action: #selector(nextButtonTap), for: .touchUpInside)
@@ -98,61 +99,84 @@ class UserInfoInputViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc private func passwordCheckFieldDidChange() {
+    @objc private func passwordFieldsDidChange() {
         guard let password = userInfoView.passwordTextField.textField.text,
               let confirmPassword = userInfoView.passwordCheckTextField.textField.text
         else { return }
         
-        if confirmPassword.isEmpty {
-            // 비밀번호 확인 필드가 비어 있으면 초기 상태 유지
-            userInfoView.passwordCheckTextField.clearError()
+        // 두 필드 모두 비어있으면 초기 상태로
+        if password.isEmpty && confirmPassword.isEmpty {
+            [userInfoView.passwordTextField, userInfoView.passwordCheckTextField].forEach {
+                $0.clearError()
+            }
             return
         }
         
-        if password == confirmPassword {
-            // 비밀번호가 일치
-            [userInfoView.passwordTextField, userInfoView.passwordCheckTextField].forEach {
-                $0.setSuccess()
-                $0.titleLabel.textColor = .gray900
-                $0.textField.textColor = .positive400
+        // 비밀번호 확인 필드가 비어있지 않을 때만 검증
+        if !confirmPassword.isEmpty {
+            if password == confirmPassword {
+                [userInfoView.passwordTextField, userInfoView.passwordCheckTextField].forEach {
+                    $0.setSuccess()
+                    $0.titleLabel.textColor = .gray900
+                    $0.textField.textColor = .positive400
+                }
+                userInfoView.passwordCheckTextField.errorLabel.text = "비밀번호가 일치합니다"
+                userInfoView.passwordCheckTextField.errorLabel.textColor = .positive400
+                userInfoView.passwordCheckTextField.errorLabel.isHidden = false
+            } else {
+                userInfoView.passwordCheckTextField.setError(message: "비밀번호가 일치하지 않습니다")
+                userInfoView.passwordCheckTextField.titleLabel.textColor = .negative400
+                userInfoView.passwordCheckTextField.textField.textColor = .negative400
             }
-            userInfoView.passwordCheckTextField.errorLabel.text = "비밀번호가 일치합니다"
-            userInfoView.passwordCheckTextField.errorLabel.textColor = .positive400
-            userInfoView.passwordCheckTextField.errorLabel.isHidden = false
-        } else {
-            // 비밀번호가 일치하지 않음
-            userInfoView.passwordCheckTextField.setError(message: "비밀번호가 일치하지 않습니다")
-            userInfoView.passwordCheckTextField.titleLabel.textColor = .negative400
-            userInfoView.passwordCheckTextField.textField.textColor = .negative400
         }
         
         // 버튼 상태 업데이트
         nextButtonState()
     }
+ 
     
     @objc private func nextButtonTap() {
-        let name = "입력받은 사용자 이름"
-        let password = "입력받은 비밀번호"
-
-        let mappedUserTerms = agreeTerms
-
-        let requiredTermIds: Set<Int> = [1, 2, 3, 4]
-        let agreedTermIds = Set(mappedUserTerms.map { $0.termId })
-
-        guard requiredTermIds.isSubset(of: agreedTermIds) else {
-            print("❌ 필수 약관 (1~4)에 대한 동의가 필요합니다.")
+        guard let name = userInfoView.nameTextField.textField.text,
+              let password = userInfoView.passwordTextField.textField.text,
+              !name.isEmpty, !password.isEmpty else {
+            print("입력 값 누락: name이나 password가 비어있음")
             return
         }
+        
+        print("✅ 회원가입 시도")
+        print("- 이름: \(name)")
+        print("- 이메일: \(email)")
+        print("- 비밀번호: \(password)")
+        print("- 이메일 인증 여부: \(isVerified)")
 
-        print("✅ 최종 약관 동의 상태: \(mappedUserTerms)")
+        // 필수 약관 ID를 TermsAgreeViewController에서 전달받은 값으로 설정
+        let mandatoryTermIds: Set<Int> = Set(agreeTerms.filter { $0.termId <= 10 && $0.termId >= 7 }.map { $0.termId })
+
+        // 사용자가 동의한 약관 ID 목록 (agreed == true)
+        let agreedTermIds = Set(agreeTerms.filter { $0.agreed }.map { $0.termId })
+
+        print("✅ 필수 약관 ID 목록: \(mandatoryTermIds)")
+        print("✅ 사용자가 동의한 약관 ID 목록: \(agreedTermIds)")
+
+        // 필수 약관이 모두 동의되었는지 확인
+        guard mandatoryTermIds.isSubset(of: agreedTermIds) else {
+            print("❌ 필수 약관 (\(mandatoryTermIds))에 대한 동의가 필요합니다.")
+            return
+        }
         
         let request = EmailSignUpRequest(
             isVerified: isVerified,
             email: email,
             name: name,
             password: password,
-            userTerms: mappedUserTerms
+            userTerms: agreeTerms
         )
+        
+        print("✅ 서버로 전송되는 최종 요청 데이터:")
+        print("- 이메일 인증 여부: \(request.isVerified)")
+        print("- 이메일: \(request.email)")
+        print("- 이름: \(request.name)")
+        print("- 약관 동의 상태: \(request.userTerms)")
         
         authService.signUp(type: "email", data: request) { result in
             switch result {
@@ -164,7 +188,6 @@ class UserInfoInputViewController: UIViewController {
                 print("❌ 회원가입 실패: \(error.localizedDescription)")
             }
         }
-
     }
     
     private func handleSignUpSuccess(accessToken: String) {
@@ -172,6 +195,10 @@ class UserInfoInputViewController: UIViewController {
         
         moveToSignUpCompleteScreen()
     }
+    
+    @objc private func dismissKeyboard() {
+            view.endEditing(true)
+    }   
 
 
     func moveToSignUpCompleteScreen() {

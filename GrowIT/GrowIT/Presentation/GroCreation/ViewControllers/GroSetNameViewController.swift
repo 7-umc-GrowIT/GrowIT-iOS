@@ -61,7 +61,7 @@ class GroSetNameViewController: UIViewController {
         iconImage: selectedIcon
     ).then {
         $0.nickNameTextField.textField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
-        $0.startButton.addTarget(self, action: #selector(didTapStartButton), for: .touchUpInside)
+        $0.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
     //MARK: - init
@@ -81,13 +81,21 @@ class GroSetNameViewController: UIViewController {
         super.viewDidLoad()
         self.view = groSetNameView
         updateNextButtonState()
+        
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
+        self.view.endEditing(true)
     }
     
     //MARK: - 기능
     @objc
     private func textFieldsDidChange() {
-        guard let groName = groSetNameView.nickNameTextField.textField.text else { return }
-        isValidName = groName.count >= 2 && groName.count <= 8
+        groName = groSetNameView.nickNameTextField.textField.text ?? ""
+        isValidName = groName!.count >= 2 && groName!.count <= 8
         
         if !isValidName {
             groSetNameView.nickNameTextField.setError(message: "닉네임은 2~8자 이내로 작성해야 합니다")
@@ -98,9 +106,9 @@ class GroSetNameViewController: UIViewController {
     }
     
     private func updateNextButtonState() {
-        groSetNameView.startButton.isEnabled = isValidName
+        groSetNameView.nextButton.isEnabled = isValidName
         
-        groSetNameView.startButton.setButtonState(
+        groSetNameView.nextButton.setButtonState(
             isEnabled: isValidName,
             enabledColors: [UIColor.primaryColor400!.cgColor, UIColor.primaryColor600!.cgColor],
             disabledColors: [UIColor.grayColor100!.cgColor, UIColor.grayColor100!.cgColor],
@@ -109,8 +117,16 @@ class GroSetNameViewController: UIViewController {
     }
     
     @objc
-    private func didTapStartButton() {
-        print("다음화면으로")
+    private func nextVC() {
         callPostGroCreate()
+        
+        let homeVC = CustomTabBarController(initialIndex: 1)
+        let navigationController = UINavigationController(rootViewController: homeVC)
+        
+        // 루트 뷰 컨트롤러 교체
+        if let window = UIApplication.shared.windows.first {
+            window.rootViewController = navigationController
+            window.makeKeyAndVisible()
+        }
     }
 }

@@ -49,9 +49,8 @@ class SignUpCompleteViewController: UIViewController {
     }
     
     @objc private func loginButtonTap() {
-        let emailLoginVC = EmailLoginViewController()
-        self.navigationController?.pushViewController(emailLoginVC, animated: true)
+        let nextVC = GroSetBackgroundViewController()
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
-    
 
 }

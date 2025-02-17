@@ -32,6 +32,7 @@ class GroSetBackgroundViewController: UIViewController, ItemBackgroundModalDeleg
         setConstraints()
         setInitialState()
         
+        navigationController?.navigationBar.isHidden = true
         itemBackgroundModalVC.delegate = self
     }
     
