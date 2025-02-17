@@ -140,7 +140,7 @@ class ChallengeCompleteViewController: UIViewController {
             switch result{
             case .success(let data):
                 print(data)
-                let url = URL(string: data.certificationImage)
+                let url = URL(string: data.certificationImageUrl)
                 challengeCompleteView.imageContainer.kf.setImage(with: url){ result in
                     switch result{
                     case .success(let data):
@@ -149,7 +149,7 @@ class ChallengeCompleteViewController: UIViewController {
                         print("킹피셔 이미지 저장 후 데이터 반환 에러: \(error)")
                     }
                 }
-                originalImageUrl = data.certificationImage
+                originalImageUrl = data.certificationImageUrl
                 initialReview = data.thoughts
                 challengeCompleteView.setupChallenge(challenge: data)
                 

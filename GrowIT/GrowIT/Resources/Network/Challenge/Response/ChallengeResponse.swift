@@ -35,7 +35,7 @@ struct ChallengeProveResponseDTO: Decodable{
 struct ChallengeDTO: Decodable{
     let id: Int
     let title: String
-    let certificationImage: String
+    let certificationImageUrl: String
     let thoughts: String
     let time: Int
     let certificationDate: String
