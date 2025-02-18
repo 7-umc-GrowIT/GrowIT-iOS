@@ -168,11 +168,16 @@ class TermsAgreeViewController: UIViewController, UITableViewDelegate {
     }
     
     @objc private func nextButtonTapped() {
-        guard validateAgreements() else {
-            print("필수 약관을 모두 동의해야 함")
+        if !validateAgreements() {
+            let toastImage = UIImage(named: "agreeIcon") ?? UIImage()
+            CustomToast(containerWidth: 250).show(
+                image: toastImage,
+                message: "필수 이용약관 동의가 필요합니다",
+                font: UIFont.body2Medium()
+            )
             return
         }
-
+        
         // UserTermDTO 리스트 생성
         let agreedList = (termsList + optionalTermsList).map { term in
             UserTermDTO(termId: term.termId, agreed: agreedTerms[term.termId] ?? false)
@@ -232,6 +237,10 @@ extension TermsAgreeViewController: UITableViewDataSource {
             let term = termsList[indexPath.row]
             let numberedTitle = "이용약관 (\(indexPath.row + 1))"
             
+            // 화살표 버튼을 눌렀을 때 상세 화면으로 이동
+            cell.detailButton.addTarget(self, action: #selector(showTermsDetail(_:)), for: .touchUpInside)
+            cell.detailButton.tag = term.termId
+        
             cell.configure(
                 title: numberedTitle,
                 content: term.content,
@@ -255,6 +264,11 @@ extension TermsAgreeViewController: UITableViewDataSource {
             }
             
             let term = optionalTermsList[indexPath.row]
+            
+            // 화살표 버튼을 눌렀을 때 상세 화면으로 이동
+            cell.detailButton.addTarget(self, action: #selector(showTermsDetail(_:)), for: .touchUpInside)
+            cell.detailButton.tag = term.termId
+            
             cell.configure(
                 title: term.title,
                 content: term.content,
@@ -273,5 +287,25 @@ extension TermsAgreeViewController: UITableViewDataSource {
             
             return cell
         }
+    }
+    
+    @objc private func showTermsDetail(_ sender: UIButton) {
+        let termId = sender.tag
+
+        guard let term = (termsList + optionalTermsList).first(where: { $0.termId == termId }) else { return }
+
+        let detailVC = TermsDetailViewController()
+        detailVC.termsContent = term.content
+        detailVC.termId = term.termId
+        
+        detailVC.onAgreeCompletion = { [weak self] agreedTermId in
+            guard let self = self else { return }
+            self.agreedTerms[agreedTermId] = true
+            
+            self.termsAgreeView.termsTableView.reloadData()
+            self.termsAgreeView.termsOptTableView.reloadData()
+        }
+
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
