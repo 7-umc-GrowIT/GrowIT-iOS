@@ -87,7 +87,8 @@ class JDiaryHomeView: UIView {
         }
         
         diaryHomeStack.snp.makeConstraints{
-            $0.edges.equalToSuperview()
+            $0.horizontalEdges.top.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(165)
             $0.width.equalTo(diaryHomeScrollView.snp.width)
         }
 
