@@ -135,14 +135,14 @@ class EmailLoginViewController: UIViewController {
                         // 옵셔널 해제 없이 바로 접근 가능
                         let tokenData = response.result
 
-                        print("로그인 성공! 액세스 토큰: \(tokenData.accessToken)")
+                        print("로그인 성공")
 
                         // 토큰 저장
                         UserDefaults.standard.set(tokenData.accessToken, forKey: "accessToken")
                         UserDefaults.standard.set(tokenData.refreshToken, forKey: "refreshToken")
 
-                        print("AccessToken 저장됨: \(tokenData.accessToken)")
-                        print("RefreshToken 저장됨: \(tokenData.refreshToken)")
+                        print("AccessToken 저장됨")
+                        print("RefreshToken 저장됨")
 
                         // 로그인 성공 후 다음 화면으로 이동
                         self.moveToNextScreen()
