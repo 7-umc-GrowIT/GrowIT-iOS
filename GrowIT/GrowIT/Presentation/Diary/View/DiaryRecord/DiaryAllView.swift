@@ -25,6 +25,11 @@ class DiaryAllView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    var onDateSelected: ((Int, Int) -> Void)?
+    
+    var selectedYear: Int = Calendar.current.component(.year, from: Date())
+    var selectedMonth: Int = Calendar.current.component(.month, from: Date())
+    
     // MARK: - UI Components
     
     private let dateView = UIView().then {
@@ -51,19 +56,7 @@ class DiaryAllView: UIView {
         $0.backgroundColor = .clear
         $0.contentHorizontalAlignment = .left
     }
-    
-    //    private let dateLabel = UILabel().then {
-    //        $0.text = "2025년 1월 30일"
-    //        $0.font = .heading2Bold()
-    //        $0.textColor = .gray900
-    //    }
-    //
-    //    let dropDownButton = UIButton().then {
-    //        $0.setImage(UIImage(named: "dropdownIcon"), for: .normal)
-    //        $0.backgroundColor = .clear
-    //        $0.tintColor = .gray500
-    //    }
-    
+
     let diaryCountLabel = UILabel().then {
         var count = 0
         let allText = "작성한 일기 수 \(count)"
@@ -95,13 +88,6 @@ class DiaryAllView: UIView {
             make.top.equalToSuperview().offset(32)
         }
         
-        //        dateView.addSubview(dateLabel)
-        //        dateLabel.snp.makeConstraints { make in
-        //            make.leading.equalTo(dayLabel)
-        //            make.top.equalTo(dayLabel.snp.bottom).offset(8)
-        //            // make.width.equalTo(160)
-        //        }
-        
         dateView.addSubview(dropDownButton)
         dropDownButton.snp.makeConstraints { make in
             make.leading.equalTo(dayLabel.snp.leading)
@@ -131,10 +117,19 @@ class DiaryAllView: UIView {
         dropDown.textColor = .black
         dropDown.cornerRadius = 12
         dropDown.anchorView = dropDownButton
-        // dropDown.bottomOffset = CGPoint(x: 0, y: dropDownButton.bounds.height)
         
         dropDown.selectionAction = { [weak self] index, item in
             self?.dropDownButton.setTitle("\(item) ▼", for: .normal)
+            
+            let components = item.split(separator: " ")
+            if let year = Int(components[0].replacingOccurrences(of: "년", with: "")),
+               let month = Int(components[1].replacingOccurrences(of: "월", with: "")) {
+                
+                self?.selectedYear = year
+                self?.selectedMonth = month
+                
+                self?.onDateSelected?(year, month)
+            }
         }
         
         dropDown.customCellConfiguration = { [weak self] (index: Int, item: String, cell: DropDownCell) -> Void in
