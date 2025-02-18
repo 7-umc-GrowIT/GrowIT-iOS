@@ -26,9 +26,9 @@ final class AuthPlugin: PluginType {
         // 저장된 AccessToken 가져오기
         if let accessToken = TokenManager.shared.getAccessToken(), !accessToken.isEmpty {
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-            print("✅ 헤더에 AccessToken 추가됨: \(accessToken)")
+            print("헤더에 AccessToken 추가됨")
         } else {
-            print("⚠️ 저장된 AccessToken 없음")
+            print("저장된 AccessToken 없음")
         }
         
         return request
@@ -49,23 +49,23 @@ final class AuthPlugin: PluginType {
                         switch reissueResult {
                         case .success(let response):
                             let newAccessToken = response.result.accessToken
-                            print("성공 새로운 AccessToken: \(newAccessToken)")
+                            print("성공 새로운 AccessToken")
 
                             // 원래 요청을 다시 보낼 수 있도록 수정
                             if let originalRequest = target as? AuthorizationEndpoints {
                                 MoyaProvider<AuthorizationEndpoints>().request(originalRequest) { retryResult in
                                     switch retryResult {
                                     case .success(let retryResponse):
-                                        print("원래 요청 재시도 성공 - Status: \(retryResponse.statusCode)")
+                                        print("원래 요청 재시도 성공")
                                     case .failure(let error):
-                                        print("요청 재시도 실패: \(error)")
+                                        print("요청 재시도 실패")
                                     }
                                 }
                             } else {
                                 print("실패")
                             }
                         case .failure(let error):
-                            print("토큰 재발급 실패: \(error)")
+                            print("토큰 재발급 실패")
                         }
                     }
                 }

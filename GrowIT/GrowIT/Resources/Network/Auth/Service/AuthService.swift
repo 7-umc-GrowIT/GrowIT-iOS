@@ -17,7 +17,7 @@ final class AuthService: NetworkManager {
     public init(provider: MoyaProvider<AuthorizationEndpoints>? = nil) {
         // 플러그인 추가
         let plugins: [PluginType] = [
-            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)), // 로그 플러그인
+            // NetworkLoggerPlugin(configuration: .init(logOptions: [.requestMethod, .successResponseBody])), // 로그 플러그인
             AuthPlugin()
         ]
         
