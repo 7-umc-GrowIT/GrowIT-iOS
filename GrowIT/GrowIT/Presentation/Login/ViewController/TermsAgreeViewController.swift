@@ -168,11 +168,16 @@ class TermsAgreeViewController: UIViewController, UITableViewDelegate {
     }
     
     @objc private func nextButtonTapped() {
-        guard validateAgreements() else {
-            print("필수 약관을 모두 동의해야 함")
+        if !validateAgreements() {
+            let toastImage = UIImage(named: "agreeIcon") ?? UIImage()
+            CustomToast(containerWidth: 250).show(
+                image: toastImage,
+                message: "필수 이용약관 동의가 필요합니다",
+                font: UIFont.body2Medium()
+            )
             return
         }
-
+        
         // UserTermDTO 리스트 생성
         let agreedList = (termsList + optionalTermsList).map { term in
             UserTermDTO(termId: term.termId, agreed: agreedTerms[term.termId] ?? false)
