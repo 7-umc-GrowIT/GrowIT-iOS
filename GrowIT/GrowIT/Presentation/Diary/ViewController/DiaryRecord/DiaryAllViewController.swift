@@ -59,10 +59,18 @@ class DiaryAllViewController: UIViewController, UITableViewDelegate {
     }
     
     // MARK: Setup Actions
+    private func setupActions() {
+        
+    }
+    
     
     // MARK: @objc Methods
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func dropDown() {
+        
     }
     
     // MARK: Setup APIs
