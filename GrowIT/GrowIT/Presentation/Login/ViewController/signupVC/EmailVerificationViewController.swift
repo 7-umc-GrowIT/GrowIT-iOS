@@ -156,9 +156,11 @@ class EmailVerificationViewController: UIViewController {
     
     @objc private func sendCodeButtonTapped() {
         guard let emailText = emailVerificationView.emailTextField.textField.text, !emailText.isEmpty else {
-            print("이메일을 입력하세요")
+            print("이메일 입력 필요")
             return
         }
+        
+        self.view.endEditing(true)
         
         email = emailText
         
@@ -181,7 +183,7 @@ class EmailVerificationViewController: UIViewController {
         
         // 토스트 메시지 표시
         let toastImage = UIImage(named: "Style=Mail") ?? UIImage()
-        Toast.show(
+        CustomToast(containerWidth: 225).show(
             image: toastImage,
             message: "인증번호를 발송했어요",
             font: UIFont.heading3SemiBold()
@@ -251,7 +253,7 @@ class EmailVerificationViewController: UIViewController {
         
         // 토스트 메시지 표시
         let toastImage = UIImage(named: "Style=check") ?? UIImage()
-        Toast.show(
+        CustomToast(containerWidth: 258).show(
             image: toastImage,
             message: "인증번호 인증을 완료했어요",
             font: UIFont.heading3SemiBold()
@@ -271,12 +273,12 @@ class EmailVerificationViewController: UIViewController {
     @objc func nextButtonTap() {
         let userInfoVC = UserInfoInputViewController()
         
-        // ✅ 약관 동의 데이터를 올바르게 전달
+        // 약관 동의 데이터를 올바르게 전달
         userInfoVC.email = email
         userInfoVC.isVerified = true
         userInfoVC.agreeTerms = agreeTerms
 
-        print("✅ 이메일 인증에서 전달된 약관 목록: \(agreeTerms)")
+        print("이메일 인증에서 전달된 약관 목록: \(agreeTerms)")
 
         self.navigationController?.pushViewController(userInfoVC, animated: true)
     }

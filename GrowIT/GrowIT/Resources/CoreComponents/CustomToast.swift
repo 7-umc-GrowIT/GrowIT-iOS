@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ChallengeToast {
+class CustomToast {
     private var containerWidth: CGFloat
     private var containerHeight: CGFloat
     private var imageWidthHeight: CGFloat

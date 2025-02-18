@@ -132,26 +132,26 @@ class EmailLoginViewController: UIViewController {
                 switch result {
                 case .success(let response):
                     if response.isSuccess {
-                        // ✅ 옵셔널 해제 없이 바로 접근 가능
+                        // 옵셔널 해제 없이 바로 접근 가능
                         let tokenData = response.result
 
-                        print("✅ 로그인 성공! 액세스 토큰: \(tokenData.accessToken)")
+                        print("로그인 성공! 액세스 토큰: \(tokenData.accessToken)")
 
                         // 토큰 저장
                         UserDefaults.standard.set(tokenData.accessToken, forKey: "accessToken")
                         UserDefaults.standard.set(tokenData.refreshToken, forKey: "refreshToken")
 
-                        print("🔒 AccessToken 저장됨: \(tokenData.accessToken)")
-                        print("🔒 RefreshToken 저장됨: \(tokenData.refreshToken)")
+                        print("AccessToken 저장됨: \(tokenData.accessToken)")
+                        print("RefreshToken 저장됨: \(tokenData.refreshToken)")
 
                         // 로그인 성공 후 다음 화면으로 이동
                         self.moveToNextScreen()
                     } else {
-                        print("❌ 로그인 실패: \(response.message)")
+                        print("로그인 실패: \(response.message)")
                     }
 
                 case .failure(let error):
-                    print("❌ 로그인 요청 실패: \(error.localizedDescription)")
+                    print("로그인 요청 실패: \(error.localizedDescription)")
                 }
             }
         }
@@ -165,7 +165,7 @@ class EmailLoginViewController: UIViewController {
     
     // 로그인 성공 후 다음 화면으로 이동
     private func moveToNextScreen() {
-        let homeVC = CustomTabBarController()
+        let homeVC = CustomTabBarController(initialIndex: 1)
         self.navigationController?.pushViewController(homeVC, animated: true)
     }
     

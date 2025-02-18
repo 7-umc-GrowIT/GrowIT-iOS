@@ -65,7 +65,7 @@ class TermsAgreeViewController: UIViewController, UITableViewDelegate {
         termsAgreeView.termsOptTableView.delegate = self
         termsAgreeView.termsOptTableView.rowHeight = 60
 
-        // ✅ 셀을 등록 (코드로 생성하는 경우)
+        // 셀을 등록 (코드로 생성하는 경우)
         termsAgreeView.termsTableView.register(TermsAgreeTableViewCell.self, forCellReuseIdentifier: TermsAgreeTableViewCell.identifier)
         termsAgreeView.termsOptTableView.register(TermsAgreeOptionalTableViewCell.self, forCellReuseIdentifier: TermsAgreeOptionalTableViewCell.identifier)
     }
@@ -83,7 +83,7 @@ class TermsAgreeViewController: UIViewController, UITableViewDelegate {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let terms):
-                    print("✅ 서버에서 받은 약관 데이터: \(terms)")
+                    print("서버에서 받은 약관 데이터: \(terms)")
                     
                     // 필수 약관과 선택 약관으로 분리
                     self?.termsList = terms.filter { $0.type.uppercased() == "MANDATORY" }
@@ -95,8 +95,8 @@ class TermsAgreeViewController: UIViewController, UITableViewDelegate {
                     // 약관 내용 저장 (약관 확인 뷰에서 사용)
                     self?.termsContentMap = terms.reduce(into: [:]) { $0[$1.termId] = $1.content }
                     
-                    print("✅ 필수 약관 필터링 결과: \(self?.termsList ?? [])")
-                    print("✅ 선택 약관 필터링 결과: \(self?.optionalTermsList ?? [])")
+                    print("필수 약관 필터링 결과: \(self?.termsList ?? [])")
+                    print("선택 약관 필터링 결과: \(self?.optionalTermsList ?? [])")
                     
                     // 약관 동의 상태 초기화
                     self?.setupTermsView()
@@ -106,7 +106,7 @@ class TermsAgreeViewController: UIViewController, UITableViewDelegate {
                     self?.termsAgreeView.termsOptTableView.reloadData()
                     
                 case .failure(let error):
-                    print("❌ 약관 불러오기 실패: \(error.localizedDescription)")
+                    print("약관 불러오기 실패: \(error.localizedDescription)")
                 }
             }
         }
@@ -118,7 +118,7 @@ class TermsAgreeViewController: UIViewController, UITableViewDelegate {
             agreedTerms[term.termId] = false
         }
         
-        print("✅ 약관 동의 상태 초기화: \(agreedTerms)")
+        print("약관 동의 상태 초기화: \(agreedTerms)")
     }
     
     private func validateAgreements() -> Bool {
@@ -137,7 +137,7 @@ class TermsAgreeViewController: UIViewController, UITableViewDelegate {
             agreedTerms[term.termId] = isSelected
         }
         
-        print("✅ 전체 동의 상태 업데이트: \(agreedTerms)")
+        print("전체 동의 상태 업데이트: \(agreedTerms)")
         
         termsAgreeView.termsTableView.reloadData()
         termsAgreeView.termsOptTableView.reloadData()
@@ -169,18 +169,18 @@ class TermsAgreeViewController: UIViewController, UITableViewDelegate {
     
     @objc private func nextButtonTapped() {
         guard validateAgreements() else {
-            print("❌ 필수 약관을 모두 동의해야 합니다.")
+            print("필수 약관을 모두 동의해야 함")
             return
         }
 
-        // ✅ UserTermDTO 리스트 생성
+        // UserTermDTO 리스트 생성
         let agreedList = (termsList + optionalTermsList).map { term in
             UserTermDTO(termId: term.termId, agreed: agreedTerms[term.termId] ?? false)
         }
         
-        print("✅ 필수 약관: \(termsList.map { "\($0.termId): \($0.title)" })")
-        print("✅ 선택 약관: \(optionalTermsList.map { "\($0.termId): \($0.title)" })")
-        print("✅ agreedTerms 상태: \(agreedTerms)")
+        print("필수 약관: \(termsList.map { "\($0.termId): \($0.title)" })")
+        print("선택 약관: \(optionalTermsList.map { "\($0.termId): \($0.title)" })")
+        print("agreedTerms 상태: \(agreedTerms)")
         
         let emailVerificationVC = EmailVerificationViewController()
         emailVerificationVC.agreeTerms = agreedList
@@ -242,7 +242,7 @@ extension TermsAgreeViewController: UITableViewDataSource {
             cell.onAgreeButtonTapped = { [weak self] in
                 guard let self = self else { return }
                 self.agreedTerms[term.termId] = !(self.agreedTerms[term.termId] ?? false)
-                print("✅ 업데이트된 약관 동의 상태: \(self.agreedTerms)")
+                print("업데이트된 약관 동의 상태: \(self.agreedTerms)")
                 
                 self.updateCheckButtonState()
                 tableView.reloadRows(at: [indexPath], with: .none)
@@ -265,7 +265,7 @@ extension TermsAgreeViewController: UITableViewDataSource {
             cell.onAgreeButtonTapped = { [weak self] in
                 guard let self = self else { return }
                 self.agreedTerms[term.termId] = !(self.agreedTerms[term.termId] ?? false)
-                print("✅ 업데이트된 약관 동의 상태: \(self.agreedTerms)")
+                print("업데이트된 약관 동의 상태: \(self.agreedTerms)")
                 
                 self.updateCheckButtonState()
                 tableView.reloadRows(at: [indexPath], with: .none)

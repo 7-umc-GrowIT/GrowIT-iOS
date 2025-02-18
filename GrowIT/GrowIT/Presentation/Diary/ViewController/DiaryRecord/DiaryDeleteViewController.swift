@@ -51,7 +51,7 @@ class DiaryDeleteViewController: UIViewController {
         // 삭제하기 api 연결 필요
         onDismiss?()
         callDeleteDiary()
-        Toast.show(image: UIImage(named: "toasttrash") ?? UIImage(), message: "일기를 삭제했어요", font: .heading3SemiBold())
+        CustomToast(containerWidth: 195).show(image: UIImage(named: "toasttrash") ?? UIImage(), message: "일기를 삭제했어요", font: .heading3SemiBold())
         
         self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }

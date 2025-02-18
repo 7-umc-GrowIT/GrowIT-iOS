@@ -156,7 +156,7 @@ class ChangePasswordViewController: UIViewController {
         )
     }
 
-    // ✅ 인증번호 형식 검증 함수 추가
+    // 인증번호 형식 검증 함수 추가
     private func isValidVerificationCode(_ code: String) -> Bool {
         let codeRegex = "^[A-Za-z0-9]{8}$" // 영문+숫자로 8자리
         return NSPredicate(format: "SELF MATCHES %@", codeRegex).evaluate(with: code)
@@ -222,9 +222,9 @@ class ChangePasswordViewController: UIViewController {
                     
                     // 성공 메시지 표시
                     let toastImage = UIImage(named: "Style=check") ?? UIImage()
-                    Toast.show(
+                    CustomToast(containerWidth: 225).show(
                         image: toastImage,
-                        message: "비밀번호 변경이 완료되었습니다.",
+                        message: "비밀번호를 변경했어요",
                         font: UIFont.heading3SemiBold()
                     )
                     
@@ -301,7 +301,7 @@ class ChangePasswordViewController: UIViewController {
                     self.isEmailFieldDisabled = true
                     self.changePasswordView.emailTextField.setTextFieldInteraction(enabled: false)
                     let toastImage = UIImage(named: "Style=Mail") ?? UIImage()
-                    Toast.show(
+                    CustomToast(containerWidth: 225).show(
                         image: toastImage,
                         message: "인증번호를 발송했어요",
                         font: UIFont.heading3SemiBold()
@@ -375,7 +375,7 @@ class ChangePasswordViewController: UIViewController {
 
         // 인증 성공 시 토스트 메시지 표시
         let toastImage = UIImage(named: "Style=check") ?? UIImage()
-        Toast.show(
+        CustomToast(containerWidth: 258).show(
             image: toastImage,
             message: "인증번호 인증을 완료했어요",
             font: UIFont.heading3SemiBold()

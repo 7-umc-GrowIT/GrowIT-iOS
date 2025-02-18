@@ -12,6 +12,23 @@ class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
     
     var customTabBar: CustomTabBarView!
     private var viewControllers: [UIViewController] = []
+    private var initialViewControllerIndex: Int = 1
+        
+    init(initialIndex: Int) {
+        self.initialViewControllerIndex = initialIndex
+        super.init(nibName: nil, bundle: nil)
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        switchTo(index: initialViewControllerIndex)
+        customTabBar.updateTabItemSelection(at: initialViewControllerIndex)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +37,7 @@ class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
         setupCustomTabBar()
         
         navigationController?.navigationBar.isHidden = true
+        
     }
     
     private func setupViewControllers() {
@@ -41,7 +59,7 @@ class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
         viewControllers = [firstNavController, secondNavController, thirdNavController]
 
            // 초기 뷰 컨트롤러 설정
-        add(asChildViewController: viewControllers[1])
+        add(asChildViewController: viewControllers[initialViewControllerIndex])
     }
     
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {

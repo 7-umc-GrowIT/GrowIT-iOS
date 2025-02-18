@@ -25,25 +25,25 @@ final class KakaoLoginManager {
     
     func loginWithKakao(completion: @escaping (Result<String, Error>) -> Void) {
         // 완료 핸들러 저장
-        print("🟡 이전 completionHandler: \(String(describing: self.completionHandler))")
+        print("이전 completionHandler: \(String(describing: self.completionHandler))")
         self.completionHandler = completion
-        print("🟡 설정된 completionHandler: \(String(describing: self.completionHandler))")
-        print("🟡 KakaoLoginManager: loginWithKakao 호출됨")
+        print("설정된 completionHandler: \(String(describing: self.completionHandler))")
+        print("KakaoLoginManager: loginWithKakao 호출됨")
         
         if (UserApi.isKakaoTalkLoginAvailable()) {
-            print("🟡 KakaoLoginManager: 카카오톡 로그인 시도")
+            print("KakaoLoginManager: 카카오톡 로그인 시도")
             // 카카오톡 설치되어 있는 경우
             UserApi.shared.loginWithKakaoTalk { [weak self] (oauthToken, error) in
                 guard let self = self else { return }
                 
                 if let error = error {
-                    print("❌ 카카오톡 로그인 실패: \(error.localizedDescription)")
+                    print("카카오톡 로그인 실패: \(error.localizedDescription)")
                     self.completionHandler?(.failure(error))
                     self.completionHandler = nil
                     return
                 }
                 
-                print("✅ KakaoLoginManager: 카카오톡 로그인 성공! 인가 코드 요청 시작")
+                print("KakaoLoginManager: 카카오톡 로그인 성공")
                 
                 // 인증 코드 요청 URL 생성
                 let authCodeURL = "https://kauth.kakao.com/oauth/authorize?client_id=\(self.clientId)&redirect_uri=\(self.redirectUri)&response_type=code"
@@ -57,7 +57,7 @@ final class KakaoLoginManager {
             }
         } else {
             // 카카오톡 미설치: 웹 로그인
-            print("🟡 KakaoLoginManager: 카카오 계정 로그인 시도")
+            print("KakaoLoginManager: 카카오 계정 로그인 시도")
             
             UserApi.shared.loginWithKakaoAccount { [weak self] (oauthToken, error) in
                 guard let self = self else { return }
@@ -69,7 +69,7 @@ final class KakaoLoginManager {
                     return
                 }
                 
-                print("✅ KakaoLoginManager: 카카오 계정 로그인 성공! 인가 코드 요청 시작")
+                print("KakaoLoginManager: 카카오 계정 로그인 성공 인가 코드 요청 시작")
                             
                 // 인증 코드 요청 URL 생성
                 let authCodeURL = "https://kauth.kakao.com/oauth/authorize?client_id=\(self.clientId)&redirect_uri=\(self.redirectUri)&response_type=code"
@@ -85,33 +85,33 @@ final class KakaoLoginManager {
     
     // Redirect URI로부터 인가 코드를 받아오는 메서드
     func handleAuthorizationCode(from url: URL) {
-        print("🟡 handleAuthorizationCode 시작시 completionHandler: \(String(describing: self.completionHandler))")
-        print("🟡 KakaoLoginManager: handleAuthorizationCode 실행됨")
+        print("handleAuthorizationCode 시작시 completionHandler: \(String(describing: self.completionHandler))")
+        print("KakaoLoginManager: handleAuthorizationCode 실행됨")
         
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let code = components.queryItems?.first(where: { $0.name == "code" })?.value else {
-            print("❌ KakaoLoginManager: 인가 코드 획득 실패")
+            print("KakaoLoginManager: 인가 코드 획득 실패")
             self.completionHandler?(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to get authorization code"])))
             self.completionHandler = nil
             return
         }
 
-        print("✅ KakaoLoginManager: 인가 코드 획득: \(code)")
+        print("KakaoLoginManager: 인가 코드 획득: \(code)")
         
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
-                print("❌ KakaoLoginManager: self가 nil, completionHandler 실행 안 됨")
+                print("KakaoLoginManager: self가 nil, completionHandler 실행 안 됨")
                 return
             }
             
-            print("✅ KakaoLoginManager: completionHandler 실행됨 (인가 코드: \(code))")
+            print("KakaoLoginManager: completionHandler 실행됨 (인가 코드: \(code))")
             
             if let handler = self.completionHandler {
-                print("✅ KakaoLoginManager: completionHandler가 존재함, handleKakaoLogin 호출 예정")
-                handler(.success(code))  // 🚀 여기에서 handleKakaoLogin 호출됨
-                print("✅ KakaoLoginManager: handleKakaoLogin 호출됨!")
+                print("KakaoLoginManager: completionHandler가 존재, handleKakaoLogin 호출 예정")
+                handler(.success(code))  // handleKakaoLogin 호출
+                print("KakaoLoginManager: handleKakaoLogin 호출됨")
             } else {
-                print("❌ KakaoLoginManager: completionHandler가 nil이라 handleKakaoLogin 호출 안 됨")
+                print("KakaoLoginManager: completionHandler가 nil이라 handleKakaoLogin 호출 안 됨")
             }
 
             self.completionHandler = nil
