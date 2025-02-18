@@ -70,6 +70,7 @@ class TodayChallengeCollectionViewCell: UICollectionViewCell {
     private lazy var buttonLabel = UILabel().then{
         $0.text = ""
         $0.textColor = .negative400
+        $0.textAlignment = .center
         $0.font = .detail1Medium()
         $0.adjustsFontSizeToFitWidth = true
     }
