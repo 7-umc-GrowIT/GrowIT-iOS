@@ -49,6 +49,7 @@ class ErrorView: UIView {
     
     //MARK: - Setup UI
     private func setupUI() {
+        layer.cornerRadius = 40
         backgroundColor = .white
         addSubview(diaryIcon)
         diaryIcon.snp.makeConstraints { make in

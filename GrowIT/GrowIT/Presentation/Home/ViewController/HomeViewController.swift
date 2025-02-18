@@ -86,6 +86,6 @@ class HomeViewController: UIViewController {
 
     @objc private func goToItemShop() {
         let itemShopVC = GroViewController()
-        navigationController?.pushViewController(itemShopVC, animated: true)
+        navigationController?.pushViewController(itemShopVC, animated: false)
     }
 }
