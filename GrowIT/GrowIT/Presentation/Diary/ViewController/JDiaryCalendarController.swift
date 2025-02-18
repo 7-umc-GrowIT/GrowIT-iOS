@@ -86,13 +86,11 @@ class JDiaryCalendarController: UIViewController {
         
         jDiaryCalendar.calendarCollectionView.delegate = self
         jDiaryCalendar.calendarCollectionView.dataSource = self
+        
+        jDiaryCalendar.todayBtn.addTarget(self, action: #selector(todayBtnTapped), for: .touchUpInside)
         jDiaryCalendar.backMonthBtn.addTarget(self, action: #selector(backMonthTapped), for: .touchUpInside)
         jDiaryCalendar.nextMonthBtn.addTarget(self, action: #selector(nextMonthTapped), for: .touchUpInside)
-        
-        //getDiaryDates()
     }
-    
-    
     
     func refreshData(){
         getDiaryDates()
@@ -122,6 +120,18 @@ class JDiaryCalendarController: UIViewController {
         } else {
             isDark = false
         }
+    }
+    
+    @objc private func todayBtnTapped() {
+        // 오늘 날짜를 currentDate에 설정
+        currentDate = Date()
+
+        // 현재 캘린더를 사용하여 현재 월과 년도를 업데이트
+        currentMonthIndex = currentCalendar.component(.month, from: currentDate) - 1
+        currentYear = currentCalendar.component(.year, from: currentDate)
+
+        // 캘린더를 업데이트하여 변경된 날짜를 반영
+        updateCalendar()
     }
     
     @objc private func backMonthTapped() {
@@ -354,8 +364,11 @@ func collectionView(_ collectionView: UICollectionView, layout collectionViewLay
                             print("Error: \(error)")
                         }
                     })
-                    delegate?.didSelectDate(formattedDate)
+                    
                 }
+            }
+            if(!callendarDiaries.contains(where: {$0.date == formattedDate})){
+                delegate?.didSelectDate(formattedDate)
             }
             print("Selected date: \(formattedDate)")
         }

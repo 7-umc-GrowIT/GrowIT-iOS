@@ -21,7 +21,7 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         self.view = loginView
         setupActions()
-        checkUserLoginStatus()
+        //checkUserLoginStatus()
     }
     
     private func setupActions() {

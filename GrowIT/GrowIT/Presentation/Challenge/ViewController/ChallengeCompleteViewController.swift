@@ -44,6 +44,7 @@ class ChallengeCompleteViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(setImage(_:)), name: NSNotification.Name("ImageSelected"), object: nil)
     }
+
     
     private func setBtnGesture() {
         challengeCompleteView.challengeExitButton.addTarget(self, action: #selector(exitBtnTapped), for: .touchUpInside)

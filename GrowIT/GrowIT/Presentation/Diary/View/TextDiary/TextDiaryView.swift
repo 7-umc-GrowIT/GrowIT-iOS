@@ -48,15 +48,6 @@ class TextDiaryView: UIView, UITextViewDelegate {
     
     private let placeholder: String = "일기 내용을 입력하세요"
     let diaryTextField = UITextView().then {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 8 // 원하는 줄 간격 값
-
-        let attributes: [NSAttributedString.Key: Any] = [
-            .paragraphStyle: paragraphStyle,
-            .font: UIFont.body1Medium(), // 사용 중인 폰트
-            .foregroundColor: UIColor.gray300 // 텍스트 색상
-        ]
-        
         $0.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         $0.font = UIFont.body1Medium()
         $0.textColor = .gray300
@@ -64,7 +55,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
         $0.layer.cornerRadius = 8
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
-        $0.setLineSpacing(8)
+        $0.setLineSpacing(spacing: 8, font: .body1Medium(), color: .gray300)
     }
     
     private let helpLabel = UILabel().then {

@@ -49,7 +49,7 @@ struct ChallengeDeleteResponseDTO: Decodable{
 
 // 단일 챌린지 수정 응답 DTO
 struct ChallengePatchResponseDTO: Decodable{
-    let certificationImage: String
+    let certificationImageUrl: String
     let thoughts: String
 }
 
