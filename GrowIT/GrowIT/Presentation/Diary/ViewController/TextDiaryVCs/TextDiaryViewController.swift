@@ -105,12 +105,11 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
                 guard let self = self else { return }
                 switch result {
                 case.success(let data):
-                    print("Success!!!!!!! \(data)")
                     DispatchQueue.main.async {
                         completion(data.diaryId)
                     }
                 case.failure(let error):
-                    print("Error: \(error)")
+                    print("Error")
                 }
             }
         )

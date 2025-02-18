@@ -39,12 +39,12 @@ class GroViewController: UIViewController, ItemListDelegate {
         super.viewDidLoad()
         self.view = groView
         
+        loadGroImage()
         setNotification()
         setView()
         setConstraints()
         setInitialState()
         callGetCredit()
-        callGetGroImage()
         setDelegate()
     }
     
@@ -63,48 +63,15 @@ class GroViewController: UIViewController, ItemListDelegate {
         })
     }
     
-    func callGetGroImage() {
-        groService.getGroImage(completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                groView.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
-                let equippedItems = data.equippedItems
-                
-                let categoryImageViews: [String: UIImageView] = [
-                    "BACKGROUND": groView.backgroundImageView,
-                    "OBJECT": groView.groObjectImageView,
-                    "PLANT": groView.groFlowerPotImageView,
-                    "HEAD_ACCESSORY": groView.groAccImageView
-                ]
-                
-                categoryToEquippedId = equippedItems.reduce(into: [String: Int]()) { dict, item in
-                    dict[item.category] = item.id
-                }
-                originalEquippedItem = categoryToEquippedId
-                print(categoryToEquippedId)
-                
-                for item in equippedItems {
-                    if let imageView = categoryImageViews[item.category] {
-                        imageView.kf.setImage(with: URL(string: item.itemImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
-                    } else {
-                        fatalError("category not found")
-                    }
-                }
-                
-                
-            case .failure(let error):
-                print("Error: \(error.localizedDescription)")
-            }
-        })
-    }
-    
     func callPatchItemState(itemId: Int, status: String) {
         itemService.patchItemState(itemId: itemId, data: ItemRequestDTO(status: status), completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case.success(let data):
                 print("Success: \(data)")
+                GroImageCacheManager.shared.refreshGroImage { _ in
+                    NotificationCenter.default.post(name: .groImageUpdated, object: nil)
+                }
             case.failure(let error):
                 print("Error: \(error)")
             }
@@ -160,6 +127,33 @@ class GroViewController: UIViewController, ItemListDelegate {
     }
     
     //MARK: - Functional
+    private func loadGroImage() {
+        GroImageCacheManager.shared.fetchGroImage { [weak self] data in
+            guard let self = self, let data = data else { return }
+            self.updateCharacterView(with: data)
+        }
+    }
+    
+    private func updateCharacterView(with data: GroGetResponseDTO) {
+        groView.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
+        
+        let categoryImageViews: [String: UIImageView] = [
+            "BACKGROUND": groView.backgroundImageView,
+            "OBJECT": groView.groObjectImageView,
+            "PLANT": groView.groFlowerPotImageView,
+            "HEAD_ACCESSORY": groView.groAccImageView
+        ]
+        
+        categoryToEquippedId = data.equippedItems.reduce(into: [String: Int]()) { dict, item in
+            dict[item.category] = item.id
+        }
+        
+        for item in data.equippedItems {
+            if let imageView = categoryImageViews[item.category] {
+                imageView.kf.setImage(with: URL(string: item.itemImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
+            }
+        }
+    }
     //MARK: Notification
     private func setNotification() {
         let Notification = NotificationCenter.default

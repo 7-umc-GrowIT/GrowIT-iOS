@@ -61,6 +61,7 @@ class CustomTextField: UIView {
         
         if showEyeButton {
             self.addSubview(eyeButton)
+            eyeButton.isHidden = true
         }
         
         // Title Label 설정

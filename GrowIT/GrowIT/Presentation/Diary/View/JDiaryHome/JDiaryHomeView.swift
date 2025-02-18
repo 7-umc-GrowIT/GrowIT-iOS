@@ -82,7 +82,7 @@ class JDiaryHomeView: UIView {
             $0.horizontalEdges.equalToSuperview()
             // 높이의 17% 값을 계산하여 bottom inset으로 사용
             let bottomInset = self.frame.size.height * 0.17
-            $0.bottom.equalToSuperview().inset(168)
+            $0.bottom.equalToSuperview().inset(bottomInset)
             //$0.bottom.equalToSuperview()
         }
         

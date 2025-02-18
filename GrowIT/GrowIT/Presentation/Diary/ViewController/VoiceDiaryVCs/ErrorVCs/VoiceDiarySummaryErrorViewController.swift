@@ -11,6 +11,10 @@ class VoiceDiarySummaryErrorViewController: UIViewController {
     
     weak var delegate: VoiceDiaryErrorDelegate?
     
+    let diaryService = DiaryService()
+    
+    var diaryId: Int = 0
+    
     let errorView = ErrorView().then {
         $0.configure(
             icon: "diaryIcon",
@@ -48,8 +52,24 @@ class VoiceDiarySummaryErrorViewController: UIViewController {
     }
     
     @objc func mainVC() {
+        callDeleteDiary()
         dismiss(animated: true) { [weak self] in
             self?.delegate?.didTapExitButton()
         }
+    }
+    
+    // MARK: Setup APIs
+    private func callDeleteDiary() {
+        diaryService.deleteDiary(
+            diaryId: diaryId,
+            completion: {[weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    print("Success: \(data)")
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            })
     }
 }

@@ -18,7 +18,8 @@ target 'GrowIT' do
   pod 'Moya'
   pod 'googleapis', :path => '.'
   pod 'EzPopup'
-  pod 'Kingfisher', '~> 8.0'
+  pod 'Kingfisher', '8.2.0'
+  pod 'DropDown'
 end
 
 # Modify build settings after installing pods

@@ -19,14 +19,14 @@ final class TokenManager {
     func saveTokens(accessToken: String, refreshToken: String) {
         UserDefaults.standard.set(accessToken, forKey: accessTokenKey)
         UserDefaults.standard.set(refreshToken, forKey: refreshTokenKey)
-        print("🔒 AccessToken 저장됨: \(accessToken)")
-        print("🔒 RefreshToken 저장됨: \(refreshToken)")
+        // print("🔒 AccessToken 저장됨: \(accessToken)")
+        // print("🔒 RefreshToken 저장됨: \(refreshToken)")
     }
     
     /// Access Token만 저장하는 메서드 추가
     func saveAccessToken(_ accessToken: String) {
         UserDefaults.standard.set(accessToken, forKey: accessTokenKey)
-        print("🔒 AccessToken 저장됨: \(accessToken)")
+        // print("🔒 AccessToken 저장됨: \(accessToken)")
     }
 
     func getAccessToken() -> String? {
