@@ -21,6 +21,9 @@ class OnboardingViewController: UIViewController {
         
         onboardingView.imageCollectionView.dataSource = self
         onboardingView.imageCollectionView.delegate = self
+        
+        onboardingView.startBtn.addTarget(self, action: #selector(goToAuth), for: .touchUpInside)
+        onboardingView.loginBtn.addTarget(self, action: #selector(goToLogin), for:.touchUpInside)
     }
     
     private func setupPageControl() {
@@ -40,6 +43,16 @@ class OnboardingViewController: UIViewController {
             $0.top.equalTo(pageControl.snp.bottom).offset(28)
             $0.centerX.equalToSuperview()
         }
+    }
+    
+    @objc private func goToAuth() {
+        let nextVC = TermsAgreeViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc private func goToLogin() {
+        let nextVC = LoginViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
     }
 }
 

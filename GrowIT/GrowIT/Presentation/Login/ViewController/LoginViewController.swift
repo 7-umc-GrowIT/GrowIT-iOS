@@ -17,9 +17,18 @@ class LoginViewController: UIViewController {
     
     private lazy var loginView = LoginView()
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = loginView
+        self.navigationController?.isNavigationBarHidden = true
         setupActions()
         //checkUserLoginStatus()
     }

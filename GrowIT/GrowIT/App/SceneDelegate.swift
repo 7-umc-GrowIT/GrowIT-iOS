@@ -23,28 +23,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = launchVC
         self.window = window
         window.makeKeyAndVisible()
+        
+        launchVC.navigateToMain()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            
-            // 앱 시작 시 로그아웃 처리
-            TokenManager.shared.clearTokens()
-
-            // 토큰 확인 후 화면 선택
-            let nextViewController: UIViewController
-            if let _ = TokenManager.shared.getAccessToken() {
-                nextViewController = CustomTabBarController(initialIndex: 1)
-            } else {
-                nextViewController = LoginViewController()
-            }
-
-            // NavigationController 설정
-            let navigationController = UINavigationController(rootViewController: nextViewController)
-            navigationController.isNavigationBarHidden = true
-
-            // LaunchScreen → 다음 화면 전환
-            self.window?.rootViewController = navigationController
-            self.window?.makeKeyAndVisible()
-        }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+//            
+//            // 앱 시작 시 로그아웃 처리
+//            //TokenManager.shared.clearTokens()
+//
+//            // 토큰 확인 후 화면 선택
+//            let nextViewController: UIViewController
+//            if let _ = TokenManager.shared.getAccessToken() {
+//                nextViewController = CustomTabBarController(initialIndex: 1)
+//            } else {
+//                nextViewController = LoginViewController()
+//            }
+//
+//            // NavigationController 설정
+//            let navigationController = UINavigationController(rootViewController: nextViewController)
+//            navigationController.isNavigationBarHidden = true
+//
+//            // LaunchScreen → 다음 화면 전환
+//            self.window?.rootViewController = navigationController
+//            self.window?.makeKeyAndVisible()
+//        }
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
