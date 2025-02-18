@@ -10,4 +10,5 @@ import Foundation
 extension Notification.Name {
     static let purchaseCompleted = Notification.Name("purchaseCompleted")
     static let creditUpdated = Notification.Name("creditUpdated")
+    static let groImageUpdated = Notification.Name("groImageUpdated")
 }
