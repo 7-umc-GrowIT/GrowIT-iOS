@@ -15,7 +15,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
         super.init(frame: frame)
         diaryTextField.delegate = self
         setupUI()
-        setTodayDate()
+        // setTodayDate()
     }
     
     required init?(coder: NSCoder) {
@@ -35,7 +35,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
     }
     
     let dateLabel = UILabel().then {
-        $0.text = "2025년 1월 30일"
+        $0.text = "날짜를 선택해 주세요"
         $0.font = .heading2Bold()
         $0.textColor = .gray900
     }
@@ -84,7 +84,9 @@ class TextDiaryView: UIView, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        if !textView.text.isEmpty && textView.text != placeholder && textView.text.count > 100 {
+        let isDateSelected = dateLabel.text != "날짜를 선택해 주세요"
+        
+        if isDateSelected && !textView.text.isEmpty && textView.text != placeholder && textView.text.count > 100 {
             saveButton.setButtonState(isEnabled: true, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
         } else {
             saveButton.setButtonState(isEnabled: false, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
@@ -145,13 +147,13 @@ class TextDiaryView: UIView, UITextViewDelegate {
         }
     }
     
-    private func setTodayDate() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy년 M월 d일"
-        formatter.locale = Locale(identifier: "ko_KR")
-        
-        dateLabel.text = formatter.string(from: Date())
-    }
+//    private func setTodayDate() {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy년 M월 d일"
+//        formatter.locale = Locale(identifier: "ko_KR")
+//        
+//        dateLabel.text = formatter.string(from: Date())
+//    }
     
     func updateDateLabel(_ date: String) {
         dateLabel.text = date.formattedDate()
