@@ -92,6 +92,10 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     
     func didSelectDate(_ date: String) {
         textDiaryView.updateDateLabel(date)
+        
+        if let presentedVC = self.presentedViewController {
+            presentedVC.dismiss(animated: true)
+        }
     }
     
     // MARK: Setup APIs

@@ -42,6 +42,7 @@ class VoiceDiaryFixView: UIView {
         $0.backgroundColor = .gray700
         $0.layer.cornerRadius = 8
         $0.textContainer.lineFragmentPadding = 12
+        $0.setLineSpacing(8)
     }
     
     private let errorLabel = UILabel().then {
