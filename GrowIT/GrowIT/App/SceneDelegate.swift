@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             
             // 앱 시작 시 로그아웃 처리
-            TokenManager.shared.clearTokens()
+            //TokenManager.shared.clearTokens()
 
             // 토큰 확인 후 화면 선택
             let nextViewController: UIViewController

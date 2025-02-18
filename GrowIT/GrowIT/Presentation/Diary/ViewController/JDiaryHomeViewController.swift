@@ -62,7 +62,7 @@ class JDiaryHomeViewController: UIViewController {
         jDiaryCalendarVC.view.snp.makeConstraints{
             //$0.top.equalTo(jdiaryHomeView.diaryHomeCalendar.snp.bottom).offset(10)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(100)
+            $0.bottom.equalToSuperview().inset(165)
             //$0.height.equalTo(jDiaryHomeView.snp.height).multipliedBy(0.311)
         }
     }

@@ -91,24 +91,24 @@ class HomeViewController: UIViewController {
         navigationController?.pushViewController(itemShopVC, animated: false)
     }
     
-<<<<<<< HEAD
     @objc private func logout(){
         TokenManager.shared.clearTokens()
         let nextVC = LoginViewController()
         if let window = UIApplication.shared.windows.first {
             window.rootViewController = nextVC
             window.makeKeyAndVisible()
-
+            
             // 뷰 컨트롤러 전환 시 애니메이션을 제공합니다.
             UIView.transition(with: window, duration: 0.1, options: .transitionCrossDissolve, animations: nil, completion: nil)
         }
-=======
+    }
+        
     //MARK: Notification
     private func setNotification() {
         let Notification = NotificationCenter.default
         
         Notification.addObserver(self, selector: #selector(updateCharacterView), name: .groImageUpdated, object: nil)
->>>>>>> 0b380c88335e788b645153057bdea7cefdd827c7
+        
     }
+    
 }
-

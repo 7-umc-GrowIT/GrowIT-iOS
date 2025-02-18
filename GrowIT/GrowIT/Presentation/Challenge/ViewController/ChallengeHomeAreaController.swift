@@ -79,9 +79,9 @@ class ChallengeHomeAreaController: UIViewController {
                 }else if(data.recommendedChallenges.count == 0){
                     pageControl.isHidden = true
                     self.challengeHomeArea.todayChallengeCollectionView.isHidden = true
-                    self.challengeHomeArea.challengeReportTitleStack.snp.updateConstraints {
-                        $0.top.equalTo(self.challengeHomeArea.hashTagStack.snp.bottom).offset(172)
-                    }
+//                    self.challengeHomeArea.challengeReportTitleStack.snp.updateConstraints {
+//                        $0.top.equalTo(self.challengeHomeArea.titleStack.snp.bottom).offset(193)
+//                    }
                 }
                 else{
                     self.todayChallenges = data.recommendedChallenges
