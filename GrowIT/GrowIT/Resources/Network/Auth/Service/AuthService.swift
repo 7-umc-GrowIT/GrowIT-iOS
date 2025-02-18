@@ -143,11 +143,11 @@ final class AuthService: NetworkManager {
                 do {
                     // 서버 응답 JSON을 출력하여 디코딩 오류 확인
                     let responseString = String(data: response.data, encoding: .utf8) ?? "데이터 없음"
-                    print("로그인 서버 응답 데이터: \(responseString)")
+                    // print("로그인 서버 응답 데이터: \(responseString)")
                     
                     // 응답을 LoginResponse 구조체로 디코딩
                     let decodedResponse = try JSONDecoder().decode(LoginResponse.self, from: response.data)
-                    print("로그인 성공 액세스 토큰: \(decodedResponse.result.accessToken)")
+                    print("로그인 성공")
                     
                     // 토큰 저장 (UserDefaults 또는 Keychain 사용 가능)
                     UserDefaults.standard.set(decodedResponse.result.accessToken, forKey: "accessToken")
@@ -203,7 +203,7 @@ final class AuthService: NetworkManager {
                     
                     // JSON 디코딩 시 오류 확인
                     let decodedResponse = try JSONDecoder().decode(SignUpResponse.self, from: response.data)
-                    print("회원가입 성공! 액세스 토큰: \(decodedResponse.result.accessToken ?? "없음")")
+                    print("회원가입 성공! 액세스 토큰")
 
                     let accessToken = decodedResponse.result.accessToken
                     let refreshToken = decodedResponse.result.refreshToken
