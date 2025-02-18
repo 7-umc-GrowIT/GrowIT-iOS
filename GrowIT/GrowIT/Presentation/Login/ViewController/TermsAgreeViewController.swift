@@ -232,6 +232,10 @@ extension TermsAgreeViewController: UITableViewDataSource {
             let term = termsList[indexPath.row]
             let numberedTitle = "이용약관 (\(indexPath.row + 1))"
             
+            // 화살표 버튼을 눌렀을 때 상세 화면으로 이동
+            cell.detailButton.addTarget(self, action: #selector(showTermsDetail(_:)), for: .touchUpInside)
+            cell.detailButton.tag = term.termId
+        
             cell.configure(
                 title: numberedTitle,
                 content: term.content,
@@ -255,6 +259,11 @@ extension TermsAgreeViewController: UITableViewDataSource {
             }
             
             let term = optionalTermsList[indexPath.row]
+            
+            // 화살표 버튼을 눌렀을 때 상세 화면으로 이동
+            cell.detailButton.addTarget(self, action: #selector(showTermsDetail(_:)), for: .touchUpInside)
+            cell.detailButton.tag = term.termId
+            
             cell.configure(
                 title: term.title,
                 content: term.content,
@@ -273,5 +282,25 @@ extension TermsAgreeViewController: UITableViewDataSource {
             
             return cell
         }
+    }
+    
+    @objc private func showTermsDetail(_ sender: UIButton) {
+        let termId = sender.tag
+
+        guard let term = (termsList + optionalTermsList).first(where: { $0.termId == termId }) else { return }
+
+        let detailVC = TermsDetailViewController()
+        detailVC.termsContent = term.content
+        detailVC.termId = term.termId
+        
+        detailVC.onAgreeCompletion = { [weak self] agreedTermId in
+            guard let self = self else { return }
+            self.agreedTerms[agreedTermId] = true
+            
+            self.termsAgreeView.termsTableView.reloadData()
+            self.termsAgreeView.termsOptTableView.reloadData()
+        }
+
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
