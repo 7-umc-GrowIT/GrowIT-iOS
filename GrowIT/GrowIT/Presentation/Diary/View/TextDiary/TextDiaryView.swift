@@ -55,6 +55,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
         $0.layer.cornerRadius = 8
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        $0.setLineSpacing(8)
     }
     
     private let helpLabel = UILabel().then {

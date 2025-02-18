@@ -77,6 +77,7 @@ class VoiceDiarySummaryView: UIView {
         $0.font = .body1Medium()
         $0.isEditable = false
         $0.backgroundColor = .clear
+        $0.setLineSpacing(8)
     }
     
     private let aiLabel = UILabel().then {
