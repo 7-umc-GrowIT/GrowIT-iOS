@@ -266,9 +266,11 @@ class ChangePasswordViewController: UIViewController {
             changePasswordView.newPwdTextField.textField.textColor = .positive400
             changePasswordView.pwdCheckTextField.textField.textColor = .positive400
             
+            // 성공 메시지 표시 부분 수정
             changePasswordView.pwdCheckTextField.errorLabel.text = "비밀번호가 일치합니다"
             changePasswordView.pwdCheckTextField.errorLabel.textColor = .positive400
             changePasswordView.pwdCheckTextField.errorLabel.isHidden = false
+            changePasswordView.pwdCheckTextField.errorLabelTopConstraint?.update(offset: 4) // 간격 조정
         } else {
             changePasswordView.newPwdTextField.setError(message: "")
             changePasswordView.pwdCheckTextField.setError(message: "비밀번호가 일치하지 않습니다")
@@ -279,6 +281,7 @@ class ChangePasswordViewController: UIViewController {
             changePasswordView.pwdCheckTextField.textField.textColor = .negative400
             
             changePasswordView.pwdCheckTextField.errorLabel.isHidden = false
+            changePasswordView.pwdCheckTextField.errorLabelTopConstraint?.update(offset: 4) // 에러 메시지도 동일한 간격 적용
         }
     }
     
@@ -347,14 +350,14 @@ class ChangePasswordViewController: UIViewController {
         self.isCodeFieldDisabled = true
         self.setCodeFieldDisabledUI()
 
-        // 이메일 입력 필드도 비활성화 및 Success 상태로 변경
+        // 이메일 입력 필드 비활성화
         self.changePasswordView.emailTextField.setTextFieldInteraction(enabled: false)
-        self.changePasswordView.emailTextField.setSuccess()
-
-        // 이메일 필드에 성공 메시지 표시
-        self.changePasswordView.emailTextField.errorLabel.text = "이메일 인증이 완료되었습니다."
-        self.changePasswordView.emailTextField.errorLabel.textColor = UIColor.positive400
-        self.changePasswordView.emailTextField.errorLabel.isHidden = false
+        
+        // 기본 UI 설정
+        self.changePasswordView.emailTextField.textField.layer.borderColor = UIColor.gray100.cgColor
+        self.changePasswordView.emailTextField.textField.backgroundColor = .gray100
+        self.changePasswordView.emailTextField.textField.textColor = .gray300
+        self.changePasswordView.emailTextField.titleLabel.textColor = .gray300
 
         // 인증 완료 후 버튼 비활성화
         self.changePasswordView.certificationButton.setButtonState(
