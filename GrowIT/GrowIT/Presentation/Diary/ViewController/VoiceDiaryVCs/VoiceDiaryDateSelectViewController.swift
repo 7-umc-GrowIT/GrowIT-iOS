@@ -72,7 +72,8 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
         let labelAction = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
         voiceDiaryDateSelectView.helpLabel.addGestureRecognizer(labelAction)
         
-        voiceDiaryDateSelectView.toggleButton.addTarget(self, action: #selector(toggleTapped), for: .touchUpInside)
+        let viewAction = UITapGestureRecognizer(target: self, action: #selector(toggleTapped))
+        voiceDiaryDateSelectView.dateView.addGestureRecognizer(viewAction)
     }
     
     

@@ -20,6 +20,10 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
     var recommendedChallenges: [RecommendedChallenge] = []
     var emotionKeywords: [EmotionKeyword] = []
     
+    private var challengeViews: [VoiceChallengeItemView] {
+        return voiceDiaryRecommendChallengeView.challengeStackView.challengeViews
+    }
+    
     override func viewDidLoad() {
         navigationController?.navigationBar.isHidden = false
         super.viewDidLoad()
@@ -65,25 +69,11 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
     
     //MARK: - Setup Actions
     private func setupActions() {
-        voiceDiaryRecommendChallengeView.challengeStackView.button1.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        voiceDiaryRecommendChallengeView.challengeStackView.button2.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        voiceDiaryRecommendChallengeView.challengeStackView.button3.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        challengeViews.forEach { challengeView in
+            challengeView.button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        }
         
         voiceDiaryRecommendChallengeView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
-    }
-    
-    func getSelectedChallenges() -> [ChallengeSelectRequestDTO] {
-        let buttons = [
-            voiceDiaryRecommendChallengeView.challengeStackView.button1,
-            voiceDiaryRecommendChallengeView.challengeStackView.button2,
-            voiceDiaryRecommendChallengeView.challengeStackView.button3
-        ]
-        
-        return buttons.enumerated().compactMap { index, button in
-            guard index < recommendedChallenges.count, button.isSelectedState() else { return nil }
-            let challenge = recommendedChallenges[index]
-            return ChallengeSelectRequestDTO(challengeIds: [challenge.id], dtype: challenge.type)
-        }
     }
     
     //MARK: - @objc methods
@@ -153,5 +143,13 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
                 print("Error: \(error)")
             }
         })
+    }
+    
+    func getSelectedChallenges() -> [ChallengeSelectRequestDTO] {
+        return challengeViews.enumerated().compactMap { index, challengeView in
+            guard index < recommendedChallenges.count, challengeView.button.isSelectedState() else { return nil }
+            let challenge = recommendedChallenges[index]
+            return ChallengeSelectRequestDTO(challengeIds: [challenge.id], dtype: challenge.type)
+        }
     }
 }

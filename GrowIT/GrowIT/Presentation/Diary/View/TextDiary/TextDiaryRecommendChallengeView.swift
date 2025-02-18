@@ -138,8 +138,9 @@ class TextDiaryRecommendChallengeView: UIView {
     func updateChallenges(_ challenges: [RecommendedChallenge]) {
         let titles = challenges.prefix(3).map { $0.title }
         let times = challenges.prefix(3).map { "\($0.time)분" }
+        let content = challenges.prefix(3).map { $0.content }
         
-        challengeStackView.updateChallengeTitles(titles: titles, times: times)
+        challengeStackView.updateChallengeTitles(titles: titles, times: times, contents: content)
     }
     
 }

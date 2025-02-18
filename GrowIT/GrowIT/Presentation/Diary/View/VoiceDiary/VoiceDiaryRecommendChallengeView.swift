@@ -47,12 +47,11 @@ class VoiceDiaryRecommendChallengeView: UIView {
         $0.configure(rectColor: UIColor(hex: "0B0B11")!.withAlphaComponent(0.5), titleColor: .primary200)
     }
     
-    let challengeStackView = VoiceDiaryhallengeStackView().then {
+    let challengeStackView = VoiceDiarychallengeStackView().then {
         $0.axis = .vertical
         $0.spacing = 12
         $0.distribution = .equalSpacing
         $0.backgroundColor = .clear
-        $0.configure(rectColor: .black, textColor: .white, clockColor: .primary400)
     }
     
     let saveButton = AppButton(title: "챌린지 저장하기").then {
@@ -118,8 +117,9 @@ class VoiceDiaryRecommendChallengeView: UIView {
     func updateChallenges(_ challenges: [RecommendedChallenge]) {
         let titles = challenges.prefix(3).map { $0.title }
         let times = challenges.prefix(3).map { "\($0.time)분" }
+        let contents = challenges.prefix(3).map { $0.content }
         
-        challengeStackView.updateChallengeTitles(titles: titles, times: times)
+        challengeStackView.updateChallengeTitles(titles: titles, times: times, contents: contents)
     }
     
     func updateEmo(emotionKeywords: [EmotionKeyword]) {
