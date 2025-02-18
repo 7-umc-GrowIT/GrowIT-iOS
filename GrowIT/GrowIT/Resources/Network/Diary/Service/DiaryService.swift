@@ -15,7 +15,7 @@ final class DiaryService: NetworkManager {
     
     init(provider: MoyaProvider<DiaryEndpoint>? = nil) {
         let plugins: [PluginType] = [
-            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)),
+            // NetworkLoggerPlugin(configuration: .init(logOptions: [.requestMethod, .successResponseBody])),
             AuthPlugin()
         ]
         

@@ -15,7 +15,7 @@ final class GroService: NetworkManager {
     
     init(provider: MoyaProvider<GroEndpoint>? = nil) {
         let plugins: [PluginType] = [
-            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)),
+            // NetworkLoggerPlugin(configuration: .init(logOptions: [.requestMethod, .successResponseBody])),
             AuthPlugin()
         ]
         
