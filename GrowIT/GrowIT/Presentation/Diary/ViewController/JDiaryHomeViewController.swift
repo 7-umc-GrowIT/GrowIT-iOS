@@ -11,7 +11,7 @@ import SnapKit
 class JDiaryHomeViewController: UIViewController {
     
     private lazy var jDiaryHomeView = JDiaryHomeView()
-    private lazy var jDiaryCalendarVC = JDiaryCalendarController()
+    private lazy var jDiaryCalendarVC = JDiaryCalendarController(isDropDown: false)
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = true

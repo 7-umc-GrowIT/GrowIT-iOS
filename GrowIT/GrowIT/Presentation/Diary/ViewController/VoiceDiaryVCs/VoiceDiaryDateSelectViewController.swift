@@ -13,7 +13,7 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
     let  voiceDiaryDateSelectView = VoiceDiaryDateSelectView()
     let navigationBarManager = NavigationManager()
     
-    let calVC = JDiaryCalendarController()
+    let calVC = JDiaryCalendarController(isDropDown: true)
     
     override func viewDidLoad() {
         super.viewDidLoad()

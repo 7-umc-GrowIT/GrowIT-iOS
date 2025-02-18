@@ -37,6 +37,15 @@ class DiaryPostFixView: UIView {
     }
     
     let textView = UITextView().then {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 8 // 원하는 줄 간격 값
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .paragraphStyle: paragraphStyle,
+            .font: UIFont.body1Medium(), // 사용 중인 폰트
+            .foregroundColor: UIColor.gray300 // 텍스트 색상
+        ]
+        
         $0.font = .body1Medium()
         $0.textColor = .gray900
         $0.backgroundColor = .white
@@ -44,6 +53,7 @@ class DiaryPostFixView: UIView {
         $0.textContainer.lineFragmentPadding = 12
         $0.layer.borderColor = UIColor.border2.cgColor
         $0.layer.borderWidth = 1
+        //$0.attributedText = NSAttributedString(string: "", attributes: attributes)
     }
     
     let cancelButton = AppButton(title: "나가기", titleColor: .gray400).then {

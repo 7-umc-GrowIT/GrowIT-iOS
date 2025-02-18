@@ -31,10 +31,10 @@ class HomeTopNavbarView: UIView {
     }
     
     // 아이템샵 아이콘 버튼
-    lazy var itemShopBtn = makeIconbutton(image: "shop")
+    public lazy var itemShopBtn = makeIconbutton(image: "shop")
     
     // 환경설정 아이콘 버튼
-    private lazy var settingBtn = makeIconbutton(image: "setting")
+    public lazy var settingBtn = makeIconbutton(image: "setting")
     
     // MARK: - Stack
     
