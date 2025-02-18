@@ -68,8 +68,8 @@ extension AuthorizationEndpoints: TargetType {
             return .requestJSONEncodable(data)
         case .postEmailSignUp(let data):
             return .requestJSONEncodable(data)
-        case .postReissueToken:
-            return .requestPlain
+        case .postReissueToken(let data):
+            return .requestJSONEncodable(data)
         case .postKakaoLogin(let code):
             return .requestParameters(parameters: ["code": code], encoding: URLEncoding.queryString)
         case .postEmailLogin(let data):

@@ -7,19 +7,47 @@
 
 import UIKit
 
-class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate, VoiceDiaryRecordDelegate {
+class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate {
     
     // MARK: Properties
     let voiceDiarySummaryView = VoiceDiarySummaryView()
     let navigationBarManager = NavigationManager()
+    let diaryContent: String
+    let diaryId: Int
+    let date: String
     
-    weak var delegate: VoiceDiaryRecordDelegate?
+    private var recommendedChallenges: [RecommendedChallenge] = []
+    private var emotionKeywords: [EmotionKeyword] = []
+    
+    let diaryService = DiaryService()
+    
+    init(diaryContent: String, diaryId: Int, date: String) {
+        self.diaryContent = diaryContent
+        self.diaryId = diaryId
+        self.date = date
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        DispatchQueue.main.async {
+            self.fetchDiaryAnalyze()
+        }
+        
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
         setupUI()
         setupActions()
+        
+        voiceDiarySummaryView.configure(text: diaryContent)
+        voiceDiarySummaryView.updateDate(with: date)
     }
     
     // MARK: Setup Navigation Bar
@@ -58,6 +86,7 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
     @objc func prevVC() {
         let prevVC = VoiceDiarySummaryErrorViewController()
         prevVC.delegate = self
+        prevVC.diaryId = diaryId
         let navController = UINavigationController(rootViewController: prevVC)
         navController.modalPresentationStyle = .fullScreen
         presentPageSheet(viewController: navController, detentFraction: 0.37)
@@ -65,6 +94,8 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
     
     @objc func nextVC() {
         let nextVC = VoiceDiaryRecommendChallengeViewController()
+        nextVC.recommendedChallenges = recommendedChallenges
+        nextVC.emotionKeywords = emotionKeywords
         nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
@@ -80,9 +111,23 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
         navigationController?.popToRootViewController(animated: true)
     }
     
-    func didFinishRecording(diaryContent: String) {
-        DispatchQueue.main.async() {
-            self.voiceDiarySummaryView.configure(text: diaryContent)
-        }
+    // MARK: Setup APIs
+    private func fetchDiaryAnalyze() {
+        diaryService.postVoiceDiaryAnalyze(
+            diaryId: diaryId,
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    print(data)
+                    DispatchQueue.main.async {
+                        self.voiceDiarySummaryView.updateEmo(emotionKeywords: data.emotionKeywords)
+                        self.recommendedChallenges = data.recommendedChallenges
+                        self.emotionKeywords = data.emotionKeywords
+                    }
+                case .failure(let error):
+                    print(error)
+                }
+            })
     }
 }

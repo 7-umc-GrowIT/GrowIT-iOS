@@ -43,7 +43,7 @@ class ChallengeDeleteModalController: UIViewController {
                 switch result{
                 case.success(let data):
                     NotificationCenter.default.post(name: .challengeDidDelete, object: nil)
-                    ChallengeToast().show(image: UIImage(named: "toasttrash") ?? UIImage(), message: "챌린지를 삭제했어요", font: .heading3SemiBold())
+                    CustomToast().show(image: UIImage(named: "toasttrash") ?? UIImage(), message: "챌린지를 삭제했어요", font: .heading3SemiBold())
                     UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)
                 case.failure(let error):
                     print("Error: \(error)")

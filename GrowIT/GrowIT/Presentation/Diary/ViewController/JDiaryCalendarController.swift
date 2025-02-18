@@ -60,6 +60,22 @@ class JDiaryCalendarController: UIViewController {
         return calendar.component(.weekday, from: date)
     }
     
+    private let isDropDown: Bool
+    
+    init(isDropDown: Bool){
+        self.isDropDown = isDropDown
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getDiaryDates()
+        jDiaryCalendar.calendarCollectionView.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = jDiaryCalendar
@@ -70,10 +86,15 @@ class JDiaryCalendarController: UIViewController {
         
         jDiaryCalendar.calendarCollectionView.delegate = self
         jDiaryCalendar.calendarCollectionView.dataSource = self
+        
+        jDiaryCalendar.todayBtn.addTarget(self, action: #selector(todayBtnTapped), for: .touchUpInside)
         jDiaryCalendar.backMonthBtn.addTarget(self, action: #selector(backMonthTapped), for: .touchUpInside)
         jDiaryCalendar.nextMonthBtn.addTarget(self, action: #selector(nextMonthTapped), for: .touchUpInside)
-        
+    }
+    
+    func refreshData(){
         getDiaryDates()
+        
     }
     
     private func getDiaryDates(){
@@ -81,6 +102,7 @@ class JDiaryCalendarController: UIViewController {
             guard let self = self else {return}
             switch result{
             case.success(let data):
+                self.callendarDiaries.removeAll()
                 data?.diaryDateList.forEach{
                     self.callendarDiaries.append($0)
                 }
@@ -98,6 +120,18 @@ class JDiaryCalendarController: UIViewController {
         } else {
             isDark = false
         }
+    }
+    
+    @objc private func todayBtnTapped() {
+        // 오늘 날짜를 currentDate에 설정
+        currentDate = Date()
+
+        // 현재 캘린더를 사용하여 현재 월과 년도를 업데이트
+        currentMonthIndex = currentCalendar.component(.month, from: currentDate) - 1
+        currentYear = currentCalendar.component(.year, from: currentDate)
+
+        // 캘린더를 업데이트하여 변경된 날짜를 반영
+        updateCalendar()
     }
     
     @objc private func backMonthTapped() {
@@ -125,7 +159,7 @@ class JDiaryCalendarController: UIViewController {
         calculateWeeksInMonth()
         adjustCalendarHeightBasedOnWeeks()
         jDiaryCalendar.calendarCollectionView.reloadData()
-        
+        self.view.layoutIfNeeded()
     }
     
 //    private func adjustCalendarHeightBasedOnWeeks() {
@@ -312,24 +346,36 @@ func collectionView(_ collectionView: UICollectionView, layout collectionViewLay
             
             if let result = callendarDiaries.first(where: {$0.date == formattedDate}){
                 print("selectedDiaryId: \(result.diaryId)")
-                 diaryService.fetchDiary(diaryId: result.diaryId, completion: { [weak self] result in
-                     guard let self = self else {return}
-                     switch result{
-                     case.success(let data):
-                         let diaryPostFixVC = DiaryPostFixViewController(text: data.content, date: data.date, diaryId: data.diaryId)
-                         diaryPostFixVC.modalPresentationStyle = .fullScreen
-                         presentPageSheet(viewController: diaryPostFixVC, detentFraction: 0.65)
-                     case.failure(let error):
-                         print("Error: \(error)")
-                     }
-                 })
-                
-                
-                
+                print("🐾isDropDown값은 \(self.isDropDown)")
+                if(self.isDropDown){
+                    CustomToast(containerWidth: 310).show(image: UIImage(named: "toastAlertIcon") ?? UIImage(), message: "해당 날짜는 이미 일기를 작성했어요", font: .heading3SemiBold())
+                }else{
+                    diaryService.fetchDiary(diaryId: result.diaryId, completion: { [weak self] result in
+                        guard let self = self else {return}
+                        switch result{
+                        case.success(let data):
+                            let diaryPostFixVC = DiaryPostFixViewController(text: data.content, date: data.date, diaryId: data.diaryId)
+                            diaryPostFixVC.modalPresentationStyle = .fullScreen
+                            diaryPostFixVC.onDismiss = { [weak self] in
+                                self?.getDiaryDates()
+                            }
+                            presentPageSheet(viewController: diaryPostFixVC, detentFraction: 0.65)
+                        case.failure(let error):
+                            print("Error: \(error)")
+                        }
+                    })
+                    
+                }
             }
-            delegate?.didSelectDate(formattedDate)
+            if(!callendarDiaries.contains(where: {$0.date == formattedDate})){
+                delegate?.didSelectDate(formattedDate)
+            }
             print("Selected date: \(formattedDate)")
         }
     }
     
+}
+
+extension Notification.Name {
+    static let deleteDiary = Notification.Name("deleteDiary")
 }

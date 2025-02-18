@@ -16,8 +16,14 @@ struct UserPatchResponseDTO: Decodable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: EmptyResult?
+
+    enum CodingKeys: String, CodingKey {
+        case isSuccess = "isSuccess"
+        case code = "code"
+        case message = "message"
+    }
 }
+
 
 struct EmptyResult: Decodable {}
 

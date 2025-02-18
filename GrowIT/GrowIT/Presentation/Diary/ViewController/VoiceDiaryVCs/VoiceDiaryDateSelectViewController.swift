@@ -13,7 +13,7 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
     let  voiceDiaryDateSelectView = VoiceDiaryDateSelectView()
     let navigationBarManager = NavigationManager()
     
-    let calVC = JDiaryCalendarController()
+    let calVC = JDiaryCalendarController(isDropDown: true)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,6 +60,25 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
         calVC.view.isHidden = true
     }
     
+    private func updateDateSelectionUI(isValid: Bool) {
+        let v = voiceDiaryDateSelectView
+        if isValid {
+            v.dateLabel.textColor = .gray300
+            v.dateView.layer.borderColor = UIColor.clear.cgColor
+            v.toggleButton.tintColor = .gray500
+            v.dateSelectLabel.textColor = .white
+            v.warningLabel.isHidden = true
+        } else {
+            v.dateLabel.textColor = .negative100
+            v.dateView.layer.borderColor = UIColor.negative100.cgColor
+            v.toggleButton.tintColor = .negative100
+            v.dateSelectLabel.textColor = .negative100
+            v.warningLabel.isHidden = false
+        }
+        
+       
+    }
+    
     // MARK: Setup Delegate
     private func setupDelegate() {
         calVC.delegate = self
@@ -69,10 +88,9 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
     private func setupActions() {
         voiceDiaryDateSelectView.startButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         
-        let labelAction = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
-        voiceDiaryDateSelectView.helpLabel.addGestureRecognizer(labelAction)
+        voiceDiaryDateSelectView.helpLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(labelTapped)))
         
-        voiceDiaryDateSelectView.toggleButton.addTarget(self, action: #selector(toggleTapped), for: .touchUpInside)
+        voiceDiaryDateSelectView.dateView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleTapped)))
     }
     
     
@@ -83,12 +101,7 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
     
     @objc func nextVC() {
         if voiceDiaryDateSelectView.dateSelectLabel.text == "일기 날짜를 선택해 주세요" {
-            let v = voiceDiaryDateSelectView
-            v.dateLabel.textColor = .negative400
-            v.dateView.layer.borderColor = UIColor.negative400.cgColor
-            v.toggleButton.tintColor = .negative400
-            v.dateSelectLabel.textColor = .negative400
-            v.warningLabel.isHidden = false
+            updateDateSelectionUI(isValid: false)
         } else {
             let nextVC = VoiceDiaryRecordViewController()
             nextVC.hidesBottomBarWhenPushed = true
@@ -112,5 +125,7 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
         voiceDiaryDateSelectView.updateDateLabel(date)
         UserDefaults.standard.set(date, forKey: "VoiceDate")
         calVC.view.isHidden = true
+        
+        updateDateSelectionUI(isValid: true)
     }
 }

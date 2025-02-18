@@ -44,6 +44,7 @@ class DiaryPostFixView: UIView {
         $0.textContainer.lineFragmentPadding = 12
         $0.layer.borderColor = UIColor.border2.cgColor
         $0.layer.borderWidth = 1
+        $0.setLineSpacing(spacing: 8, font: .body1Medium(), color: .gray900)
     }
     
     let cancelButton = AppButton(title: "나가기", titleColor: .gray400).then {

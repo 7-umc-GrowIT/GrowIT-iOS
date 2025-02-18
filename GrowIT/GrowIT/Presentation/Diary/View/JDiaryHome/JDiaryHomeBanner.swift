@@ -40,7 +40,11 @@ class JDiaryHomeBanner: UIView {
     
     private lazy var postImage = LottieAnimationView(name: "Diary").then {
         $0.frame = CGRect(x: 0, y: 0, width: 162, height: 153)
-        $0.contentMode = .scaleAspectFit
+        //$0.sizeToFit()
+        $0.contentMode = .scaleAspectFill
+        $0.clipsToBounds = true
+//        $0.layer.borderColor = UIColor.red.cgColor
+//        $0.layer.borderWidth = 1
         $0.loopMode = .loop
     }
     
@@ -111,8 +115,10 @@ class JDiaryHomeBanner: UIView {
         }
         
         postImage.snp.makeConstraints{
-            $0.centerX.equalToSuperview()
-            $0.centerY.equalToSuperview().inset(5)
+//            $0.centerX.equalToSuperview()
+//            $0.centerY.equalToSuperview()
+            $0.horizontalEdges.top.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(20)
         }
         
         diaryWriteStack.snp.makeConstraints{

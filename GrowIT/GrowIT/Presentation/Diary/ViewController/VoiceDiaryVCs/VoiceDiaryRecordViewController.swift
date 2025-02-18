@@ -22,8 +22,6 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     private var audioPlayer: AVAudioPlayer?
     private var isRecording = false // 녹음 상태 관리
     
-    weak var delegate: VoiceDiaryRecordDelegate?
-    
     private let diaryService = DiaryService()
     
     override func viewDidLoad() {
@@ -43,7 +41,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
         voiceDiaryRecordView.onRemainingTimeChanged = { [weak self] remainingTime in
             guard let self = self else { return }
             if remainingTime == 30 {
-                Toast.show(
+                CustomToast(containerWidth: 239).show(
                     image: UIImage(named: "warningIcon") ?? UIImage(),
                     message: "30초 후 대화가 종료돼요",
                     font: .heading3SemiBold()
@@ -97,18 +95,22 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     @objc func nextVC() {
         let remainingTime = voiceDiaryRecordView.remainingTime
         if remainingTime > 170 {
-            Toast.show(
+            CustomToast(containerWidth: 225).show(
                 image: UIImage(named: "warningIcon") ?? UIImage(),
                 message: "1분 이상 대화해 주세요",
                 font: .heading3SemiBold()
             )
         } else {
             stopRecording()
-            callPostVoiceDiaryDate()
             let nextVC = VoiceDiaryLoadingViewController()
             nextVC.hidesBottomBarWhenPushed = true
-            nextVC.delegate = self.delegate
             navigationController?.pushViewController(nextVC, animated: true)
+            
+            callPostVoiceDiaryDate { content, diaryId, date in
+                DispatchQueue.main.async {
+                    nextVC.navigateToNextScreen(with: content, diaryId: diaryId, date: date)
+                }
+            }
         }
     }
     
@@ -242,7 +244,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
             })
     }
     
-    private func callPostVoiceDiaryDate() {
+    private func callPostVoiceDiaryDate(completion: @escaping (String, Int, String) -> Void) {
         let date = UserDefaults.standard.string(forKey: "VoiceDate") ?? ""
         diaryService.postVoiceDiaryDate(
             data: DiaryVoiceDateRequestDTO(
@@ -253,7 +255,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
                 case.success(let data):
                     print("Success!!!!!!! \(data)")
                     DispatchQueue.main.async {
-                        self.delegate?.didFinishRecording(diaryContent: data.content)
+                        completion(data.content, data.diaryId, date)
                     }
                 case.failure(let error):
                     print("Error: \(error)")

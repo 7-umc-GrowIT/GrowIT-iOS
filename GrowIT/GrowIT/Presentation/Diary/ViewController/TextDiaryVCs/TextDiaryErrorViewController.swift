@@ -14,6 +14,10 @@ class TextDiaryErrorViewController: UIViewController {
     // MARK: - Properties
     let errorView = ErrorView()
     
+    let diaryService = DiaryService()
+    
+    var diaryId = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,8 +45,24 @@ class TextDiaryErrorViewController: UIViewController {
     }
     
     @objc func mainVC() {
+        callDeleteDiary()
         dismiss(animated: true) { [weak self] in
             self?.delegate?.didTapExitButton()
         }
+    }
+    
+    // MARK: Setup APIs
+    private func callDeleteDiary() {
+        diaryService.deleteDiary(
+            diaryId: diaryId,
+            completion: {[weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    print("Success: \(data)")
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            })
     }
 }

@@ -38,7 +38,7 @@ class CustomChallengeListCell: UICollectionViewCell{
     }
     
     private lazy var icon = UIImageView().then{
-        $0.image = UIImage(named: "challengeListIcon")
+        $0.image = UIImage(named: "challengeIcon")
         $0.contentMode = .scaleAspectFit
     }
     

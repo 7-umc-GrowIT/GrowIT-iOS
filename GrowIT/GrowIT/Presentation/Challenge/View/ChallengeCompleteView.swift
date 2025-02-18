@@ -74,18 +74,9 @@ class ChallengeCompleteView: UIView {
     private lazy var reviewLabel = makeLabel(title: "챌린지 한줄소감", color: .gray900, font: .heading3Bold())
     
     public lazy var reviewContainer = UITextView().then{
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 8 // 원하는 줄 간격 값
-
-        let attributes: [NSAttributedString.Key: Any] = [
-            .paragraphStyle: paragraphStyle,
-            .font: UIFont.body1Medium(), // 사용 중인 폰트
-            .foregroundColor: UIColor.gray900 // 텍스트 색상
-        ]
-        
         $0.text = ""
-//        $0.textColor = .gray900
-//        $0.font = .body1Medium()
+        $0.textColor = .gray900
+        $0.font = .body1Medium()
         $0.backgroundColor = .white
         $0.isScrollEnabled = false
         $0.clipsToBounds = true
@@ -93,8 +84,8 @@ class ChallengeCompleteView: UIView {
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
         $0.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
-        $0.attributedText = NSAttributedString(string: "", attributes: attributes)
         $0.returnKeyType = .done
+        $0.setLineSpacing(spacing: 8, font: .body1Medium(), color: .gray900)
     }
     
     private lazy var reviewHintText = makeLabel(title: "챌린지 한줄소감을 50자 이상 적어 주세요", color: .gray500, font: .detail2Regular())
@@ -169,7 +160,7 @@ class ChallengeCompleteView: UIView {
         challengeName.text = challenge.title
         challengeTime.text = challenge.time.formattedTime
         reviewContainer.text = challenge.thoughts
-        
+        reviewContainer.setLineSpacing(spacing: 4, font: .body1Medium(), color: .gray900)
         var dateList : [String] = []
         let fullDate = challenge.certificationDate.split(separator: "T")[0]
         fullDate.split(separator: "-").forEach { (element) in

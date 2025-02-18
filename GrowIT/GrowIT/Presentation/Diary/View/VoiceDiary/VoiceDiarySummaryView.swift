@@ -77,6 +77,7 @@ class VoiceDiarySummaryView: UIView {
         $0.font = .body1Medium()
         $0.isEditable = false
         $0.backgroundColor = .clear
+        $0.setLineSpacing(spacing: 8, font: .body1Medium(), color: .white)
     }
     
     private let aiLabel = UILabel().then {
@@ -172,4 +173,13 @@ class VoiceDiarySummaryView: UIView {
         diaryTextView.text = text
     }
 
+    func updateEmo(emotionKeywords: [EmotionKeyword]) {
+        let keywords = emotionKeywords.prefix(3).map { $0.keyword }
+        emoStackView.updateLabels(with: keywords)
+    }
+    
+    func updateDate(with date: String) {
+        dateLabel.text = date
+    }
+    
 }

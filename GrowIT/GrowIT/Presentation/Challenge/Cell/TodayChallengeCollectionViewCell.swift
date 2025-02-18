@@ -37,7 +37,7 @@ class TodayChallengeCollectionViewCell: UICollectionViewCell {
     }
     
     private lazy var icon = UIImageView().then{
-        $0.image = UIImage(named: "challengeListIcon")
+        $0.image = UIImage(named: "challengeIcon")
         $0.contentMode = .scaleAspectFit
     }
     
@@ -45,8 +45,10 @@ class TodayChallengeCollectionViewCell: UICollectionViewCell {
         $0.text = ""
         $0.textColor = .gray900
         $0.font = .heading3Bold()
+        $0.numberOfLines = 0
+        $0.lineBreakMode = .byWordWrapping
         $0.adjustsFontSizeToFitWidth = true
-        $0.minimumScaleFactor = 0.8
+        $0.minimumScaleFactor = 0.5
     }
     
     private lazy var clock = UIImageView().then{
@@ -102,11 +104,11 @@ class TodayChallengeCollectionViewCell: UICollectionViewCell {
         box.snp.makeConstraints{
             $0.horizontalEdges.equalToSuperview()
             //$0.top.equalToSuperview().offset(8)
-            $0.height.equalTo(100)
+            //$0.height.equalTo(100)
         }
         
         icon.snp.makeConstraints{
-            $0.verticalEdges.equalToSuperview().inset(30)
+            $0.centerY.equalToSuperview()
             $0.left.equalToSuperview().offset(24)
             $0.width.height.equalTo(40)
         }
@@ -114,11 +116,12 @@ class TodayChallengeCollectionViewCell: UICollectionViewCell {
         name.snp.makeConstraints{
             $0.top.equalToSuperview().offset(24.5)
             $0.left.equalTo(icon.snp.right).offset(12)
-            $0.right.equalTo(buttonContainer.snp.left).inset(10)
-            //$0.width.equalToSuperview().multipliedBy(0.37)
+            //$0.right.equalTo(buttonContainer.snp.left).inset(10)
+            $0.width.equalToSuperview().multipliedBy(0.5)
         }
         
         timeStack.snp.makeConstraints{
+            $0.top.equalTo(name.snp.bottom).offset(8)
             $0.bottom.equalToSuperview().inset(24.5)
             $0.left.equalTo(icon.snp.right).offset(12)
         }

@@ -15,48 +15,52 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = homeview
-        callGetGroImage()
+        loadGroImage()
+        setNotification()
         
         navigationController?.navigationBar.isHidden = true
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-
+        
         //setupGradientView()
     }
     
-    // MARK: - NetWork
-    func callGetGroImage() {
-        groService.getGroImage(completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                homeview.characterArea.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl))
-                let equippedItems = data.equippedItems
-                
-                let categoryImageViews: [String: UIImageView] = [
-                    "BACKGROUND": homeview.characterArea.backgroundImageView,
-                    "OBJECT": homeview.characterArea.groObjectImageView,
-                    "PLANT": homeview.characterArea.groFlowerPotImageView,
-                    "HEAD_ACCESSORY": homeview.characterArea.groAccImageView
-                ]
-                
-                for item in equippedItems {
-                    if let imageView = categoryImageViews[item.category] {
-                        imageView.kf.setImage(with: URL(string: item.itemImageUrl))
-                    } else {
-                        fatalError("category not found")
-                    }
-                }
-                
-                
-            case .failure(let error):
-                print("Error: \(error.localizedDescription)")
-            }
-        })
+    // MARK: - Set Character
+    private func loadGroImage() {
+        GroImageCacheManager.shared.fetchGroImage { [weak self] data in
+            guard let self = self, let data = data else { return }
+            self.updateCharacterViewImage(with: data)
+        }
     }
     
+    @objc
+    private func updateCharacterView() {
+        GroImageCacheManager.shared.refreshGroImage { [weak self] data in
+            guard let self = self, let data = data else { return }
+            self.updateCharacterViewImage(with: data)
+        }
+    }
+    
+    private func updateCharacterViewImage(with data: GroGetResponseDTO) {
+        homeview.characterArea.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
+        
+        let categoryImageViews: [String: UIImageView] = [
+            "BACKGROUND": homeview.characterArea.backgroundImageView,
+            "OBJECT": homeview.characterArea.groObjectImageView,
+            "PLANT": homeview.characterArea.groFlowerPotImageView,
+            "HEAD_ACCESSORY": homeview.characterArea.groAccImageView
+        ]
+        
+        for item in data.equippedItems {
+            if let imageView = categoryImageViews[item.category] {
+                imageView.kf.setImage(with: URL(string: item.itemImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
+            }
+        }
+    }
+    
+    //MARK: -
     private func setupGradientView() {
         // 그라디언트 뷰의 프레임 설정
         gradientView.frame = CGRect(x: 0, y: view.bounds.height / 2, width: view.bounds.width, height: view.bounds.height / 2 - 20)
@@ -76,7 +80,35 @@ class HomeViewController: UIViewController {
         // 그라디언트 레이어를 뷰에 추가
         gradientView.layer.addSublayer(gradientLayer)
     }
-
-    private lazy var homeview = HomeView()
-
+    
+    private lazy var homeview = HomeView().then {
+        $0.topNavBar.itemShopBtn.addTarget(self, action: #selector(goToItemShop), for: .touchUpInside)
+        $0.topNavBar.settingBtn.addTarget(self, action: #selector(logout), for: .touchUpInside)
+    }
+    
+    @objc private func goToItemShop() {
+        let itemShopVC = GroViewController()
+        navigationController?.pushViewController(itemShopVC, animated: false)
+    }
+    
+    @objc private func logout(){
+        TokenManager.shared.clearTokens()
+        let nextVC = LoginViewController()
+        if let window = UIApplication.shared.windows.first {
+            window.rootViewController = nextVC
+            window.makeKeyAndVisible()
+            
+            // 뷰 컨트롤러 전환 시 애니메이션을 제공합니다.
+            UIView.transition(with: window, duration: 0.1, options: .transitionCrossDissolve, animations: nil, completion: nil)
+        }
+    }
+        
+    //MARK: Notification
+    private func setNotification() {
+        let Notification = NotificationCenter.default
+        
+        Notification.addObserver(self, selector: #selector(updateCharacterView), name: .groImageUpdated, object: nil)
+        
+    }
+    
 }

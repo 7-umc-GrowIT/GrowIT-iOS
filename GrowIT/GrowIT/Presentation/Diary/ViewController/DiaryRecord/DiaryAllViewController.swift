@@ -26,6 +26,7 @@ class DiaryAllViewController: UIViewController, UITableViewDelegate {
         super.viewWillAppear(animated)
         callGetAllDiaries()
         setupNavigationBar()
+        setupActions()
     }
     
     //MARK: - Setup Navigation Bar
@@ -59,6 +60,12 @@ class DiaryAllViewController: UIViewController, UITableViewDelegate {
     }
     
     // MARK: Setup Actions
+    private func setupActions() {
+        diaryAllView.onDateSelected = { [weak self] year, month in
+            self?.callGetAllDiaries()
+        }
+    }
+    
     
     // MARK: @objc Methods
     @objc func prevVC() {
@@ -68,13 +75,13 @@ class DiaryAllViewController: UIViewController, UITableViewDelegate {
     // MARK: Setup APIs
     private func callGetAllDiaries() {
         diaryService.fetchAllDiaries(
-            year: 2025,
-            month: 2,
+            year: diaryAllView.selectedYear,
+            month: diaryAllView.selectedMonth,
             completion: { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let data):
-                    print("Success: \(data)")
+                    print("Success")
                     guard let responseData = data else {
                         print("데이터가 nil")
                         return

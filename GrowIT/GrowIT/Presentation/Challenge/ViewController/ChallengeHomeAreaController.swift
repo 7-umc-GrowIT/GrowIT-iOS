@@ -13,7 +13,7 @@ class ChallengeHomeAreaController: UIViewController {
     private lazy var challengeHomeArea = ChallengeHomeArea()
     private lazy var pageControl = UIPageControl()
     private lazy var todayChallenges: [RecommendedChallengeDTO] = []
-
+    private lazy var selectedIndex: Int = 0
     private lazy var challengeService = ChallengeService()
 
     override func viewDidLoad() {
@@ -30,7 +30,7 @@ class ChallengeHomeAreaController: UIViewController {
     
     private func setupPageControl() {
         pageControl.numberOfPages = todayChallenges.count  // 페이지 수 설정
-        pageControl.currentPage = 0    // 현재 페이지 초기화
+        pageControl.currentPage = selectedIndex    // 현재 페이지 초기화
         pageControl.currentPageIndicatorTintColor = .primary600
         pageControl.pageIndicatorTintColor = .gray
         view.addSubview(pageControl)
@@ -79,9 +79,9 @@ class ChallengeHomeAreaController: UIViewController {
                 }else if(data.recommendedChallenges.count == 0){
                     pageControl.isHidden = true
                     self.challengeHomeArea.todayChallengeCollectionView.isHidden = true
-                    self.challengeHomeArea.challengeReportTitleStack.snp.updateConstraints {
-                        $0.top.equalTo(self.challengeHomeArea.hashTagStack.snp.bottom).offset(172)
-                    }
+//                    self.challengeHomeArea.challengeReportTitleStack.snp.updateConstraints {
+//                        $0.top.equalTo(self.challengeHomeArea.titleStack.snp.bottom).offset(193)
+//                    }
                 }
                 else{
                     self.todayChallenges = data.recommendedChallenges
@@ -118,14 +118,29 @@ extension ChallengeHomeAreaController: UICollectionViewDelegateFlowLayout, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = self.view.bounds.width * 0.88
-        let height = self.view.bounds.height * 0.13
+        let challenge = todayChallenges[indexPath.row]
+        let approximateWidthOfNameLabel = collectionView.frame.width * 0.5 // 아이콘, 패딩을 고려한 너비
+        let size = CGSize(width: approximateWidthOfNameLabel, height: CGFloat.greatestFiniteMagnitude)
+        let attributes = [NSAttributedString.Key.font: UIFont.heading3Bold()]
+
+        let estimatedFrame = NSString(string: challenge.title).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+
+        let lines = ceil(estimatedFrame.height / UIFont.heading3Bold().lineHeight) // 줄 수 계산
+        let additionalHeightPerLine = UIFont.heading3Bold().lineHeight // 추가 높이 설정
+
+        let cellHeight = 78 + (lines * additionalHeightPerLine) // 기본 높이 + 줄 수에 따른 추가 높이
         
-        return CGSize(width: width, height: 100)
+        self.challengeHomeArea.todayChallengeCollectionView.snp.updateConstraints{
+            $0.height.equalTo(cellHeight)
+        }
+        
+        self.view.layoutIfNeeded()
+        return CGSize(width: collectionView.frame.width, height: cellHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(todayChallenges[indexPath.row])
+        selectedIndex = indexPath.row
         let challenge = todayChallenges[indexPath.row]
         if(challenge.completed == true){
             let challengeCompleteVC = ChallengeCompleteViewController()
@@ -201,6 +216,7 @@ extension ChallengeHomeAreaController: UIScrollViewDelegate {
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
         
         if let visibleIndexPath = challengeHomeArea.todayChallengeCollectionView.indexPathForItem(at: visiblePoint) {
+            selectedIndex = visibleIndexPath.row
             pageControl.currentPage = visibleIndexPath.row
             print("Current visible cell index: \(visibleIndexPath.row)")
             // 여기서 필요한 작업 수행, 예를 들면 인덱스 저장, UI 업데이트 등

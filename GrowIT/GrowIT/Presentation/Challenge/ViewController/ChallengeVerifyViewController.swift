@@ -46,8 +46,8 @@ class ChallengeVerifyViewController: UIViewController {
     }
     
     private func setupInitialTextViewState() {
-        challengeVerifyView.reviewTextView.text = "챌린지 소감을 간단하게 입력해주세요"
-        challengeVerifyView.reviewTextView.textColor = UIColor.gray300  // 초기 텍스트 색상을 구분하기 쉬운 색상으로 설정
+        challengeVerifyView.reviewTextView.text = "챌린지 소감을 간단하게 입력해 주세요"
+        challengeVerifyView.reviewTextView.setLineSpacing(spacing: 4, font: .body1Medium(), color: .gray300)
     }
     
     @objc func handleImage(_ notification: Notification) {
@@ -148,7 +148,7 @@ class ChallengeVerifyViewController: UIViewController {
         if(!isImageSelected){
             print("여기 출력됨")
             isImageSelected = false
-            Toast.show(image: UIImage(named: "challengeToastIcon") ?? UIImage(), message: "인증샷을 업로드해 주세요", font: .heading3SemiBold())
+            CustomToast(containerWidth: 244).show(image: UIImage(named: "challengeToastIcon") ?? UIImage(), message: "인증샷을 업로드해 주세요", font: .heading3SemiBold())
         }else{
             if(isReviewValidate){
                 getPresignedUrl()
@@ -232,7 +232,7 @@ class ChallengeVerifyViewController: UIViewController {
                 print(data)
                 print("인증 저장 성공!!!")
                 navigationController?.popViewController(animated: false)
-                Toast.show(image: UIImage(named: "challengeToastIcon") ?? UIImage(), message: "챌린지 인증을 완료했어요", font: .heading3SemiBold())
+                CustomToast(containerWidth: 244).show(image: UIImage(named: "challengeToastIcon") ?? UIImage(), message: "챌린지 인증을 완료했어요", font: .heading3SemiBold())
             case .failure(let error):
                 print("챌린지 인증 저장 에러: \(error)")
             }

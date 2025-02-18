@@ -35,7 +35,7 @@ struct ChallengeProveResponseDTO: Decodable{
 struct ChallengeDTO: Decodable{
     let id: Int
     let title: String
-    let certificationImage: String
+    let certificationImageUrl: String
     let thoughts: String
     let time: Int
     let certificationDate: String
@@ -49,7 +49,7 @@ struct ChallengeDeleteResponseDTO: Decodable{
 
 // 단일 챌린지 수정 응답 DTO
 struct ChallengePatchResponseDTO: Decodable{
-    let certificationImage: String
+    let certificationImageUrl: String
     let thoughts: String
 }
 
@@ -86,4 +86,16 @@ struct UserChallenge: Decodable{
     let dtype: String
     let time: Int
     let completed: Bool
+}
+
+struct ChallengeSelectResultDTO: Codable {
+    let selectedChallenges: [SelectedChallengeDTO]
+}
+
+struct SelectedChallengeDTO: Codable {
+    let id: Int
+    let dtype: String
+    let title: String
+    let content: String
+    let time: Int
 }

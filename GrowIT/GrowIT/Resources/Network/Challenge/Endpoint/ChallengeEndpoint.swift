@@ -15,7 +15,7 @@ enum ChallengeEndpoint {
     case getSummaryChallenge
     
     // Post
-    case postSelectChallenge(challengeId: Int)
+    case postSelectChallenge(data: ChallengeSelectRequestListDTO)
     case postProveChallenge(challengeId: Int, data: ChallengeRequestDTO)
     
     // Delete
@@ -67,7 +67,9 @@ extension ChallengeEndpoint: TargetType {
     
     public var task: Moya.Task {
         switch self {
-        case .postSelectChallenge(_), .deleteChallengeById(_), .getChallengeById(_), .getSummaryChallenge:
+        case .postSelectChallenge(let data):
+            return .requestJSONEncodable(data)
+        case .deleteChallengeById(_), .getChallengeById(_), .getSummaryChallenge:
             return .requestPlain
         case .postProveChallenge(_, let data), .patchChallengeById(_, let data):
             return .requestJSONEncodable(data)
@@ -79,7 +81,9 @@ extension ChallengeEndpoint: TargetType {
     }
     
     var headers: [String : String]? {
-        return [ "Content-type": "application/json"]
+        return [
+            "Content-Type": "application/json"
+        ]
     }
     
     
