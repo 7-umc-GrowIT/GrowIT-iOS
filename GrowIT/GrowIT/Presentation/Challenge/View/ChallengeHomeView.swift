@@ -41,6 +41,8 @@ class ChallengeHomeView: UIView {
     
     public lazy var challengeSegmentUnderline = UIView().then{
         $0.backgroundColor = .primary600
+        $0.layer.shouldRasterize = false
+        $0.clipsToBounds = true
     }
     
     private lazy var divideLine = UIView().then{
@@ -119,9 +121,11 @@ class ChallengeHomeView: UIView {
         if animated {
             UIView.animate(withDuration: 0.3) {
                 self.layoutIfNeeded() // 애니메이션 효과 추가
+                self.challengeSegmentUnderline.setNeedsDisplay()
             }
         } else {
             self.layoutIfNeeded() // 애니메이션 없이 레이아웃 업데이트
+            self.challengeSegmentUnderline.setNeedsDisplay()
         }
     }
     

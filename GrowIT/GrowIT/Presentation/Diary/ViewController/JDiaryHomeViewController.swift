@@ -11,7 +11,7 @@ import SnapKit
 class JDiaryHomeViewController: UIViewController {
     
     private lazy var jDiaryHomeView = JDiaryHomeView()
-    private lazy var jDiaryCalendarVC = JDiaryCalendarController()
+    private lazy var jDiaryCalendarVC = JDiaryCalendarController(isDropDown: false)
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = true
@@ -58,12 +58,9 @@ class JDiaryHomeViewController: UIViewController {
     }
     
     private func setupCalendarViewConstraints() {
-        //secondVC.view.translatesAutoresizingMaskIntoConstraints = false
         jDiaryCalendarVC.view.snp.makeConstraints{
-            //$0.top.equalTo(jdiaryHomeView.diaryHomeCalendar.snp.bottom).offset(10)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(100)
-            //$0.height.equalTo(jDiaryHomeView.snp.height).multipliedBy(0.311)
+            $0.bottom.equalToSuperview()
         }
     }
     

@@ -15,7 +15,7 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     let textDiaryView = TextDiaryView()
     let diaryService = DiaryService()
     
-    let calVC = JDiaryCalendarController()
+    let calVC = JDiaryCalendarController(isDropDown: true)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,7 +82,7 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     }
     
     @objc func calenderVC(_ sender: UIButton) {
-        let calVC = JDiaryCalendarController()
+        let calVC = JDiaryCalendarController(isDropDown: true)
         calVC.configureTheme(isDarkMode: false)
         calVC.delegate = self
         calVC.view.backgroundColor = .clear

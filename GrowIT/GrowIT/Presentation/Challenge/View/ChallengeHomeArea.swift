@@ -92,7 +92,7 @@ class ChallengeHomeArea: UIView {
     private lazy var diaryDatesLabel = makeLabel(title: "", color: .gray400, font: .body2Medium())
     
     // MARK: - Stack
-    private lazy var titleStack = makeStack(axis: .vertical, spacing: 4)
+    public lazy var titleStack = makeStack(axis: .vertical, spacing: 4)
     
     public lazy var hashTagStack = makeStack(axis: .horizontal, spacing: 8)
     
