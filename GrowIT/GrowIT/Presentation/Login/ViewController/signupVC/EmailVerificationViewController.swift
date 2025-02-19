@@ -25,7 +25,6 @@ class EmailVerificationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("✅ 전달된 약관 목록: \(agreeTerms)")
         setupView()
         setupActions()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
