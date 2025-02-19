@@ -94,7 +94,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     
     @objc func nextVC() {
         let remainingTime = voiceDiaryRecordView.remainingTime
-        if remainingTime > 170 {
+        if remainingTime > 120 {
             CustomToast(containerWidth: 225).show(
                 image: UIImage(named: "warningIcon") ?? UIImage(),
                 message: "1분 이상 대화해 주세요",
@@ -116,6 +116,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     
     @objc func beginRecord() {
         startRecording()
+        voiceDiaryRecordView.tipView2.isHidden = false
     }
     
     @objc func stopRecord() {
