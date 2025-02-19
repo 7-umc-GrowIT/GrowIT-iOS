@@ -34,7 +34,7 @@ class HomeCharacterView: UIView {
     private lazy var creditIcon = makeIcon("credit")
     
     // 크레딧 개수
-    private lazy var creditNum = UILabel().then{
+    public lazy var creditNum = UILabel().then{
         $0.text = "1개"
         $0.font = UIFont.heading2Bold()
         $0.textColor = .white

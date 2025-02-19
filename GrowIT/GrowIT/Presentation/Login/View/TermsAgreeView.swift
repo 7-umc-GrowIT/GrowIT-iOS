@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import SnapKit
+import Then
 
 class TermsAgreeView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        addComponents()
         setupUI()
     }
     
@@ -19,6 +23,12 @@ class TermsAgreeView: UIView {
     }
     
     // MARK: UI Components
+    private lazy var scrollView = UIScrollView(frame: self.bounds).then{
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+        $0.contentOffset = CGPoint(x: 0, y: 0)
+    }
+    
     private let topLabel = UILabel().then {
         let allText = "그로우잇 시작을 위한\n필수 약관에 동의해 주세요"
         $0.text = allText
@@ -73,16 +83,28 @@ class TermsAgreeView: UIView {
         $0.backgroundColor = .gray100
     }
     
+    private func addComponents(){
+        self.addSubview(scrollView)
+        //scrollView.addSubview(contentView)
+        [topLabel, allAgreeView, termsLabel, termsTableView, termsLabel2, termsOptTableView, nextButton].forEach(scrollView.addSubview)
+        [checkButton, allAgreeLabel].forEach(allAgreeView.addSubview)
+    }
+    
     // MARK: Setup UI
     private func setupUI() {
         backgroundColor = .white
-        addSubview(topLabel)
-        topLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(24)
-            make.top.equalTo(safeAreaLayoutGuide).offset(32)
+        
+        scrollView.snp.makeConstraints{
+            $0.top.equalTo(self.safeAreaLayoutGuide.snp.top)
+            $0.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
+            $0.horizontalEdges.equalToSuperview()
         }
         
-        addSubview(allAgreeView)
+        topLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(24)
+            make.top.equalToSuperview().offset(32)
+        }
+        
         allAgreeView.snp.makeConstraints { make in
             make.leading.equalTo(topLabel.snp.leading)
             make.centerX.equalToSuperview()
@@ -90,25 +112,21 @@ class TermsAgreeView: UIView {
             make.height.equalTo(60)
         }
         
-        allAgreeView.addSubview(checkButton)
         checkButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(12)
             make.centerY.equalToSuperview()
         }
         
-        allAgreeView.addSubview(allAgreeLabel)
         allAgreeLabel.snp.makeConstraints { make in
             make.leading.equalTo(checkButton.snp.trailing).offset(10)
             make.centerY.equalToSuperview()
         }
         
-        addSubview(termsLabel)
         termsLabel.snp.makeConstraints { make in
             make.leading.equalTo(allAgreeView.snp.leading)
             make.top.equalTo(allAgreeView.snp.bottom).offset(16)
         }
         
-        addSubview(termsTableView)
         termsTableView.snp.makeConstraints { make in
             make.top.equalTo(termsLabel.snp.bottom).offset(4)
             make.leading.equalTo(termsLabel.snp.leading)
@@ -116,23 +134,22 @@ class TermsAgreeView: UIView {
             make.height.equalTo(240)
         }
         
-        addSubview(termsLabel2)
         termsLabel2.snp.makeConstraints { make in
             make.leading.equalTo(termsTableView.snp.leading)
             make.top.equalTo(termsTableView.snp.bottom).offset(24)
         }
         
-        addSubview(termsOptTableView)
         termsOptTableView.snp.makeConstraints { make in
             make.leading.equalTo(termsLabel2.snp.leading)
             make.top.equalTo(termsLabel2.snp.bottom).offset(4)
             make.centerX.equalToSuperview()
             make.height.equalTo(120)
         }
-        addSubview(nextButton)
+    
         nextButton.snp.makeConstraints { make in
             make.leading.equalTo(termsOptTableView.snp.leading)
             make.top.equalTo(termsOptTableView.snp.bottom).offset(80)
+            make.bottom.equalToSuperview().inset(20)
             make.centerX.equalToSuperview()
         }
     }
