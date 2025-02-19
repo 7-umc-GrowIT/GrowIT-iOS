@@ -9,6 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     let groService = GroService()
+    let userService = UserService()
     
     private lazy var gradientView = UIView()
     
@@ -17,6 +18,7 @@ class HomeViewController: UIViewController {
         self.view = homeview
         loadGroImage()
         setNotification()
+        callGetCredit()
         
         navigationController?.navigationBar.isHidden = true
     }
@@ -25,6 +27,18 @@ class HomeViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         //setupGradientView()
+    }
+    
+    func callGetCredit() {
+        userService.getUserCredits(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                homeview.characterArea.creditNum.text = "\(data.currentCredit)개"
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        })
     }
     
     // MARK: - Set Character
@@ -110,5 +124,6 @@ class HomeViewController: UIViewController {
         Notification.addObserver(self, selector: #selector(updateCharacterView), name: .groImageUpdated, object: nil)
         
     }
+    
     
 }
