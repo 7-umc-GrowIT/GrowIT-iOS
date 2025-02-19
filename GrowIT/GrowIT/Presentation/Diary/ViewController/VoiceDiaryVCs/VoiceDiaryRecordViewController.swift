@@ -260,6 +260,7 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
                     }
                 case.failure(let error):
                     print("Error: \(error)")
+                    self.navigationController?.popToRootViewController(animated: true)
                 }
             })
     }
