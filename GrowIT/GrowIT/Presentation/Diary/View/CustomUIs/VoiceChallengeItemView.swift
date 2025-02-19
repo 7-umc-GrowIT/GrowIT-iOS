@@ -12,7 +12,8 @@ import SnapKit
 class VoiceChallengeItemView: UIView {
     
     private let containerView = UIView().then {
-        $0.backgroundColor = .black
+        $0.backgroundColor = UIColor(hex: "#0B0B1180")
+        $0.layer.cornerRadius = 20
     }
     private var isFlipped = false
     
@@ -39,7 +40,7 @@ class VoiceChallengeItemView: UIView {
     private let label = UILabel().then {
         $0.text = "반신욕 즐겨보기"
         $0.font = .heading3Bold()
-        $0.textColor = .gray900
+        $0.textColor = .white
     }
     
     let button = CircleCheckButton(isEnabled: false)
@@ -63,7 +64,7 @@ class VoiceChallengeItemView: UIView {
     private let backLabel = UILabel().then {
         $0.text = ""
         $0.font = .heading3Bold()
-        $0.textColor = .gray900
+        $0.textColor = .white
         $0.numberOfLines = 0
     }
     
@@ -75,11 +76,6 @@ class VoiceChallengeItemView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        containerView.setGradient(color1: .white, color2: .primary50)
     }
     
     private func setupUI() {
