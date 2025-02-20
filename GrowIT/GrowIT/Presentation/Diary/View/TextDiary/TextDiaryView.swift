@@ -85,14 +85,20 @@ class TextDiaryView: UIView, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
+        checkButtonState()
+    }
+    
+    private func checkButtonState() {
         let isDateSelected = dateLabel.text != "날짜를 선택해 주세요"
+        let isTextValid = !diaryTextField.text.isEmpty && diaryTextField.text != placeholder && diaryTextField.text.count > 100
         
-        if isDateSelected && !textView.text.isEmpty && textView.text != placeholder && textView.text.count > 100 {
-            saveButton.setButtonState(isEnabled: true, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
-            saveButton.isUserInteractionEnabled = true
-        } else {
-            saveButton.setButtonState(isEnabled: false, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
-        }
+        saveButton.setButtonState(
+            isEnabled: isDateSelected && isTextValid,
+            enabledColor: .black,
+            disabledColor: .gray100,
+            enabledTitleColor: .white,
+            disabledTitleColor: .gray400
+        )
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -159,5 +165,6 @@ class TextDiaryView: UIView, UITextViewDelegate {
     
     func updateDateLabel(_ date: String) {
         dateLabel.text = date.formattedDate()
+        checkButtonState()
     }
 }

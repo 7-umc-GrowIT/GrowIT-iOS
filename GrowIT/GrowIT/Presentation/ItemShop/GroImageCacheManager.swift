@@ -34,10 +34,17 @@ final class GroImageCacheManager {
 
             switch result {
             case .success(let data):
-                self.cachedGroData = data
+                if self.isDataChanged(newData: data) {
+                    self.cachedGroData = data
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: .groImageUpdated, object: nil)
+                    }
+                } else {
+                    print("✅ 데이터 변경 없음, 알림 발송 안 함")
+                }
                 completion(data)
             case .failure(let error):
-                print("Error: \(error.localizedDescription)")
+                print("서버 요청 실패: \(error.localizedDescription)")
                 completion(nil)
             }
         }
@@ -45,12 +52,20 @@ final class GroImageCacheManager {
 
     // 2. 강제 갱신 메서드
     func refreshGroImage(completion: @escaping (GroGetResponseDTO?) -> Void) {
+        guard !isFetching else {
+            print("refreshGroImage 중복 호출 방지됨")
+            return
+        }
+        
         cachedGroData = nil
         fetchGroImage(completion: completion)
     }
 
-    // 3. 캐시 초기화 메서드
-    func clearCache() {
-        cachedGroData = nil
+
+    private func isDataChanged(newData: GroGetResponseDTO) -> Bool {
+        guard let oldData = cachedGroData else { return true }
+        let oldEquippedIds = Set(oldData.equippedItems.map { $0.id })
+        let newEquippedIds = Set(newData.equippedItems.map { $0.id })
+        return oldEquippedIds != newEquippedIds
     }
 }
