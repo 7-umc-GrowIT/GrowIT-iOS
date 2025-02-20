@@ -53,7 +53,7 @@ class VoiceDiaryEndViewController: UIViewController {
     
     //MARK: - @objc methods
     @objc func prevVC() {
-        navigationController?.popViewController(animated: true)
+        // navigationController?.popViewController(animated: true)
     }
     
     @objc func nextVC() {
