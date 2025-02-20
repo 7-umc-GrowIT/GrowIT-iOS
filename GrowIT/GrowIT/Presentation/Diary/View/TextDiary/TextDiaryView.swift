@@ -99,6 +99,12 @@ class TextDiaryView: UIView, UITextViewDelegate {
             enabledTitleColor: .white,
             disabledTitleColor: .gray400
         )
+        
+        if isDateSelected && isTextValid {
+            saveButton.isUserInteractionEnabled = true
+        } else {
+            saveButton.isUserInteractionEnabled = false
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
