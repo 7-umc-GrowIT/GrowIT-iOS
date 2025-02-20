@@ -101,6 +101,7 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     // MARK: Setup APIs
     func callPostTextDiary(userDiary: String, date: String, completion: @escaping (Int) -> Void) {
         let convertedDate = convertDateFormat(from: date)
+        UserDefaults.standard.set(convertedDate, forKey: "TextDate")
         diaryService.postTextDiary(
             data: DiaryRequestDTO(
                 content: userDiary,
