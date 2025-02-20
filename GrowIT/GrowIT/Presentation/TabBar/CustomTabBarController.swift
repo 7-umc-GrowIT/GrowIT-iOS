@@ -81,7 +81,7 @@ class CustomTabBarController: UIViewController, UINavigationControllerDelegate {
         
         customTabBar.snp.makeConstraints{
             $0.bottom.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(100)
+            $0.height.equalTo(154)
         }
         
     }

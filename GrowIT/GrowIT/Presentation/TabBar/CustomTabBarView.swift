@@ -30,6 +30,11 @@ class CustomTabBarView: UIView {
     // MARK: - Property
     
     // 탭바 배경 이미지
+    
+    public lazy var containerView = UIView().then{
+        $0.backgroundColor = .clear
+    }
+    
     private lazy var tabBarBg = UIImageView().then{
         $0.image = UIImage(named: "tabBarBg")
         $0.contentMode = .scaleAspectFill
@@ -41,6 +46,7 @@ class CustomTabBarView: UIView {
         
         $0.layer.shouldRasterize = true
         $0.layer.rasterizationScale = UIScreen.main.scale
+        $0.isUserInteractionEnabled = true
     }
     
     
@@ -50,6 +56,7 @@ class CustomTabBarView: UIView {
     // 첫번째 아이템 라벨
     private lazy var firstTabLabel = makeLabel(name:"일기", color: UIColor.grayColor400!)
 
+    
     
     private lazy var secondTabItem = UIImageView().then{
         $0.image = UIImage(named: "homeSelected")
@@ -122,15 +129,22 @@ class CustomTabBarView: UIView {
     }
     
     private func addComponent(){
-        //secondTabContainer.addSubview(secondTabItem)
-        [tabBarBg, firstTabItem, secondTabItem, thirdTabItem].forEach(self.addSubview)
+        self.addSubview(containerView)
+
+        [tabBarBg, firstTabItem, secondTabItem, thirdTabItem].forEach(containerView.addSubview)
+        
     }
     
     private func constraints(){
         
-        tabBarBg.snp.makeConstraints{
+        containerView.snp.makeConstraints{
             $0.horizontalEdges.bottom.equalToSuperview()
             $0.height.equalToSuperview()
+        }
+        
+        tabBarBg.snp.makeConstraints{
+            $0.horizontalEdges.bottom.equalToSuperview()
+            $0.height.equalTo(100)
         }
         
         firstTabIcon.snp.makeConstraints{
@@ -139,7 +153,7 @@ class CustomTabBarView: UIView {
         
         firstTabItem.snp.makeConstraints {
             $0.centerX.equalToSuperview().multipliedBy(1.0 / 3.0)
-            $0.centerY.equalToSuperview()
+            $0.centerY.equalTo(tabBarBg.snp.centerY)
         }
         
         thirdTabIcon.snp.makeConstraints{
@@ -148,7 +162,7 @@ class CustomTabBarView: UIView {
         
         thirdTabItem.snp.makeConstraints {
             $0.centerX.equalToSuperview().multipliedBy(5.0 / 3.0)
-            $0.centerY.equalToSuperview()
+            $0.centerY.equalTo(tabBarBg.snp.centerY)
         }
     }
     
@@ -200,15 +214,5 @@ class CustomTabBarView: UIView {
     @objc private func didTapThirdItem() {
         didSelectItem?(2)
         updateTabItemSelection(at: 2)
-    }
-    
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        // 특정 조건 하에서 secondTabItem이 터치 이벤트를 받도록 처리
-        let pointForTargetView = secondTabItem.convert(point, from: self)
-        if secondTabItem.bounds.contains(pointForTargetView) {
-            return secondTabItem
-        }
-
-        return super.hitTest(point, with: event)
     }
 }

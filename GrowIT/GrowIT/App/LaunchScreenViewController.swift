@@ -80,7 +80,7 @@ final class LaunchScreenViewController: UIViewController {
                     }
                 }
                 
-                let navigationController = CustomNavigationController(rootViewController: mainVC)
+                let navigationController = UINavigationController(rootViewController: mainVC)
                 UIApplication.shared.windows.first?.rootViewController = navigationController
                 UIApplication.shared.windows.first?.makeKeyAndVisible()
             }

@@ -25,7 +25,7 @@ struct ItemList: Decodable {
     let id: Int
     let name: String
     let price: Int
-    let imageUrl, groImageUrl, shopBackgroundColor, category: String
+    let imageUrl, groImageUrl, category: String
     let status: String?
     let purchased: Bool
 }
