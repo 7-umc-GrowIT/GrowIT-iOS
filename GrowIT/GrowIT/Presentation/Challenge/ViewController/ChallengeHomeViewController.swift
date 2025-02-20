@@ -32,6 +32,9 @@ class ChallengeHomeViewController: UIViewController {
         setupChallengeStatusArea()
         setupNotifications()
         
+        challengeStatusAreaVC.refreshData()
+        challengeHomeAreaVC.refreshData()
+        
         challengeHomeAreaVC.view.isHidden = false
         challengeStatusAreaVC.view.isHidden = true
     }

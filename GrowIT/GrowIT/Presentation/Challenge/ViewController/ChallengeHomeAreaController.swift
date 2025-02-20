@@ -79,9 +79,6 @@ class ChallengeHomeAreaController: UIViewController {
                 }else if(data.recommendedChallenges.count == 0){
                     pageControl.isHidden = true
                     self.challengeHomeArea.todayChallengeCollectionView.isHidden = true
-//                    self.challengeHomeArea.challengeReportTitleStack.snp.updateConstraints {
-//                        $0.top.equalTo(self.challengeHomeArea.titleStack.snp.bottom).offset(193)
-//                    }
                 }
                 else{
                     self.todayChallenges = data.recommendedChallenges
@@ -218,7 +215,6 @@ extension ChallengeHomeAreaController: UIScrollViewDelegate {
         if let visibleIndexPath = challengeHomeArea.todayChallengeCollectionView.indexPathForItem(at: visiblePoint) {
             selectedIndex = visibleIndexPath.row
             pageControl.currentPage = visibleIndexPath.row
-            print("Current visible cell index: \(visibleIndexPath.row)")
             // 여기서 필요한 작업 수행, 예를 들면 인덱스 저장, UI 업데이트 등
         }
     }

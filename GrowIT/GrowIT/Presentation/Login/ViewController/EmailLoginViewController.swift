@@ -148,10 +148,12 @@ class EmailLoginViewController: UIViewController {
                         self.moveToNextScreen()
                     } else {
                         print("로그인 실패: \(response.message)")
+                        self.emailLoginView.pwdTextField.setError(message: "비밀번호가 일치하지 않습니다.")
                     }
 
                 case .failure(let error):
                     print("로그인 요청 실패: \(error.localizedDescription)")
+                    self.emailLoginView.pwdTextField.setError(message: "비밀번호가 일치하지 않습니다.")
                 }
             }
         }

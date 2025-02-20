@@ -52,7 +52,6 @@ class ChallengeImageModalController: UIViewController {
     @objc private func galleryBtnTapped(){
         imagePicker.sourceType = .photoLibrary
         
-        print("이미지 업로드")
         let authorizationStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         switch authorizationStatus {
         case .notDetermined:

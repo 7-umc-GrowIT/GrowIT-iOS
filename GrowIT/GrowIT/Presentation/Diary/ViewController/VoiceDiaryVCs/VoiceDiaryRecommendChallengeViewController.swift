@@ -17,6 +17,8 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
     
     private var buttonCount: Int = 0
     
+    var diaryId = 0
+        
     var recommendedChallenges: [RecommendedChallenge] = []
     var emotionKeywords: [EmotionKeyword] = []
     
@@ -80,6 +82,7 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
     @objc func prevVC() {
         let prevVC = VoiceDiaryRecommendErrorViewController()
         prevVC.delegate = self
+        prevVC.diaryId = diaryId
         let navController = UINavigationController(rootViewController: prevVC)
         navController.modalPresentationStyle = .fullScreen
         presentPageSheet(viewController: navController, detentFraction: 0.37)
@@ -146,10 +149,11 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
     }
     
     func getSelectedChallenges() -> [ChallengeSelectRequestDTO] {
+        let date = UserDefaults.standard.string(forKey: "VoiceDate") ?? ""
         return challengeViews.enumerated().compactMap { index, challengeView in
             guard index < recommendedChallenges.count, challengeView.button.isSelectedState() else { return nil }
             let challenge = recommendedChallenges[index]
-            return ChallengeSelectRequestDTO(challengeIds: [challenge.id], dtype: challenge.type)
+            return ChallengeSelectRequestDTO(challengeIds: [challenge.id], dtype: challenge.type, date: date)
         }
     }
 }

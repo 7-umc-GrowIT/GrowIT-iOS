@@ -42,7 +42,7 @@ class ChallengeDeleteModalController: UIViewController {
                 guard let self = self else {return}
                 switch result{
                 case.success(let data):
-                    NotificationCenter.default.post(name: .challengeDidDelete, object: nil)
+                    NotificationCenter.default.post(name: .challengeStatusReload, object: nil)
                     CustomToast().show(image: UIImage(named: "toasttrash") ?? UIImage(), message: "챌린지를 삭제했어요", font: .heading3SemiBold())
                     UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)
                 case.failure(let error):
@@ -55,5 +55,5 @@ class ChallengeDeleteModalController: UIViewController {
 }
 
 extension Notification.Name {
-    static let deleteAndReload = Notification.Name("deleteAndReload")
+    static let challengeStatusReload = Notification.Name("challengeStatusReload")
 }

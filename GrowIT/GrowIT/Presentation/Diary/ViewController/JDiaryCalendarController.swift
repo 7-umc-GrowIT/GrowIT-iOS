@@ -32,8 +32,6 @@ class JDiaryCalendarController: UIViewController {
     var daysPerMonth: [Int] {
         return [31, isLeapYear() ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] // 윤년 고려
     }
-//    var currentMonthIndex: Int = 1
-//    var currentYear: Int = 2025
     var currentDate = Date()
     var currentCalendar: Calendar {
         var calendar = Calendar.current
@@ -161,19 +159,6 @@ class JDiaryCalendarController: UIViewController {
         jDiaryCalendar.calendarCollectionView.reloadData()
         self.view.layoutIfNeeded()
     }
-    
-//    private func adjustCalendarHeightBasedOnWeeks() {
-//        // 셀 높이 계산 (예: 각 셀의 높이가 collectionView의 width / 7)
-//        let cellHeight = jDiaryCalendar.calendarCollectionView.frame.width / 7
-//        
-//        // 전체 높이 계산 (주의 수 * 셀 높이 + 필요한 패딩 또는 섹션 헤더 높이)
-//        let totalHeight = CGFloat(numberOfWeeksInMonth) * cellHeight + 12 + 32 + 12 // 여기서 12, 32, 12는 추가 패딩을 가정한 값입니다.
-//        
-//        jDiaryCalendar.calendarBg.snp.updateConstraints { make in
-//            make.height.equalTo(totalHeight)
-//        }
-//        view.layoutIfNeeded() // 레이아웃 업데이트를 위해 호출
-//    }
     
     func isLeapYear() -> Bool { //윤달 계산
         let year = currentCalendar.component(.year, from: currentDate)
@@ -345,8 +330,6 @@ func collectionView(_ collectionView: UICollectionView, layout collectionViewLay
             let formattedDate = dateFormatter.string(from: date)
             
             if let result = callendarDiaries.first(where: {$0.date == formattedDate}){
-                print("selectedDiaryId: \(result.diaryId)")
-                print("🐾isDropDown값은 \(self.isDropDown)")
                 if(self.isDropDown){
                     CustomToast(containerWidth: 310).show(image: UIImage(named: "toastAlertIcon") ?? UIImage(), message: "해당 날짜는 이미 일기를 작성했어요", font: .heading3SemiBold())
                 }else{
@@ -370,7 +353,6 @@ func collectionView(_ collectionView: UICollectionView, layout collectionViewLay
             if(!callendarDiaries.contains(where: {$0.date == formattedDate})){
                 delegate?.didSelectDate(formattedDate)
             }
-            print("Selected date: \(formattedDate)")
         }
     }
     

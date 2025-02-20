@@ -96,7 +96,7 @@ class TermsAgreeView: UIView {
         
         scrollView.snp.makeConstraints{
             $0.top.equalTo(self.safeAreaLayoutGuide.snp.top)
-            $0.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
+            $0.bottom.equalToSuperview()
             $0.horizontalEdges.equalToSuperview()
         }
         

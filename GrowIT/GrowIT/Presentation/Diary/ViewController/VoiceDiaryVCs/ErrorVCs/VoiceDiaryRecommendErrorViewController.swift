@@ -66,7 +66,7 @@ class VoiceDiaryRecommendErrorViewController: UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case .success(let data):
-                    print("Success: \(data)")
+                    print("챌린지 뷰컨에서 삭제 성공 \(diaryId)")
                 case .failure(let error):
                     print("Error: \(error)")
                 }

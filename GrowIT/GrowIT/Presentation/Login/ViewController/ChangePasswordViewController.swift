@@ -108,13 +108,13 @@ class ChangePasswordViewController: UIViewController {
         
         if emailText.isEmpty {
             changePasswordView.emailTextField.clearError()
-            changePasswordView.emailLabel.isHidden = false
+            changePasswordView.emailLabel.isHidden = false  // 기본 라벨 표시
         } else if isValidEmail(emailText) {
             changePasswordView.emailTextField.clearError()
-            changePasswordView.emailLabel.isHidden = false
+            changePasswordView.emailLabel.isHidden = false  // 기본 라벨 표시
         } else {
             changePasswordView.emailTextField.setError(message: "올바르지 않은 이메일 형식입니다.")
-            changePasswordView.emailLabel.isHidden = true
+            changePasswordView.emailLabel.isHidden = true   // 오류 메시지가 표시될 때는 기본 라벨 숨김
         }
         
         let isEmailValid = isValidEmail(emailText)
@@ -303,15 +303,25 @@ class ChangePasswordViewController: UIViewController {
 
                     self.isEmailFieldDisabled = true
                     self.changePasswordView.emailTextField.setTextFieldInteraction(enabled: false)
+                    
                     let toastImage = UIImage(named: "Style=Mail") ?? UIImage()
                     CustomToast(containerWidth: 225).show(
                         image: toastImage,
                         message: "인증번호를 발송했어요",
                         font: UIFont.heading3SemiBold()
                     )
+                    
+                    self.changePasswordView.sendCodeButton.setButtonState(
+                        isEnabled: false,
+                        enabledColor: .black,
+                        disabledColor: .gray100,
+                        enabledTitleColor: .white,
+                        disabledTitleColor: .gray400
+                    )
 
                 case .failure(let error):
                     print("인증 메일 전송 실패: \(error)")
+                    self.changePasswordView.emailLabel.isHidden = true  // 기본 라벨 숨기기
                     self.changePasswordView.emailTextField.setError(message: "이메일 전송에 실패했습니다.")
                 }
             }

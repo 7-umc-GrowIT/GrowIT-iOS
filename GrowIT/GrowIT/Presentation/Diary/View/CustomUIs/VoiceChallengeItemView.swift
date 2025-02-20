@@ -38,7 +38,7 @@ class VoiceChallengeItemView: UIView {
     }
     
     private let label = UILabel().then {
-        $0.text = "반신욕 즐겨보기"
+        $0.text = ""
         $0.font = .heading3Bold()
         $0.textColor = .white
     }
@@ -51,7 +51,7 @@ class VoiceChallengeItemView: UIView {
     }
     
     private let clockLabel = UILabel().then {
-        $0.text = "1시간"
+        $0.text = ""
         $0.font = .body2Medium()
         $0.textColor = .primary600
     }
@@ -63,7 +63,7 @@ class VoiceChallengeItemView: UIView {
     
     private let backLabel = UILabel().then {
         $0.text = ""
-        $0.font = .heading3Bold()
+        $0.font = .body2SemiBold()
         $0.textColor = .white
         $0.numberOfLines = 0
     }
@@ -136,6 +136,7 @@ class VoiceChallengeItemView: UIView {
         backLabel.snp.makeConstraints { make in
             make.leading.equalTo(backIcon.snp.trailing).offset(12)
             make.trailing.equalToSuperview().inset(12)
+            make.top.equalTo(backIcon.snp.top).offset(9.5)
             make.centerY.equalTo(backIcon)
 
         }

@@ -85,8 +85,15 @@ final class AuthService: NetworkManager {
     
     /// 카카오 로그인
     func loginKakao(code: String, completion: @escaping (Result<KakaoLoginResponse, Error>) -> Void) {
-        let urlString = "\(Constants.API.authURL)/login/kakao?code=\(code)"
-        guard let url = URL(string: urlString) else {
+        let urlString = "\(Constants.API.authURL)/login/kakao"
+        guard var urlComponents = URLComponents(string: urlString) else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            return
+        }
+        
+        urlComponents.queryItems = [URLQueryItem(name: "code", value: code)]
+        
+        guard let url = urlComponents.url else {
             completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
             return
         }
@@ -95,39 +102,29 @@ final class AuthService: NetworkManager {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        print("iOS에서 보낸 로그인 요청: \(urlString)")
-        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("서버 요청 실패: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
             guard let data = data else {
-                print("서버 응답 데이터 없음")
                 completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No Data"])))
                 return
             }
             
-            if let httpResponse = response as? HTTPURLResponse {
-                print("서버 응답 코드: \(httpResponse.statusCode)")
-            }
-            
             do {
-                let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                print("서버 응답 JSON: \(jsonObject ?? [:])")
+                let decodedResponse = try JSONDecoder().decode(KakaoLoginResponse.self, from: data)
                 
-                if jsonObject?["isSuccess"] as? Bool == false {
-                    print("서버 로그인 실패 (백엔드 오류): \(jsonObject?["message"] ?? "Unknown error")")
-                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "\(jsonObject?["message"] ?? "Unknown error")"])))
-                    return
+                if let tokens = decodedResponse.result.tokens {
+                    TokenManager.shared.saveTokens(
+                        accessToken: tokens.accessToken,
+                        refreshToken: tokens.refreshToken
+                    )
                 }
                 
-                let decodedResponse = try JSONDecoder().decode(KakaoLoginResponse.self, from: data)
                 completion(.success(decodedResponse))
             } catch {
-                print("JSON 디코딩 실패: \(error)")
                 completion(.failure(error))
             }
         }

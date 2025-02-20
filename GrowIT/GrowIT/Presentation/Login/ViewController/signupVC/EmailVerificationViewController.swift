@@ -25,7 +25,6 @@ class EmailVerificationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("✅ 전달된 약관 목록: \(agreeTerms)")
         setupView()
         setupActions()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -176,6 +175,15 @@ class EmailVerificationViewController: UIViewController {
                     self.isEmailFieldDisabled = true
                     self.emailVerificationView.emailTextField.setTextFieldInteraction(enabled: false)
                     
+                    // 인증번호 보내기 버튼 비활성화
+                    self.emailVerificationView.sendCodeButton.setButtonState(
+                        isEnabled: false,
+                        enabledColor: .black,
+                        disabledColor: .gray100,
+                        enabledTitleColor: .white,
+                        disabledTitleColor: .gray400
+                    )
+                    
                     // 토스트 메시지 표시
                     let toastImage = UIImage(named: "Style=Mail") ?? UIImage()
                     CustomToast(containerWidth: 225).show(
@@ -242,7 +250,7 @@ class EmailVerificationViewController: UIViewController {
             enabledColor: .black,
             disabledColor: .gray100,
             enabledTitleColor: .white,
-            disabledTitleColor: .gray300
+            disabledTitleColor: .gray400
         )
         
         self.emailVerificationView.sendCodeButton.setButtonState(
@@ -250,7 +258,7 @@ class EmailVerificationViewController: UIViewController {
             enabledColor: .black,
             disabledColor: .gray100,
             enabledTitleColor: .white,
-            disabledTitleColor: .gray300
+            disabledTitleColor: .gray400
         )
         
         // 토스트 메시지 표시

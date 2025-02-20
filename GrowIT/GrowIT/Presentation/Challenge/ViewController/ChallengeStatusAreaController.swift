@@ -38,7 +38,7 @@ class ChallengeStatusAreaController: UIViewController {
     }
     
     private func setupNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(updateChallengeList), name: .challengeDidDelete, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateChallengeList), name: .challengeStatusReload, object: nil)
         //NotificationCenter.default.addObserver(self, selector: #selector(moveChallengeVerfiyVC), name: .closeModalAndMoveVC, object: nil)
     }
     
@@ -73,7 +73,6 @@ class ChallengeStatusAreaController: UIViewController {
             guard let self = self else {return}
             switch result{
             case .success(let data):
-                print("챌린지 현황 \(data)")
                 challengeStatusList = data.userChallenges
                 challengeStatusArea.challengeStatusNum.text = "\(challengeStatusList.count)"
                 challengeStatusArea.challengeAllList.reloadData()

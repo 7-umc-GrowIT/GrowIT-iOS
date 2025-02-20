@@ -28,23 +28,13 @@ class JDiaryHomeViewController: UIViewController {
         navigationController?.navigationBar.isHidden = true
         setupCalendarView()
         setupActions()
-        //setupNotifications()
     }
-    
-//    private func setupNotifications(){
-//        NotificationCenter.default.addObserver(self, selector: #selector(refreshData), name: .deleteDiary, object: nil)
-//    }
     
     @objc private func diaryDirectWriteButtonTapped() {
         let textDiaryVC = TextDiaryViewController()
         
-        //textDiaryVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(textDiaryVC, animated: false)
     }
-    
-//    @objc private func refreshData(){
-//        jDiaryCalendarVC.refreshData()
-//    }
     
     private func setupCalendarView() {
         // 캘린더 뷰 컨트롤러를 자식으로 추가

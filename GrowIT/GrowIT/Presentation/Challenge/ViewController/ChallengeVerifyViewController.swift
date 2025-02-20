@@ -167,7 +167,6 @@ class ChallengeVerifyViewController: UIViewController {
     @objc private func challengeVerifyButtonTapped() {
         
         if(!isImageSelected){
-            print("여기 출력됨")
             isImageSelected = false
             CustomToast(containerWidth: 244).show(image: UIImage(named: "challengeToastIcon") ?? UIImage(), message: "인증샷을 업로드해 주세요", font: .heading3SemiBold())
         }else{
@@ -195,7 +194,6 @@ class ChallengeVerifyViewController: UIViewController {
             guard let self = self else {return}
             switch result{
             case .success(let data):
-                print(data)
                 if let image = imageData{
                     putImageToS3(presignedUrl: data.presignedUrl, imageData: image, fileName: "\(fileName).png")
                 }
@@ -221,7 +219,6 @@ class ChallengeVerifyViewController: UIViewController {
             }
 
             if response.statusCode == 200 {
-                print("Upload successful")
                 self.getS3ImageUrl(fileName: fileName)
             } else {
                 print("Upload failed with status: \(response.statusCode)")
@@ -236,7 +233,6 @@ class ChallengeVerifyViewController: UIViewController {
             guard let self = self else {return}
             switch result{
             case .success(let data):
-                print("저장할 이미지 url은 \(data.components(separatedBy: "?").first!)")
                 saveChallengeVerify(imageUrl: data.components(separatedBy: "?").first!)
             case .failure(let error):
                 print("S3 이미지 URL 반환 에러: \(error)")
@@ -250,9 +246,8 @@ class ChallengeVerifyViewController: UIViewController {
             guard let self = self else {return}
             switch result{
             case .success(let data):
-                print(data)
-                print("인증 저장 성공!!!")
                 navigationController?.popViewController(animated: false)
+                NotificationCenter.default.post(name: .challengeStatusReload, object: nil)
                 CustomToast(containerWidth: 244).show(image: UIImage(named: "challengeToastIcon") ?? UIImage(), message: "챌린지 인증을 완료했어요", font: .heading3SemiBold())
             case .failure(let error):
                 print("챌린지 인증 저장 에러: \(error)")
