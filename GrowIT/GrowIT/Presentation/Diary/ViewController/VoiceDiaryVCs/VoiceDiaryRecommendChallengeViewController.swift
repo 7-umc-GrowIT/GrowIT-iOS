@@ -17,6 +17,8 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
     
     private var buttonCount: Int = 0
     
+    var diaryId = 0
+        
     var recommendedChallenges: [RecommendedChallenge] = []
     var emotionKeywords: [EmotionKeyword] = []
     
@@ -80,6 +82,7 @@ class VoiceDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryEr
     @objc func prevVC() {
         let prevVC = VoiceDiaryRecommendErrorViewController()
         prevVC.delegate = self
+        prevVC.diaryId = diaryId
         let navController = UINavigationController(rootViewController: prevVC)
         navController.modalPresentationStyle = .fullScreen
         presentPageSheet(viewController: navController, detentFraction: 0.37)
