@@ -89,6 +89,8 @@ class GroViewController: UIViewController, ItemListDelegate {
         
         categoryToEquippedId[category] = newItemId
         
+        if currentItemId == newItemId { return }
+        
         // 구매하지 않은 경우 UI만 변경
         if !isPurchased {
             if let imageView = getImageViewForCategory(category) {
@@ -197,16 +199,17 @@ class GroViewController: UIViewController, ItemListDelegate {
     
     @objc
     private func didTapEraseButton() {
+        let defaultFlowerPotId = 1
         let categoriesToClear = ["OBJECT", "HEAD_ACCESSORY", "PLANT"]
         
         categoriesToClear.forEach { category in
-            if let itemId = categoryToEquippedId[category] {
+            if let itemId = categoryToEquippedId[category], itemId != defaultFlowerPotId {
+                print("지워진 아이템: \(itemId)")
                 callPatchItemState(itemId: itemId, status: "UNEQUIPPED")
                 categoryToEquippedId[category] = nil
             }
         }
         
-        let defaultFlowerPotId = 1
         categoryToEquippedId["PLANT"] = defaultFlowerPotId
         callPatchItemState(itemId: defaultFlowerPotId, status: "EQUIPPED")
         
