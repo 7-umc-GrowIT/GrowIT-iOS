@@ -10,6 +10,7 @@ import UIKit
 class HomeViewController: UIViewController {
     let groService = GroService()
     let userService = UserService()
+    private var isFirstAppear: Bool = true // 화면 최초 등장 여부를 확인하는 변수 추가
     
     private lazy var gradientView = UIView()
     
@@ -29,6 +30,16 @@ class HomeViewController: UIViewController {
         //setupGradientView()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateCharacterView()
+        DispatchQueue.main.async {
+            self.view.setNeedsLayout()
+            self.view.layoutIfNeeded()
+        }
+    }
+
+
     func callGetCredit() {
         userService.getUserCredits(completion: { [weak self] result in
             guard let self = self else { return }
@@ -51,15 +62,24 @@ class HomeViewController: UIViewController {
     
     @objc
     private func updateCharacterView() {
-        GroImageCacheManager.shared.refreshGroImage { [weak self] data in
+        GroImageCacheManager.shared.fetchGroImage { [weak self] data in
             guard let self = self, let data = data else { return }
-            self.updateCharacterViewImage(with: data)
+            DispatchQueue.main.async {
+                self.updateCharacterViewImage(with: data)
+            }
         }
     }
+
     
     private func updateCharacterViewImage(with data: GroGetResponseDTO) {
-        homeview.characterArea.groFaceImageView.kf.setImage(with: URL(string: data.gro.groImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
-        
+        // 얼굴 이미지 업데이트
+        if let groImageUrl = URL(string: data.gro.groImageUrl) {
+            homeview.characterArea.groFaceImageView.kf.setImage(with: groImageUrl, options: [.transition(.fade(0.3)), .cacheOriginalImage])
+        } else {
+            print("얼굴 이미지 URL이 유효하지 않음")
+        }
+
+        // 카테고리별 이미지 뷰 매핑
         let categoryImageViews: [String: UIImageView] = [
             "BACKGROUND": homeview.characterArea.backgroundImageView,
             "OBJECT": homeview.characterArea.groObjectImageView,
@@ -67,9 +87,16 @@ class HomeViewController: UIViewController {
             "HEAD_ACCESSORY": homeview.characterArea.groAccImageView
         ]
         
+        // 기존 이미지 초기화 (이미 착용한 아이템 제거)
+        for (_, imageView) in categoryImageViews {
+            imageView.image = nil
+        }
+
         for item in data.equippedItems {
-            if let imageView = categoryImageViews[item.category] {
-                imageView.kf.setImage(with: URL(string: item.itemImageUrl), options: [.transition(.fade(0.3)), .cacheOriginalImage])
+            if let imageView = categoryImageViews[item.category], let imageUrl = URL(string: item.itemImageUrl) {
+                imageView.kf.setImage(with: imageUrl, options: [.transition(.fade(0.3)), .cacheOriginalImage])
+            } else {
+                print("잘못된 카테고리: \(item.category) 또는 유효하지 않은 URL")
             }
         }
     }
@@ -119,11 +146,7 @@ class HomeViewController: UIViewController {
         
     //MARK: Notification
     private func setNotification() {
-        let Notification = NotificationCenter.default
-        
-        Notification.addObserver(self, selector: #selector(updateCharacterView), name: .groImageUpdated, object: nil)
-        
+        let notification = NotificationCenter.default
+        notification.addObserver(self, selector: #selector(updateCharacterView), name: .groImageUpdated, object: nil)
     }
-    
-    
 }

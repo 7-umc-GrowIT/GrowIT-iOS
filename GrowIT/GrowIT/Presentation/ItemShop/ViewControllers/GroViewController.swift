@@ -204,7 +204,6 @@ class GroViewController: UIViewController, ItemListDelegate {
         
         categoriesToClear.forEach { category in
             if let itemId = categoryToEquippedId[category], itemId != defaultFlowerPotId {
-                print("지워진 아이템: \(itemId)")
                 callPatchItemState(itemId: itemId, status: "UNEQUIPPED")
                 categoryToEquippedId[category] = nil
             }
