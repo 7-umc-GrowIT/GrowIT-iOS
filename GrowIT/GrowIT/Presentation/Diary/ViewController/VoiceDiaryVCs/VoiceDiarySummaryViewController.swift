@@ -94,6 +94,7 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
     
     @objc func nextVC() {
         let nextVC = VoiceDiaryRecommendChallengeViewController()
+        nextVC.diaryId = diaryId
         nextVC.recommendedChallenges = recommendedChallenges
         nextVC.emotionKeywords = emotionKeywords
         nextVC.hidesBottomBarWhenPushed = true
