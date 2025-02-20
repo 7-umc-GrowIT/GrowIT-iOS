@@ -72,25 +72,6 @@ class VoiceDiaryFixViewController: UIViewController {
             }
         }
     }
-    
-    // MARK: Setup APIs
-    private func fetchDiaryAnalyze() {
-        diaryService.postVoiceDiaryAnalyze(
-            diaryId: diaryId,
-            completion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    print(data)
-                    DispatchQueue.main.async {
-                        self.recommendedChallenges = data.recommendedChallenges
-                        self.emotionKeywords = data.emotionKeywords
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            })
-    }
 }
 
 extension VoiceDiaryFixViewController: UITextViewDelegate {
