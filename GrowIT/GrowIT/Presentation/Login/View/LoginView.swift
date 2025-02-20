@@ -35,7 +35,7 @@ class LoginView: UIView {
     
     // 로고 이미지
     private lazy var logoImageView = UIImageView().then {
-        $0.image = UIImage(named: "GROWIT")
+        $0.image = UIImage(named: "loginTitle")
         $0.contentMode = .scaleAspectFill
     }
     
@@ -169,25 +169,19 @@ class LoginView: UIView {
         
         kakaoLoginButton.snp.makeConstraints {
             $0.top.equalTo(logoImageView.snp.bottom).offset(200)
-            $0.centerX.equalToSuperview()
-            $0.leading.equalToSuperview().offset(24)
-            $0.width.equalTo(382)
+            $0.horizontalEdges.equalToSuperview().inset(24)
             $0.height.equalTo(60)
         }
         
         appleLoginButton.snp.makeConstraints {
             $0.top.equalTo(kakaoLoginButton.snp.bottom).offset(9)
-            $0.centerX.equalToSuperview()
-            $0.leading.equalToSuperview().offset(24)
-            $0.width.equalTo(382)
+            $0.horizontalEdges.equalToSuperview().inset(24)
             $0.height.equalTo(60)
         }
         
         emailLoginButton.snp.makeConstraints {
             $0.top.equalTo(appleLoginButton.snp.bottom).offset(39)
-            $0.centerX.equalToSuperview()
-            $0.leading.equalToSuperview().offset(24)
-            $0.width.equalTo(382)
+            $0.horizontalEdges.equalToSuperview().inset(24)
             $0.height.equalTo(60)
         }
         

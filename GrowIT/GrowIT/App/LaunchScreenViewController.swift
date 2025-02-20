@@ -8,6 +8,7 @@
 import UIKit
 
 final class LaunchScreenViewController: UIViewController {
+    var isFirstLaunch: Bool = true
 
     private lazy var titleLabel = UILabel().then {
         $0.text = "AI와 대화하며 성장하다"
@@ -58,9 +59,27 @@ final class LaunchScreenViewController: UIViewController {
     }
     
     // MARK: - Navigation
-        private func navigateToMain() {
+        public func navigateToMain() {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                let mainVC = HomeViewController() // 👉 여기에 진입할 메인 뷰컨트롤러
+                // 최초 실행 여부 확인
+                let isFirstLaunch = UserDefaults.standard.bool(forKey: "HasLaunchedOnce")
+                print("isFirst값은 \(isFirstLaunch)")
+                var mainVC = UIViewController() // 👉 여기에 진입할 메인 뷰컨트롤러
+                
+                if !isFirstLaunch {  // isFirstLaunch가 false이면, 최초 실행입니다.
+                    // 최초 실행이면 온보딩 화면으로 이동
+                    mainVC = OnboardingViewController()
+                    UserDefaults.standard.set(true, forKey: "HasLaunchedOnce")
+                    UserDefaults.standard.synchronize()
+                } else {
+                    // 최초 실행이 아니면 토큰 확인 후 화면 선택
+                    if let _ = TokenManager.shared.getAccessToken() {
+                        mainVC = CustomTabBarController(initialIndex: 1)
+                    } else {
+                        mainVC = LoginViewController()
+                    }
+                }
+                
                 let navigationController = UINavigationController(rootViewController: mainVC)
                 UIApplication.shared.windows.first?.rootViewController = navigationController
                 UIApplication.shared.windows.first?.makeKeyAndVisible()

@@ -47,7 +47,7 @@ class ChallengeVerifyViewController: UIViewController {
     
     private func setupInitialTextViewState() {
         challengeVerifyView.reviewTextView.text = "챌린지 소감을 간단하게 입력해 주세요"
-        challengeVerifyView.reviewTextView.textColor = UIColor.gray300  // 초기 텍스트 색상을 구분하기 쉬운 색상으로 설정
+        challengeVerifyView.reviewTextView.setLineSpacing(spacing: 4, font: .body1Medium(), color: .gray300)
     }
     
     @objc func handleImage(_ notification: Notification) {

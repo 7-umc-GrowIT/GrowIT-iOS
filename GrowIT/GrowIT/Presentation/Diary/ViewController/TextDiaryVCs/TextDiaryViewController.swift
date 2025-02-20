@@ -92,11 +92,16 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     
     func didSelectDate(_ date: String) {
         textDiaryView.updateDateLabel(date)
+        
+        if let presentedVC = self.presentedViewController {
+            presentedVC.dismiss(animated: true)
+        }
     }
     
     // MARK: Setup APIs
     func callPostTextDiary(userDiary: String, date: String, completion: @escaping (Int) -> Void) {
         let convertedDate = convertDateFormat(from: date)
+        UserDefaults.standard.set(convertedDate, forKey: "TextDate")
         diaryService.postTextDiary(
             data: DiaryRequestDTO(
                 content: userDiary,

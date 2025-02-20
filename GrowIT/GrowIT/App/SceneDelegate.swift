@@ -23,6 +23,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = launchVC
         self.window = window
         window.makeKeyAndVisible()
+        
+        launchVC.navigateToMain()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             

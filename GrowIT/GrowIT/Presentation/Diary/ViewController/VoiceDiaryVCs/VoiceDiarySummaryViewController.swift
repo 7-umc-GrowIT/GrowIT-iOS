@@ -94,6 +94,7 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
     
     @objc func nextVC() {
         let nextVC = VoiceDiaryRecommendChallengeViewController()
+        nextVC.diaryId = diaryId
         nextVC.recommendedChallenges = recommendedChallenges
         nextVC.emotionKeywords = emotionKeywords
         nextVC.hidesBottomBarWhenPushed = true
@@ -101,7 +102,10 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
     }
     
     @objc func labelTapped() {
-        let nextVC = VoiceDiaryFixViewController(text: voiceDiarySummaryView.diaryLabel.text ?? "")
+        let nextVC = VoiceDiaryFixViewController(text: diaryContent)
+        nextVC.diaryId = diaryId
+        nextVC.emotionKeywords = emotionKeywords
+        nextVC.recommendedChallenges = recommendedChallenges
         let navController = UINavigationController(rootViewController: nextVC)
         navController.modalPresentationStyle = .fullScreen
         presentPageSheet(viewController: navController, detentFraction: 0.6)

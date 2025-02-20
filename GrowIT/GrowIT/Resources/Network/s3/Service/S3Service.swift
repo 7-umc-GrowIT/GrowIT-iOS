@@ -15,7 +15,8 @@ final class S3Service: NetworkManager {
     
     init(provider: MoyaProvider<S3Endpoint>? = nil) {
         let plugins: [PluginType] = [
-            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose))
+            //NetworkLoggerPlugin(configuration: .init(logOptions: .verbose))
+            AuthPlugin()
         ]
         
         self.provider = provider ?? MoyaProvider<S3Endpoint>(plugins: plugins)

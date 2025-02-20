@@ -13,6 +13,11 @@ class VoiceDiaryFixViewController: UIViewController {
     let text: String
     let voiceDiaryFixView = VoiceDiaryFixView()
     
+    var diaryId = 0
+    let diaryService = DiaryService()
+    
+    var recommendedChallenges: [RecommendedChallenge] = []
+    var emotionKeywords: [EmotionKeyword] = []
     
     init(text: String) {
         self.text = text
@@ -60,6 +65,9 @@ class VoiceDiaryFixViewController: UIViewController {
         if let presentingVC = presentingViewController as? UINavigationController {
             dismiss(animated: true) {
                 let nextVC = VoiceDiaryRecommendChallengeViewController()
+                nextVC.diaryId = self.diaryId
+                nextVC.recommendedChallenges = self.recommendedChallenges
+                nextVC.emotionKeywords = self.emotionKeywords
                 presentingVC.pushViewController(nextVC, animated: true)
             }
         }

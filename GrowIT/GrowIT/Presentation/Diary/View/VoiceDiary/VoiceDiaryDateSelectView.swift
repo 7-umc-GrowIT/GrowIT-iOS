@@ -56,6 +56,7 @@ class VoiceDiaryDateSelectView: UIView {
         $0.setImage(UIImage(systemName: "chevron.down"), for: .normal)
         $0.backgroundColor = .clear
         $0.tintColor = .gray500
+        $0.isUserInteractionEnabled = false
     }
     
     let warningLabel = UILabel().then {

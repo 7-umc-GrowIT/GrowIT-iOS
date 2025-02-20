@@ -87,7 +87,7 @@ class GroViewController: UIViewController, ItemListDelegate {
         let newItemId = selectedItem.id
         let currentItemId = categoryToEquippedId[category]
         
-        if currentItemId == newItemId { return }
+        categoryToEquippedId[category] = newItemId
         
         // 구매하지 않은 경우 UI만 변경
         if !isPurchased {

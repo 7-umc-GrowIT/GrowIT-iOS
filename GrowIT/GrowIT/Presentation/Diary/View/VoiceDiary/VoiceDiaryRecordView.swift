@@ -20,6 +20,10 @@ class VoiceDiaryRecordView: UIView {
             let seconds = remainingTime % 60
             updateTimerLabel(minutes: minutes, seconds: seconds)
             onRemainingTimeChanged?(remainingTime)
+            
+            if remainingTime <= 120 {
+                endButton.setButtonState(isEnabled: true, enabledColor: .primary400, disabledColor: .gray700, enabledTitleColor: .black, disabledTitleColor: .gray400)
+            }
         }
     }
     
@@ -31,6 +35,7 @@ class VoiceDiaryRecordView: UIView {
         startTimer()
         startAnimation()
         setupActions()
+        hideTipView()
     }
     
     required init?(coder: NSCoder) {
@@ -43,6 +48,16 @@ class VoiceDiaryRecordView: UIView {
         // 그라데이션 적용
         setGradient(color1: .gray700, color2: .gray900)
         recordButton.setGradient(color1: .primary400, color2: .primary600)
+    }
+    
+    private func hideTipView() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+            UIView.animate(withDuration: 1.0, animations: {
+                self?.tipView.alpha = 0
+            }) { _ in
+                self?.tipView.isHidden = true
+            }
+        }
     }
     
     private func startTimer() {
@@ -109,8 +124,19 @@ class VoiceDiaryRecordView: UIView {
         $0.clipsToBounds = true
     }
     
-    let endButton = AppButton(title: "대화 마무리하기", titleColor: .black).then {
-        $0.backgroundColor = .primary400
+    let tipView = ToolTipView().then {
+        $0.configure(text: "AI와의 대화를 시작해 보세요!")
+    }
+    
+    let tipView2 = ToolTipView().then {
+        $0.configure(text: "AI와의 대답이 끝나면 눌러 주세요")
+        $0.isHidden = true
+    }
+    
+    let endButton = AppButton(title: "대화 마무리하기", titleColor: .gray400).then {
+        // $0.backgroundColor = .primary400
+        $0.backgroundColor = .gray700
+        $0.setButtonState(isEnabled: false, enabledColor: .primary400, disabledColor: .gray700, enabledTitleColor: .black, disabledTitleColor: .gray400)
     }
     
     let clockIcon = UIImageView().then {
@@ -159,7 +185,7 @@ class VoiceDiaryRecordView: UIView {
         addSubview(chatImage)
         chatImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(label2.snp.bottom).offset(-70)
+            make.top.equalTo(label2.snp.bottom).offset(-100)
         }
         
         addSubview(endButton)
@@ -171,15 +197,26 @@ class VoiceDiaryRecordView: UIView {
         
         addSubview(timeLabel)
         timeLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(endButton.snp.top).offset(-150)
+            make.bottom.equalTo(endButton.snp.top).offset(-180)
             make.centerX.equalToSuperview()
         }
         
         addSubview(recordButton)
         recordButton.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).offset(60)
+            make.top.equalTo(timeLabel.snp.bottom).offset(85)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(80)
+        }
+        addSubview(tipView)
+        tipView.snp.makeConstraints { make in
+            make.bottom.equalTo(recordButton.snp.top).offset(-10)
+            make.centerX.equalTo(recordButton)
+        }
+        
+        addSubview(tipView2)
+        tipView2.snp.makeConstraints { make in
+            make.bottom.equalTo(recordButton.snp.top).offset(-10)
+            make.centerX.equalTo(recordButton)
         }
         
         addSubview(loadingButton)

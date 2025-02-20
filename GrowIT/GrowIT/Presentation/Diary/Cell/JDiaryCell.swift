@@ -63,7 +63,7 @@ class JDiaryCell: UICollectionViewCell{
         }
         
         if(isDark){
-            dateImage.image = UIImage(named: "diaryIconDark")
+            dateImage.image = UIImage(named: "diaryIcondark")
         }else{
             dateImage.image = UIImage(named: "diaryIcon")
         }

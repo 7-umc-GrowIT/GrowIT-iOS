@@ -50,6 +50,15 @@ class TermsAgreeViewController: UIViewController, UITableViewDelegate {
             target: self,
             action: #selector(prevVC)
         )
+        
+        // 네비게이션 바 스타일 설정
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white  // 배경색을 흰색으로 설정
+
+        // iOS 15 이상에서는 scrollEdgeAppearance도 설정해야 함
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     // MARK: - Setup Delegate
