@@ -154,10 +154,11 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
     }
     
     func getSelectedChallenges() -> [ChallengeSelectRequestDTO] {
+        let date = UserDefaults.standard.string(forKey: "TextDate") ?? ""
         return challengeViews.enumerated().compactMap { index, challengeView in
             guard index < recommendedChallenges.count, challengeView.button.isSelectedState() else { return nil }
             let challenge = recommendedChallenges[index]
-            return ChallengeSelectRequestDTO(challengeIds: [challenge.id], dtype: challenge.type)
+            return ChallengeSelectRequestDTO(challengeIds: [challenge.id], dtype: challenge.type, date: date)
         }
     }
 }
