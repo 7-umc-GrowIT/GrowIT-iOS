@@ -13,6 +13,11 @@ class VoiceDiaryFixViewController: UIViewController {
     let text: String
     let voiceDiaryFixView = VoiceDiaryFixView()
     
+    var diaryId = 0
+    let diaryService = DiaryService()
+    
+    var recommendedChallenges: [RecommendedChallenge] = []
+    var emotionKeywords: [EmotionKeyword] = []
     
     init(text: String) {
         self.text = text
@@ -60,9 +65,31 @@ class VoiceDiaryFixViewController: UIViewController {
         if let presentingVC = presentingViewController as? UINavigationController {
             dismiss(animated: true) {
                 let nextVC = VoiceDiaryRecommendChallengeViewController()
+                nextVC.diaryId = self.diaryId
+                nextVC.recommendedChallenges = self.recommendedChallenges
+                nextVC.emotionKeywords = self.emotionKeywords
                 presentingVC.pushViewController(nextVC, animated: true)
             }
         }
+    }
+    
+    // MARK: Setup APIs
+    private func fetchDiaryAnalyze() {
+        diaryService.postVoiceDiaryAnalyze(
+            diaryId: diaryId,
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    print(data)
+                    DispatchQueue.main.async {
+                        self.recommendedChallenges = data.recommendedChallenges
+                        self.emotionKeywords = data.emotionKeywords
+                    }
+                case .failure(let error):
+                    print(error)
+                }
+            })
     }
 }
 
