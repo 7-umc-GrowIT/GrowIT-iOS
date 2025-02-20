@@ -74,13 +74,13 @@ final class LaunchScreenViewController: UIViewController {
                 } else {
                     // 최초 실행이 아니면 토큰 확인 후 화면 선택
                     if let _ = TokenManager.shared.getAccessToken() {
-                        mainVC = CustomTabBarController(initialIndex: 1)
+                        mainVC =  CustomTabBarController(initialIndex: 1)
                     } else {
                         mainVC = LoginViewController()
                     }
                 }
                 
-                let navigationController = UINavigationController(rootViewController: mainVC)
+                let navigationController = CustomNavigationController(rootViewController: mainVC)
                 UIApplication.shared.windows.first?.rootViewController = navigationController
                 UIApplication.shared.windows.first?.makeKeyAndVisible()
             }

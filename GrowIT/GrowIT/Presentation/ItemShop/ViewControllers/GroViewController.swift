@@ -34,6 +34,11 @@ class GroViewController: UIViewController, ItemListDelegate {
     
     private lazy var itemListModalVC = ItemListModalViewController()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+    
     //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,6 +93,8 @@ class GroViewController: UIViewController, ItemListDelegate {
         let currentItemId = categoryToEquippedId[category]
         
         categoryToEquippedId[category] = newItemId
+        
+        if currentItemId == newItemId { return }
         
         // 구매하지 않은 경우 UI만 변경
         if !isPurchased {
@@ -197,16 +204,16 @@ class GroViewController: UIViewController, ItemListDelegate {
     
     @objc
     private func didTapEraseButton() {
+        let defaultFlowerPotId = 1
         let categoriesToClear = ["OBJECT", "HEAD_ACCESSORY", "PLANT"]
         
         categoriesToClear.forEach { category in
-            if let itemId = categoryToEquippedId[category] {
+            if let itemId = categoryToEquippedId[category], itemId != defaultFlowerPotId {
                 callPatchItemState(itemId: itemId, status: "UNEQUIPPED")
                 categoryToEquippedId[category] = nil
             }
         }
         
-        let defaultFlowerPotId = 1
         categoryToEquippedId["PLANT"] = defaultFlowerPotId
         callPatchItemState(itemId: defaultFlowerPotId, status: "EQUIPPED")
         
@@ -325,5 +332,7 @@ class GroViewController: UIViewController, ItemListDelegate {
             self.itemListBottomConstraint = $0.bottom.equalToSuperview().offset(0).constraint
         }
     }
+    
+    
     
 }
