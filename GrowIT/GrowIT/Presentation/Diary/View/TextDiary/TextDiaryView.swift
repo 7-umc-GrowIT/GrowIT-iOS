@@ -66,6 +66,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
     
     let saveButton = AppButton(title: "내가 입력한 일기 저장하기").then {
         $0.setButtonState(isEnabled: false, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
+        $0.isUserInteractionEnabled = false
     }
     
     // MARK: - Setup TextView
@@ -88,6 +89,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
         
         if isDateSelected && !textView.text.isEmpty && textView.text != placeholder && textView.text.count > 100 {
             saveButton.setButtonState(isEnabled: true, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
+            saveButton.isUserInteractionEnabled = true
         } else {
             saveButton.setButtonState(isEnabled: false, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
         }
