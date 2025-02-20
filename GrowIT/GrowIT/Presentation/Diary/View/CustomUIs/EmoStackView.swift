@@ -27,7 +27,7 @@ class EmoStackView: UIStackView {
     }
     
     private let label1 = UILabel().then {
-        $0.text = "즐거운"
+        $0.text = ""
         $0.font = .body2SemiBold()
         $0.textColor = .primary700
     }
@@ -40,7 +40,7 @@ class EmoStackView: UIStackView {
     }
     
     private let label2 = UILabel().then {
-        $0.text = "즐거운"
+        $0.text = ""
         $0.font = .body2SemiBold()
         $0.textColor = .primary700
     }
@@ -53,7 +53,7 @@ class EmoStackView: UIStackView {
     }
     
     private let label3 = UILabel().then {
-        $0.text = "즐거운"
+        $0.text = ""
         $0.font = .body2SemiBold()
         $0.textColor = .primary700
     }

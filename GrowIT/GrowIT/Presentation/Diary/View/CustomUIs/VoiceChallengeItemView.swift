@@ -38,7 +38,7 @@ class VoiceChallengeItemView: UIView {
     }
     
     private let label = UILabel().then {
-        $0.text = "반신욕 즐겨보기"
+        $0.text = ""
         $0.font = .heading3Bold()
         $0.textColor = .white
     }
@@ -51,7 +51,7 @@ class VoiceChallengeItemView: UIView {
     }
     
     private let clockLabel = UILabel().then {
-        $0.text = "1시간"
+        $0.text = ""
         $0.font = .body2Medium()
         $0.textColor = .primary600
     }
