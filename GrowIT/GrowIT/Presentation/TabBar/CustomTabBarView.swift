@@ -201,4 +201,14 @@ class CustomTabBarView: UIView {
         didSelectItem?(2)
         updateTabItemSelection(at: 2)
     }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        // 특정 조건 하에서 secondTabItem이 터치 이벤트를 받도록 처리
+        let pointForTargetView = secondTabItem.convert(point, from: self)
+        if secondTabItem.bounds.contains(pointForTargetView) {
+            return secondTabItem
+        }
+
+        return super.hitTest(point, with: event)
+    }
 }

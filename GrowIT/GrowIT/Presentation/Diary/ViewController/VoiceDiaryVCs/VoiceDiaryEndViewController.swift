@@ -57,7 +57,8 @@ class VoiceDiaryEndViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        navigationController?.popToRootViewController(animated: true)
+        let nextVC = CustomTabBarController(initialIndex: 2)
+        navigationController?.pushViewController(nextVC, animated: false)
     }
 
     
