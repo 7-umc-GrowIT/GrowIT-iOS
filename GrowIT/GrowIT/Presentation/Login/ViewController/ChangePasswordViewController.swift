@@ -316,7 +316,7 @@ class ChangePasswordViewController: UIViewController {
                         enabledColor: .black,
                         disabledColor: .gray100,
                         enabledTitleColor: .white,
-                        disabledTitleColor: .gray300
+                        disabledTitleColor: .gray400
                     )
 
                 case .failure(let error):

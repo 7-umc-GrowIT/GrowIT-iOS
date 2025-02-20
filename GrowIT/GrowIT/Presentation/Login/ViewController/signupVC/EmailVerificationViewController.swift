@@ -182,7 +182,7 @@ class EmailVerificationViewController: UIViewController {
                         enabledColor: .black,
                         disabledColor: .gray100,
                         enabledTitleColor: .white,
-                        disabledTitleColor: .gray300
+                        disabledTitleColor: .gray400
                     )
                     
                     // 토스트 메시지 표시
@@ -251,7 +251,7 @@ class EmailVerificationViewController: UIViewController {
             enabledColor: .black,
             disabledColor: .gray100,
             enabledTitleColor: .white,
-            disabledTitleColor: .gray300
+            disabledTitleColor: .gray400
         )
         
         self.emailVerificationView.sendCodeButton.setButtonState(
@@ -259,7 +259,7 @@ class EmailVerificationViewController: UIViewController {
             enabledColor: .black,
             disabledColor: .gray100,
             enabledTitleColor: .white,
-            disabledTitleColor: .gray300
+            disabledTitleColor: .gray400
         )
         
         // 토스트 메시지 표시
