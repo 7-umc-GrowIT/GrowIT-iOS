@@ -57,9 +57,9 @@ class ChangePasswordErrorViewController: UIViewController {
     @objc func mainVC() {
         if let navigationController = self.presentingViewController as? UINavigationController {
             dismiss(animated: true) {
-                // emailLoginViewController로 이동
-                let emailLoginVC = EmailLoginViewController() // EmailLoginViewController 초기화
-                navigationController.setViewControllers([emailLoginVC], animated: true)
+                // LoginViewController로 이동
+                let loginVC = LoginViewController()
+                navigationController.setViewControllers([loginVC], animated: true)
             }
         }
     }
