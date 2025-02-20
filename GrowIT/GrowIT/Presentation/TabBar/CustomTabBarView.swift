@@ -98,31 +98,7 @@ class CustomTabBarView: UIView {
         stackView.spacing = spacing
         return stackView
     }
-    
-    // 그라데이션 만드는 함수
-//    private func setupTabContainer(_ container: UIView) {
-//        container.layer.cornerRadius = 54
-//        container.layer.borderWidth = 4
-//        container.layer.borderColor = UIColor.primaryColor500?.withAlphaComponent(0.5).cgColor
-//        container.layer.shadowColor = UIColor.primaryColor500?.cgColor
-//        container.layer.shadowRadius = 8
-//        container.layer.shadowOffset = CGSize(width: 0, height: 0)
-//        container.layer.shadowOpacity = 0.5
-//        container.layer.masksToBounds = false
-//        container.layer.shouldRasterize = true
-//        container.layer.rasterizationScale = UIScreen.main.scale
-//
-//        let gradientLayer = CAGradientLayer()
-//        gradientLayer.colors = [UIColor.primaryColor400!.cgColor, UIColor.primaryColor600!.cgColor]
-//        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
-//        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
-//        gradientLayer.cornerRadius = container.layer.cornerRadius
-//        container.layer.insertSublayer(gradientLayer, at: 0)
-//        
-//        // 초기에 그라디언트 레이어의 크기를 설정
-//        gradientLayer.frame = container.bounds
-//        container.layoutIfNeeded() // 필요하면 레이아웃을 즉시 업데이트
-//    }
+
     
     override func layoutSubviews() {
         super.layoutSubviews()

@@ -31,6 +31,7 @@ class ChallengeVerifyViewController: UIViewController {
         setupNavigationBar() // 네비게이션 바 설정 함수
         openImagePicker() // 이미지 선택 관련 함수
         setupDismissKeyboardGesture() // 키보드 해제 함수
+        setupKeyboardNotifications()
         
         challengeVerifyView.reviewTextView.delegate = self
         challengeVerifyView.challengeVerifyButton.addTarget(self, action: #selector(challengeVerifyButtonTapped), for: .touchUpInside)
@@ -142,6 +143,26 @@ class ChallengeVerifyViewController: UIViewController {
         view.endEditing(true)
     }
     
+    /// 키보드 감지시 수행하는 함수
+    private func setupKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    /// 키보드가 나타나면 키보드 높이만큼 화면 올리기
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
+        if self.view.frame.origin.y == 0 {
+            self.view.frame.origin.y -= keyboardSize.height
+        }
+    }
+    
+    /// 키보드 내려가면 원래대로 복구
+    @objc private func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
+    }
     /// 인증하기 버튼 터치 이벤트
     @objc private func challengeVerifyButtonTapped() {
         
