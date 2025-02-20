@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class UserInfoInputViewController: UIViewController {
+class UserInfoInputViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - Properties
     private let userInfoView = UserInfoInputView()
@@ -63,6 +63,16 @@ class UserInfoInputViewController: UIViewController {
     private func setupActions() {
         userInfoView.passwordTextField.textField.isSecureTextEntry = true
         userInfoView.passwordCheckTextField.textField.isSecureTextEntry = true
+        
+        // delegate 설정 추가
+        userInfoView.nameTextField.textField.delegate = self
+        userInfoView.passwordTextField.textField.delegate = self
+        userInfoView.passwordCheckTextField.textField.delegate = self
+        
+        // 리턴 키 타입 설정
+        userInfoView.nameTextField.textField.returnKeyType = .next
+        userInfoView.passwordTextField.textField.returnKeyType = .next
+        userInfoView.passwordCheckTextField.textField.returnKeyType = .done
         
         // 두 필드 모두에 대해 변경 이벤트 감지
         userInfoView.passwordTextField.textField.addTarget(
@@ -204,6 +214,18 @@ class UserInfoInputViewController: UIViewController {
     func moveToSignUpCompleteScreen() {
         let signUpCompleteVC = SignUpCompleteViewController()
         self.navigationController?.pushViewController(signUpCompleteVC, animated: true)
+    }
+    
+    // UITextFieldDelegate 메서드
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == userInfoView.nameTextField.textField {
+            userInfoView.passwordTextField.textField.becomeFirstResponder()
+        } else if textField == userInfoView.passwordTextField.textField {
+            userInfoView.passwordCheckTextField.textField.becomeFirstResponder()
+        } else if textField == userInfoView.passwordCheckTextField.textField {
+            textField.resignFirstResponder()
+        }
+        return true
     }
 
 }
