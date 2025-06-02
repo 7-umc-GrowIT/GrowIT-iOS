@@ -1,21 +1,66 @@
-# MacOS 시스템 파일
-.DS_Store
-
-# 로그 파일
-*.log
-
-# 빌드 출력물
-/build/
-*.class
-
-# IDE 설정 파일
-.vscode/
-.idea/
-*.iml
-
-# 환경 파일
-.env
-
-# Xcode User Interface State Files
+# Xcode
+*.xcuserdata
+*.xcscmblueprint
+*.xccheckout
 *.xcuserstate
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata
+!*.xcodeproj/xcshareddata/WorkspaceSettings.xcsettings
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+!*.xcworkspace/xcshareddata
+!*.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+
+# Build
+build/
+DerivedData/
+*.o
+*.LinkFileList
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# SwiftPM
+.swiftpm
+.build/
+
+# CocoaPods
+Pods/
+Podfile.lock
+Podfile.swp
+Generated.xcconfig
+
+# Carthage
+Carthage/Build/
+
+# Accio dependency manager
+Dependencies/
+.accio/
+
+# Swift Package Manager
+Package.resolved
+Packages/
+.idea/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Fastlane
+fastlane/report.xml
+fastlane/screenshots
+fastlane/test_output
+
+# Misc
+*.orig
+*.DS_Store
+*.swp
+*.lock
+profile
+*.mode1v3
+*.mode2v3
+*.perspectivev3
 xcuserdata/
+*.moved-aside
+*.pbxuser
+*.xccheckout
+*.xcuserstate
