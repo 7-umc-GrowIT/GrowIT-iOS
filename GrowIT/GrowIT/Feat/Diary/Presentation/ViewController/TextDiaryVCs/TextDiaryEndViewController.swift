@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import Combine
 
 class TextDiaryEndViewController: UIViewController {
 
     //MARK: - Properties
     let textDiaryEndView =  TextDiaryEndView()
     let navigationBarManager = NavigationManager()
+    private let viewModel = TextDiaryEndViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +22,7 @@ class TextDiaryEndViewController: UIViewController {
         setupUI()
         setupActions()
         setupNavigationBar()
+        bindViewModel()
     }
     
     //MARK: - Setup Navigation Bar
@@ -48,17 +52,40 @@ class TextDiaryEndViewController: UIViewController {
     
     //MARK: - Setup Actions
     private func setupActions() {
-        textDiaryEndView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        textDiaryEndView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
+    }
+    
+    //MARK: - Bind ViewModel
+    private func bindViewModel() {
+        viewModel.$shouldNavigateBack
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    self?.navigationController?.popViewController(animated: true)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldNavigateToHome
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    let nextVC = CustomTabBarController(initialIndex: 2)
+                    self?.navigationController?.pushViewController(nextVC, animated: false)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     //MARK: - @objc methods
     @objc func prevVC() {
-        navigationController?.popViewController(animated: true)
+        viewModel.backButtonTapped.send()
     }
     
-    @objc func nextVC() {
-        let nextVC = CustomTabBarController(initialIndex: 2)
-        navigationController?.pushViewController(nextVC, animated: false)
+    @objc func nextButtonTapped() {
+        viewModel.nextButtonTapped.send()
     }
 
 }

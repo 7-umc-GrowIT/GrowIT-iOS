@@ -22,7 +22,7 @@ class CircleCheckButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc private func toggleState() {
+    @objc func toggleState() {
         isEnabledState = !isEnabledState
         updateButtonColor()
     }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 class TextDiaryErrorViewController: UIViewController {
     
@@ -13,8 +14,8 @@ class TextDiaryErrorViewController: UIViewController {
     
     // MARK: - Properties
     let errorView = ErrorView()
-    
-    let diaryService = DiaryService()
+    private let viewModel = TextDiaryErrorViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     var diaryId = 0
     
@@ -23,6 +24,7 @@ class TextDiaryErrorViewController: UIViewController {
         
         setupUI()
         setupActions()
+        bindViewModel()
     }
     
     // MARK: - Setup UI
@@ -35,34 +37,50 @@ class TextDiaryErrorViewController: UIViewController {
     
     // MARK: Setup Actions
     private func setupActions() {
-        errorView.exitButton.addTarget(self, action: #selector(mainVC), for: .touchUpInside)
-        errorView.continueButton.addTarget(self, action: #selector(prevVC), for: .touchUpInside)
+        errorView.exitButton.addTarget(self, action: #selector(exitButtonTapped), for: .touchUpInside)
+        errorView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
+    }
+    
+    // MARK: - Bind ViewModel
+    private func bindViewModel() {
+        viewModel.delegate = self
+        viewModel.diaryId = diaryId
+        
+        viewModel.$shouldDismiss
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldDismiss in
+                if shouldDismiss {
+                    self?.dismiss(animated: true, completion: nil)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldDismissAndExit
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldDismissAndExit in
+                if shouldDismissAndExit {
+                    self?.dismiss(animated: true) { [weak self] in
+                        self?.delegate?.didTapExitButton()
+                    }
+                }
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: @objc methods
-    @objc func prevVC() {
-        dismiss(animated: true, completion: nil)
+    @objc func continueButtonTapped() {
+        viewModel.continueButtonTapped.send()
     }
     
-    @objc func mainVC() {
-        callDeleteDiary()
-        dismiss(animated: true) { [weak self] in
-            self?.delegate?.didTapExitButton()
-        }
+    @objc func exitButtonTapped() {
+        viewModel.exitButtonTapped.send()
     }
-    
-    // MARK: Setup APIs
-    private func callDeleteDiary() {
-        diaryService.deleteDiary(
-            diaryId: diaryId,
-            completion: {[weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    print("Success: \(data)")
-                case .failure(let error):
-                    print("Error: \(error)")
-                }
-            })
+}
+
+extension TextDiaryErrorViewController: TextDiaryErrorViewModelDelegate {
+    func didTapExitButton() {
+        delegate?.didTapExitButton()
     }
 }

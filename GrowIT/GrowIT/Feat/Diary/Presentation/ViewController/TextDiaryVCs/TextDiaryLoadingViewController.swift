@@ -6,16 +6,20 @@
 //
 
 import UIKit
+import Combine
 
 class TextDiaryLoadingViewController: UIViewController {
     
     //MARK: - Properties
     let textDiaryLoadingView = TextDiaryLoadingView()
+    private let viewModel = TextDiaryLoadingViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.isNavigationBarHidden = true
         setupUI()
+        bindViewModel()
     }
     
     
@@ -28,11 +32,22 @@ class TextDiaryLoadingViewController: UIViewController {
         }
     }
     
-    func navigateToNextScreen(with diaryId: Int) {
-        let nextVC = TextDiaryRecommendChallengeViewController(diaryId: diaryId)
-        nextVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(nextVC, animated: true)
+    //MARK: - Bind ViewModel
+    private func bindViewModel() {
+        viewModel.$shouldNavigateToRecommendChallenge
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate, let diaryId = self?.viewModel.diaryIdForNavigation {
+                    let nextVC = TextDiaryRecommendChallengeViewController(diaryId: diaryId)
+                    nextVC.hidesBottomBarWhenPushed = true
+                    self?.navigationController?.pushViewController(nextVC, animated: true)
+                }
+            }
+            .store(in: &cancellables)
     }
     
-    //MARK: - @objc methods
+    func navigateToNextScreen(with diaryId: Int) {
+        viewModel.navigationTriggered.send(diaryId)
+    }
 }
