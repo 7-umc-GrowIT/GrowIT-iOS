@@ -57,6 +57,35 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     private func setupActions() {
         textDiaryView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         textDiaryView.dropDownButton.addTarget(self, action: #selector(calendarButtonTapped), for: .touchUpInside)
+        
+        // TextView 변경 감지를 Combine으로 통합
+        NotificationCenter.default.publisher(
+            for: UITextView.textDidChangeNotification,
+            object: textDiaryView.diaryTextField
+        )
+        .compactMap { ($0.object as? UITextView)?.text }
+        .sink { [weak self] text in
+            self?.viewModel.diaryTextChanged.send(text)
+            self?.updateButtonState() // 버튼 상태 즉시 업데이트
+        }
+        .store(in: &cancellables)
+    }
+    
+    // 버튼 상태 업데이트 메서드
+    private func updateButtonState() {
+        let isDateSelected = textDiaryView.dateLabel.text != "날짜를 선택해 주세요"
+        let diaryText = textDiaryView.diaryTextField.text ?? ""
+        let isTextValid = !diaryText.isEmpty &&
+                         diaryText != "일기 내용을 입력하세요" &&
+                         diaryText.trimmingCharacters(in: .whitespacesAndNewlines).count >= 100
+        
+        let isButtonEnabled = isDateSelected && isTextValid
+        
+        // View에서 버튼 상태 업데이트
+        textDiaryView.updateSaveButtonState(isEnabled: isButtonEnabled)
+        
+        // ViewModel에 상태 전달
+        viewModel.saveButtonEnabledChanged.send(isButtonEnabled)
     }
     
     //MARK: - Bind ViewModel
@@ -108,6 +137,7 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
             .sink { [weak self] date in
                 if !date.isEmpty {
                     self?.textDiaryView.updateDateLabel(date)
+                    self?.updateButtonState() // 날짜 선택 후 버튼 상태 업데이트
                 }
             }
             .store(in: &cancellables)
@@ -127,11 +157,15 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     }
     
     @objc func saveButtonTapped() {
-        let userDiary = textDiaryView.diaryTextField.text ?? ""
-        let date = textDiaryView.dateLabel.text ?? ""
-        let isEnabled = textDiaryView.saveButton.isEnabled
+        let diaryText = textDiaryView.diaryTextField.text == "일기 내용을 입력하세요" ? "" : (textDiaryView.diaryTextField.text ?? "")
+        let selectedDate = textDiaryView.dateLabel.text ?? ""
         
-        viewModel.processSaveAction(diaryText: userDiary, date: date, isSaveButtonEnabled: isEnabled)
+        // 직접 처리하여 확실하게 저장되도록 함
+        viewModel.processSaveAction(
+            diaryText: diaryText,
+            date: selectedDate,
+            isSaveButtonEnabled: textDiaryView.saveButton.isEnabled
+        )
     }
     
     @objc func calendarButtonTapped(_ sender: UIButton) {

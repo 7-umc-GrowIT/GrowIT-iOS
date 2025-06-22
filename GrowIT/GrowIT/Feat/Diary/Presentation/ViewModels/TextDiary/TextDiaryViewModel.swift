@@ -15,6 +15,8 @@ class TextDiaryViewModel: ObservableObject {
     let saveButtonTapped = PassthroughSubject<Void, Never>()
     let calendarButtonTapped = PassthroughSubject<UIButton, Never>()
     let dateSelected = PassthroughSubject<String, Never>()
+    let diaryTextChanged = PassthroughSubject<String, Never>()
+    let saveButtonEnabledChanged = PassthroughSubject<Bool, Never>()
     
     // MARK: - Output Publishers
     @Published var shouldShowToast = false
@@ -30,6 +32,8 @@ class TextDiaryViewModel: ObservableObject {
     // MARK: - Private Properties
     private var cancellables = Set<AnyCancellable>()
     private let diaryService: DiaryService
+    private var currentDiaryText = ""
+    private var isSaveButtonEnabled = false
     
     // MARK: - Initialization
     init(diaryService: DiaryService = DiaryService()) {
@@ -63,17 +67,57 @@ class TextDiaryViewModel: ObservableObject {
                 self?.selectedDate = date
             }
             .store(in: &cancellables)
+        
+        diaryTextChanged
+            .sink { [weak self] text in
+                self?.currentDiaryText = text
+                print("Diary text changed: \(text.count) characters")
+            }
+            .store(in: &cancellables)
+        
+        saveButtonEnabledChanged
+            .sink { [weak self] isEnabled in
+                self?.isSaveButtonEnabled = isEnabled
+                print("Save button enabled state changed: \(isEnabled)")
+            }
+            .store(in: &cancellables)
     }
     
     private func handleSaveButtonTap() {
-        // This will be called by the ViewController with diary text and date
-    }
-    
-    func processSaveAction(diaryText: String, date: String, isSaveButtonEnabled: Bool) {
+        print("handleSaveButtonTap called - isEnabled: \(isSaveButtonEnabled)")
         if !isSaveButtonEnabled {
             toastMessage = "일기를 더 작성해 주세요"
             shouldShowToast = true
         } else {
+            shouldNavigateToLoading = true
+            callPostTextDiary(userDiary: currentDiaryText, date: selectedDate)
+        }
+    }
+    
+    // MARK: - Public method for processing save action
+    func processSaveAction(diaryText: String, date: String, isSaveButtonEnabled: Bool) {
+        print("processSaveAction called:")
+        print("- diaryText: \(diaryText.count) characters")
+        print("- date: \(date)")
+        print("- isSaveButtonEnabled: \(isSaveButtonEnabled)")
+        
+        // 직접 검증을 한 번 더 수행
+        let isDateValid = date != "날짜를 선택해 주세요" && !date.isEmpty
+        let isTextValid = !diaryText.isEmpty &&
+                         diaryText != "일기 내용을 입력하세요" &&
+                         diaryText.trimmingCharacters(in: .whitespacesAndNewlines).count >= 100
+        
+        print("- isDateValid: \(isDateValid)")
+        print("- isTextValid: \(isTextValid)")
+        
+        if !isDateValid {
+            toastMessage = "날짜를 선택해 주세요"
+            shouldShowToast = true
+        } else if !isTextValid {
+            toastMessage = "일기를 100자 이상 작성해 주세요"
+            shouldShowToast = true
+        } else {
+            print("All validations passed, navigating to loading...")
             shouldNavigateToLoading = true
             callPostTextDiary(userDiary: diaryText, date: date)
         }
@@ -84,6 +128,10 @@ class TextDiaryViewModel: ObservableObject {
         let convertedDate = convertDateFormat(from: date)
         UserDefaults.standard.set(convertedDate, forKey: "TextDate")
         
+        print("Calling postTextDiary with:")
+        print("- userDiary: \(userDiary.count) characters")
+        print("- convertedDate: \(convertedDate ?? "nil")")
+        
         diaryService.postTextDiary(
             data: DiaryRequestDTO(
                 content: userDiary,
@@ -93,9 +141,10 @@ class TextDiaryViewModel: ObservableObject {
                     self?.isLoading = false
                     switch result {
                     case .success(let data):
+                        print("Diary saved successfully with ID: \(data.diaryId)")
                         self?.diaryIdForNavigation = data.diaryId
                     case .failure(let error):
-                        print("Error: \(error)")
+                        print("Error saving diary: \(error)")
                     }
                 }
             }

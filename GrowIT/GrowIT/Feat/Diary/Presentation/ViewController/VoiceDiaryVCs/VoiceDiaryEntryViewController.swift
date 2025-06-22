@@ -13,7 +13,6 @@ class VoiceDiaryEntryViewController: UIViewController {
     // MARK: Properties
     let navigationBarManager = NavigationManager()
     let voiceDiaryEntryView = VoiceDiaryEntryView()
-    let diaryService = DiaryService()
     
     private let viewModel = VoiceDiaryEntryViewModel()
     private var cancellables = Set<AnyCancellable>()

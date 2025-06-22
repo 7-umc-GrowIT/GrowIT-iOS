@@ -35,11 +35,14 @@ class VoiceDiaryRecordViewModel: ObservableObject {
     @Published var diaryContent = ""
     @Published var diaryId = 0
     @Published var selectedDate = ""
+    @Published var responseText = ""
     
     // MARK: - Private Properties
     private var cancellables = Set<AnyCancellable>()
     private let diaryService: DiaryService
     private let speechAPIProvider: SpeechAPIProvider
+    private var shouldNavigateAfterAPI = false  // API 완료 후 네비게이션 플래그
+    private var isNavigating = false  // 네비게이션 중인지 확인하는 플래그
     
     // MARK: - Initialization
     init(diaryService: DiaryService = DiaryService(), speechAPIProvider: SpeechAPIProvider = SpeechAPIProvider()) {
@@ -77,6 +80,9 @@ class VoiceDiaryRecordViewModel: ObservableObject {
         
         remainingTimeChanged
             .sink { [weak self] remainingTime in
+                // 네비게이션 중이면 타이머 이벤트 무시
+                guard self?.isNavigating == false else { return }
+                
                 if remainingTime == 30 {
                     self?.shouldShowTimeWarning = true
                 }
@@ -103,7 +109,9 @@ class VoiceDiaryRecordViewModel: ObservableObject {
             shouldShowMinimumTimeToast = true
         } else {
             shouldStopRecording = true
-            shouldNavigateToLoading = true
+            // API 완료 후 네비게이션하도록 플래그 설정
+            shouldNavigateAfterAPI = true
+            isLoading = true  // 로딩 상태 표시
             callPostVoiceDiaryDate()
         }
     }
@@ -115,8 +123,7 @@ class VoiceDiaryRecordViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let data):
-                        // Handle TTS response if needed
-                        break
+                        self?.responseText = data.chat
                     case .failure(let error):
                         print("Error: \(error)")
                     }
@@ -130,13 +137,24 @@ class VoiceDiaryRecordViewModel: ObservableObject {
             data: DiaryVoiceDateRequestDTO(date: date),
             completion: { [weak self] result in
                 DispatchQueue.main.async {
+                    self?.isLoading = false
                     switch result {
                     case .success(let data):
                         self?.diaryContent = data.content
                         self?.diaryId = data.diaryId
                         self?.selectedDate = date
+                        
+                        // API 성공 후 네비게이션이 필요한 경우 실행
+                        if self?.shouldNavigateAfterAPI == true {
+                            self?.shouldNavigateAfterAPI = false
+                            self?.isNavigating = true  // 네비게이션 시작
+                            // 타이머 관련 이벤트를 더 이상 처리하지 않도록 설정
+                            self?.shouldShowTimeWarning = false
+                            self?.shouldNavigateToLoading = true
+                        }
                     case .failure(let error):
                         print("Error: \(error)")
+                        self?.shouldNavigateAfterAPI = false
                     }
                 }
             })
