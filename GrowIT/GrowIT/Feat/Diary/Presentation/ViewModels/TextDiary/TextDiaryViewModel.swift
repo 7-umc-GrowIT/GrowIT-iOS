@@ -2,7 +2,7 @@
 //  TextDiaryViewModel.swift
 //  GrowIT
 //
-//  Created by Claude on 2025-06-21.
+//  Created by SOOHYUN on 2025-06-21.
 //
 
 import UIKit
