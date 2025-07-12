@@ -1,27 +1,25 @@
 //
-//  MypageViewController.swift
+//  MyAccountViewController.swift
 //  GrowIT
 //
-//  Created by 오현민 on 6/9/25.
+//  Created by 오현민 on 7/12/25.
 //
 
 import UIKit
 
-class MypageViewController: UIViewController {
+class MyAccountViewController: UIViewController {
     //MARK: - Data
     private let tableviewData: [[(main: String, sub: String)]] = [
-        // 섹션 1 : 구독 내역
-        [("멤버십 구독 내역", ""), ("크레딧 결제 내역", "")],
-        // 섹션 2 : 문의 및 알림
-        [("푸시 알림 활성화/비활성화", ""),("고객센터", ""),("데이터 초기화", "")]
+        // 섹션 1 : 회원정보 변경
+        [("닉네임", "샤샤"), ("비밀번호 변경", "변경하기")],
+        // 섹션 2 : 이용약관
+        [("개인정보 처리방침", ""),("서비스 이용약관", "")]
     ]
     
     // MARK: Properties
     let navigationBarManager = NavigationManager()
-    private lazy var mypageView = MypageView().then {
-        $0.editProfileButton.addTarget(self, action: #selector(goToEditProfile), for: .touchUpInside)
-    }
-
+    private lazy var myAccountView = MyAccountView()
+    
     //MARK: - init
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -30,8 +28,8 @@ class MypageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(mypageView)
-        mypageView.snp.makeConstraints { make in
+        view.addSubview(myAccountView)
+        myAccountView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
@@ -50,7 +48,7 @@ class MypageViewController: UIViewController {
         
         navigationBarManager.setTitle(
             to: navigationItem,
-            title: "마이페이지",
+            title: "내 계정",
             textColor: .black
         )
         
@@ -60,24 +58,19 @@ class MypageViewController: UIViewController {
     }
     
     private func setupTableView() {
-        mypageView.myPagetableView.delegate = self
-        mypageView.myPagetableView.dataSource = self
-        mypageView.myPagetableView.register(MypageTableViewCell.self, forCellReuseIdentifier: MypageTableViewCell.identifier)
-        mypageView.myPagetableView.rowHeight = 66
+        myAccountView.myAccounttableView.delegate = self
+        myAccountView.myAccounttableView.dataSource = self
+        myAccountView.myAccounttableView.register(MypageTableViewCell.self, forCellReuseIdentifier: MypageTableViewCell.identifier)
+        myAccountView.myAccounttableView.rowHeight = 66
     }
     
     @objc private func prevVC() {
         navigationController?.popViewController(animated: true)
     }
-    
-    @objc private func goToEditProfile() {
-        let myAccountVC = MyAccountViewController()
-        navigationController?.pushViewController(myAccountVC, animated: true)
-    }
 }
 
 // MARK: - UITableViewDataSource & UITableViewDelegate
-extension MypageViewController: UITableViewDataSource, UITableViewDelegate {
+extension MyAccountViewController: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         return tableviewData.count
     }
@@ -95,7 +88,7 @@ extension MypageViewController: UITableViewDataSource, UITableViewDelegate {
         cell.configure(mainText: mainText, subText: subText)
         
         return cell
-    } 
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -104,9 +97,10 @@ extension MypageViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case 0: return "구독 내역"
-        case 1: return "문의 및 알림"
+        case 0: return "회원정보 변경"
+        case 1: return "이용약관"
         default: return nil
         }
     }
-} 
+
+}
