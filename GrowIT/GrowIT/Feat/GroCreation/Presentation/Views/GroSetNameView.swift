@@ -116,7 +116,7 @@ class GroSetNameView: UIView {
         
         nickNameTextField.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(32)
-            $0.height.equalTo(80)
+            $0.height.equalTo(100) // 80에서 100으로 증가 (힌트/에러 메시지 공간 확보)
             $0.horizontalEdges.equalToSuperview().inset(24)
         }
         

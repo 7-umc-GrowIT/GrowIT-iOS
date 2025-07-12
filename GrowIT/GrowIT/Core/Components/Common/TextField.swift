@@ -14,6 +14,7 @@ class CustomTextField: UIView {
     let textField = UITextField()
     let titleLabel = UILabel()
     let errorLabel = UILabel()
+    let hintLabel = UILabel() // 사용자 안내용 라벨 추가
     let clearButton = UIButton()
     let eyeButton = UIButton()
     
@@ -57,6 +58,7 @@ class CustomTextField: UIView {
         self.addSubview(titleLabel)
         self.addSubview(textField)
         self.addSubview(errorLabel)
+        self.addSubview(hintLabel)
         self.addSubview(clearButton)
         
         if showEyeButton {
@@ -103,6 +105,13 @@ class CustomTextField: UIView {
         errorLabel.isHidden = true
         errorLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        // Hint Label 설정
+        hintLabel.font = UIFont.detail2Regular()
+        hintLabel.textColor = UIColor.gray400
+        hintLabel.text = ""
+        hintLabel.isHidden = true
+        hintLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         setupConstraints()
     }
     
@@ -136,6 +145,12 @@ class CustomTextField: UIView {
         
         errorLabel.snp.makeConstraints {
             errorLabelTopConstraint = $0.top.equalTo(textField.snp.bottom).offset(0).constraint
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+        }
+        
+        hintLabel.snp.makeConstraints {
+            $0.top.equalTo(textField.snp.bottom).offset(4)
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
         }
@@ -180,6 +195,9 @@ class CustomTextField: UIView {
         errorLabel.isHidden = false
         errorLabelTopConstraint?.update(offset: 4)
         
+        // 에러 발생 시 힌트 라벨 숨기기
+        hideHint()
+        
         UIView.animate(withDuration: 0.2) {
             self.layoutIfNeeded()
         }
@@ -206,6 +224,17 @@ class CustomTextField: UIView {
         
         titleLabel.textColor = UIColor.black
         clearButton.setImage(UIImage(named: "State=Default"), for: .normal)
+    }
+    
+    // 힌트 메시지 설정 함수 추가
+    func setHint(message: String) {
+        hintLabel.text = message
+        hintLabel.isHidden = false
+    }
+    
+    // 힌트 메시지 숨기기 함수 추가
+    func hideHint() {
+        hintLabel.isHidden = true
     }
     
     func setSuccess() {
