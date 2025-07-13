@@ -11,7 +11,7 @@ import Moya
 enum ChallengeEndpoint {
     // Get
     case getChallengeById(challengeId: Int)
-    case getAllChallenges(dtype: String, completed: Bool)
+    case getAllChallenges(dtype: String, completed: Bool, page: Int)
     case getSummaryChallenge
     
     // Post
@@ -73,9 +73,9 @@ extension ChallengeEndpoint: TargetType {
             return .requestPlain
         case .postProveChallenge(_, let data), .patchChallengeById(_, let data):
             return .requestJSONEncodable(data)
-        case .getAllChallenges(dtype: let dtype, completed: let completed):
+        case .getAllChallenges(dtype: let dtype, completed: let completed, page: let page):
             return .requestParameters(
-                parameters: ["dtype": dtype, "completed": completed],
+                parameters: ["dtype": dtype, "completed": completed, "page": page],
                 encoding: URLEncoding.queryString)
         }
     }
