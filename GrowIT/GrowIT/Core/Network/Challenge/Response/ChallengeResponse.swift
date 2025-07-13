@@ -61,9 +61,18 @@ struct ChallengePatchResponseDTO: Decodable{
 //}
 
 // 챌린지 현황 조회 응답 DTO
-struct ChallengeStatusResponseDTO: Decodable{
-    let userChallenges: [UserChallenge]
-}
+//struct ChallengeStatusResponseDTO: Decodable{
+//    let userChallenges: [UserChallenge]
+//}
+//
+//struct UserChallenge: Decodable{
+//    let id: Int
+//    let title: String
+//    let dtype: String
+//    let time: Int
+//    let completed: Bool
+//}
+
 
 //struct RecommendedChallengeDTO: Decodable{
 //    let id: Int
@@ -80,13 +89,6 @@ struct ChallengeStatusResponseDTO: Decodable{
 //    let diaryDate: String
 //}
 
-struct UserChallenge: Decodable{
-    let id: Int
-    let title: String
-    let dtype: String
-    let time: Int
-    let completed: Bool
-}
 
 struct ChallengeSelectResultDTO: Codable {
     let selectedChallenges: [SelectedChallengeDTO]
