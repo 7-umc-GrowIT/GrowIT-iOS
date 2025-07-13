@@ -20,8 +20,16 @@ class ChallengeHomeViewController: UIViewController {
             )
         )
     )
-
-    private lazy var challengeStatusAreaVC = ChallengeStatusAreaController()
+    
+    private lazy var challengeStatusAreaVC = ChallengeStatusAreaController(
+        viewModel: ChallengeStatusViewModel(
+            getChallengesUseCase: GetStatusChallengesUseCase(
+                repository: ChallengeRepositoryImpl(
+                    dataSource: ChallengeDataSourceImpl()
+                )
+            )
+        )
+    )
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = true
@@ -85,8 +93,17 @@ class ChallengeHomeViewController: UIViewController {
     
     @objc private func moveChallengeVerfiyVC(_ notification: Notification) {
         if let userInfo = notification.userInfo, let challenge = userInfo["challenge"] as? UserChallenge{
-            let nextVC = ChallengeVerifyViewController()
-            nextVC.challenge = challenge
+            let nextVC = ChallengeVerifyViewController(
+                viewModel: ChallengeVerifyViewModel(
+                    challenge: challenge,
+                    useCase: ChallengeVerifyUseCaseImpl(
+                        repository: ChallengeVerifyRepositoryImpl(
+                            dataSource: ChallengeVerifyDataSourceImpl()
+                        )
+                    )
+                )
+            )
+            
             navigationController?.pushViewController(nextVC, animated: true)
         }
         
