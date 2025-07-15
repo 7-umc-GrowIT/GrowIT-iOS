@@ -37,6 +37,26 @@ class MyAccountViewController: UIViewController {
         setupTableView()
     }
     
+    //MARK: - Functional
+    //MARK: Event
+    @objc
+    func didTapChangeNickname() {
+        let editNameVC = EditNameModalViewController()
+        editNameVC.modalPresentationStyle = .pageSheet
+        if let sheet = editNameVC.sheetPresentationController {
+            //지원할 크기 지정
+            if #available(iOS 16.0, *) {
+                sheet.detents = [
+                    .custom{ context in
+                        0.32 * context.maximumDetentValue
+                    }
+                ]
+            } else { sheet.detents = [.medium()] }
+            sheet.prefersGrabberVisible = true
+        }
+        present(editNameVC, animated: true, completion: nil)
+    }
+    
     //MARK: - Setup UI
     private func setupNavigationBar() {
         navigationBarManager.addBackButton(
@@ -93,6 +113,7 @@ extension MyAccountViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         print("섹션 \(indexPath.section), 행 \(indexPath.row)")
+        didTapChangeNickname()
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

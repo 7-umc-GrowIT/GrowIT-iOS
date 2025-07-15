@@ -173,6 +173,20 @@ class CustomTextField: UIView {
         titleLabel.text = text
     }
     
+    // 타이틀 폰트 설정 메서드 추가
+    func setTitleFont(_ font: UIFont) {
+        titleLabel.font = font
+    }
+    
+    func setTitleLabeloffset(_ offset: Int) {
+        textField.snp.updateConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(offset)
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.height.equalTo(48)
+        }
+    }
+    
     func setPlaceholder(_ text: String) {
         textField.attributedPlaceholder = NSAttributedString(
             string: text,

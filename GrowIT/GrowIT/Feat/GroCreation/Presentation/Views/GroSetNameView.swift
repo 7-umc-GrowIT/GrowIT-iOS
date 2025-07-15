@@ -34,6 +34,7 @@ class GroSetNameView: UIView {
     var nickNameTextField = CustomTextField(frame: .zero, isPasswordField: false).then {
         $0.setTitleLabel("닉네임")
         $0.setPlaceholder("닉네임을 입력해주세요")
+        $0.setHint(message: "2~8자 이내의 닉네임을 작성해 주세요")
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     

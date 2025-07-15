@@ -82,9 +82,6 @@ class GroSetNameViewController: UIViewController {
         self.view = groSetNameView
         updateNextButtonState()
         
-        // 힌트 메시지 설정
-        groSetNameView.nickNameTextField.setHint(message: "2~8자 이내의 닉네임을 작성해 주세요")
-        
         let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
