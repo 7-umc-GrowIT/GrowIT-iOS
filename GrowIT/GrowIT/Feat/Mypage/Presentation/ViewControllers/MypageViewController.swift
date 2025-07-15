@@ -66,13 +66,35 @@ class MypageViewController: UIViewController {
         mypageView.myPagetableView.rowHeight = 66
     }
     
-    @objc private func prevVC() {
+    //MARK: - Functional
+    //MARK: Event
+    @objc
+    private func prevVC() {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc private func goToEditProfile() {
+    @objc
+    private func goToEditProfile() {
         let myAccountVC = MyAccountViewController()
         navigationController?.pushViewController(myAccountVC, animated: true)
+    }
+    
+    @objc
+    func didTapResetData() {
+        let resetDataVC = ResetDataModalViewController()
+        resetDataVC.modalPresentationStyle = .pageSheet
+        if let sheet = resetDataVC.sheetPresentationController {
+            //지원할 크기 지정
+            if #available(iOS 16.0, *) {
+                sheet.detents = [
+                    .custom{ context in
+                        0.28 * context.maximumDetentValue
+                    }
+                ]
+            } else { sheet.detents = [.medium()] }
+            sheet.prefersGrabberVisible = true
+        }
+        present(resetDataVC, animated: true, completion: nil)
     }
 }
 
@@ -100,6 +122,8 @@ extension MypageViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         print("섹션 \(indexPath.section), 행 \(indexPath.row)")
+        // 나중에 섹션,행 별로 이벤트 설정
+        didTapResetData()
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

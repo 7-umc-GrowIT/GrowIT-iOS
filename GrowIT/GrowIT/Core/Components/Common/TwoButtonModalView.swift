@@ -72,7 +72,7 @@ class TwoButtonModalView: UIView {
     }
     
     private func setupUI() {
-        buttonStackView.addArrangedSubViews([mainButton, subButton])
+        buttonStackView.addArrangedSubViews([subButton, mainButton])
         addSubviews([titleLabel, descLabel, buttonStackView])
         
         titleLabel.snp.makeConstraints {
