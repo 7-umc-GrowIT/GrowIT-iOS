@@ -18,7 +18,9 @@ class MyAccountViewController: UIViewController {
     
     // MARK: Properties
     let navigationBarManager = NavigationManager()
-    private lazy var myAccountView = MyAccountView()
+    private lazy var myAccountView = MyAccountView().then {
+        $0.logoutButton.addTarget(self, action: #selector(didTapLogout), for: .touchUpInside)
+    }
     
     //MARK: - init
     override func viewWillAppear(_ animated: Bool) {
@@ -48,13 +50,31 @@ class MyAccountViewController: UIViewController {
             if #available(iOS 16.0, *) {
                 sheet.detents = [
                     .custom{ context in
-                        0.32 * context.maximumDetentValue
+                        0.33 * context.maximumDetentValue
                     }
                 ]
             } else { sheet.detents = [.medium()] }
             sheet.prefersGrabberVisible = true
         }
         present(editNameVC, animated: true, completion: nil)
+    }
+    
+    @objc
+    func didTapLogout() {
+        let logoutVC = LogoutModalViewController()
+        logoutVC.modalPresentationStyle = .pageSheet
+        if let sheet = logoutVC.sheetPresentationController {
+            //지원할 크기 지정
+            if #available(iOS 16.0, *) {
+                sheet.detents = [
+                    .custom{ context in
+                        0.28 * context.maximumDetentValue
+                    }
+                ]
+            } else { sheet.detents = [.medium()] }
+            sheet.prefersGrabberVisible = true
+        }
+        present(logoutVC, animated: true, completion: nil)
     }
     
     //MARK: - Setup UI
