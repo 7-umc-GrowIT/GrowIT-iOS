@@ -22,8 +22,8 @@ class TwoButtonModalView: UIView {
         $0.numberOfLines = 0
     }
     
-    private let mainButton = AppButton(title: "")
-    private let subButton = AppButton(title: "")
+    public let mainButton = AppButton(title: "")
+    public let subButton = AppButton(title: "")
 
     private let buttonStackView = UIStackView().then {
         $0.axis = .horizontal

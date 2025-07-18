@@ -22,9 +22,9 @@ class WithdrawModalView: UIView {
         $0.numberOfLines = 0
     }
     
-    private let cancleButton = AppButton(title: "취소")
+    public let cancleButton = AppButton(title: "취소")
     
-    private let withDrawButton = SmallTextButton(
+    public let withDrawButton = SmallTextButton(
         title: "탈퇴하기",
         titleColor: .gray400,
         font: .body2Medium()

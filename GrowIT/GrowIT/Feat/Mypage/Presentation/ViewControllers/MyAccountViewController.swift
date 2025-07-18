@@ -152,7 +152,9 @@ extension MyAccountViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         print("섹션 \(indexPath.section), 행 \(indexPath.row)")
-        didTapChangeNickname()
+        if indexPath.section == 0, indexPath.row == 0 {
+            didTapChangeNickname()
+        }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

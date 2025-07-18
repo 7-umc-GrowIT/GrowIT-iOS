@@ -123,7 +123,9 @@ extension MypageViewController: UITableViewDataSource, UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         print("섹션 \(indexPath.section), 행 \(indexPath.row)")
         // 나중에 섹션,행 별로 이벤트 설정
-        didTapResetData()
+        if indexPath.section == 1, indexPath.row == 2 {
+            didTapResetData()
+        }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
