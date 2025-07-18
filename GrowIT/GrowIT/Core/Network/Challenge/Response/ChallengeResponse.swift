@@ -54,31 +54,31 @@ struct ChallengePatchResponseDTO: Decodable{
 }
 
 // 챌린지 홈 조회 응답 DTO
-struct ChallengeHomeResponseDTO: Decodable{
-    let challengeKeywords: [String]
-    let recommendedChallenges: [RecommendedChallengeDTO]
-    let challengeReport: ChallengeReportDTO
-}
+//struct ChallengeHomeResponseDTO: Decodable{
+//    let challengeKeywords: [String]
+//    let recommendedChallenges: [RecommendedChallengeDTO]
+//    let challengeReport: ChallengeReportDTO
+//}
 
 // 챌린지 현황 조회 응답 DTO
 struct ChallengeStatusResponseDTO: Decodable{
     let userChallenges: [UserChallenge]
 }
 
-struct RecommendedChallengeDTO: Decodable{
-    let id: Int
-    let title: String
-    let content: String
-    let dtype: String
-    let time: Int
-    let completed: Bool
-}
+//struct RecommendedChallengeDTO: Decodable{
+//    let id: Int
+//    let title: String
+//    let content: String
+//    let dtype: String
+//    let time: Int
+//    let completed: Bool
+//}
 
-struct ChallengeReportDTO: Decodable{
-    let totalCredits: Int
-    let totalDiaries: Int
-    let diaryDate: String
-}
+//struct ChallengeReportDTO: Decodable{
+//    let totalCredits: Int
+//    let totalDiaries: Int
+//    let diaryDate: String
+//}
 
 struct UserChallenge: Decodable{
     let id: Int

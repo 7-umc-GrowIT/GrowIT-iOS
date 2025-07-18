@@ -9,9 +9,18 @@ import UIKit
 import SnapKit
 
 class ChallengeHomeViewController: UIViewController {
-
+    
     private lazy var challengeHomeView = ChallengeHomeView()
-    private lazy var challengeHomeAreaVC = ChallengeHomeAreaController()
+    private lazy var challengeHomeAreaVC = ChallengeHomeAreaController(
+        viewModel: ChallengeHomeViewModel(
+            getChallengeHomeUseCase: GetChallengeHomeUseCaseImpl(
+                repository: ChallengeRepositoryImpl(
+                    dataSource: ChallengeDataSourceImpl()
+                )
+            )
+        )
+    )
+
     private lazy var challengeStatusAreaVC = ChallengeStatusAreaController()
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,7 +80,7 @@ class ChallengeHomeViewController: UIViewController {
     
     private func setupNotifications(){
         NotificationCenter.default.addObserver(self, selector: #selector(moveChallengeVerfiyVC(_:)), name: .closeModalAndMoveVC, object: nil)
-    
+        
     }
     
     @objc private func moveChallengeVerfiyVC(_ notification: Notification) {

@@ -8,225 +8,218 @@
 import UIKit
 import SnapKit
 import Then
+import Combine
 
 class ChallengeHomeAreaController: UIViewController {
-    private lazy var challengeHomeArea = ChallengeHomeArea()
-    private lazy var pageControl = UIPageControl()
-    private lazy var todayChallenges: [RecommendedChallengeDTO] = []
-    private lazy var selectedIndex: Int = 0
-    private lazy var challengeService = ChallengeService()
+    private let challengeHomeArea = ChallengeHomeArea()
+    private let pageControl = UIPageControl()
+    private var todayChallenges: [RecommendedChallengeDTO] = []
+    private var selectedIndex = 0
+
+    private var viewModel: ChallengeHomeViewModel!
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(viewModel: ChallengeHomeViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = challengeHomeArea
         view.backgroundColor = .gray50
-        
+
+        setupCollectionView()
+        setupNotifications()
+        bindViewModel()
+        viewModel.refresh()
+    }
+
+    private func setupCollectionView() {
         challengeHomeArea.todayChallengeCollectionView.delegate = self
         challengeHomeArea.todayChallengeCollectionView.dataSource = self
-        
-        getChallengeSummary()
-        
     }
-    
+
+    private func bindViewModel() {
+        viewModel.$todayChallenges
+            .receive(on: RunLoop.main)
+            .sink { [weak self] challenges in
+                guard let self = self else { return }
+                self.todayChallenges = challenges
+                self.challengeHomeArea.todayChallengeCollectionView.reloadData()
+                self.setupPageControl()
+            }
+            .store(in: &cancellables)
+
+        viewModel.$challengeKeywords
+            .sink { [weak self] in self?.challengeHomeArea.setupChallengeKeywords($0) }
+            .store(in: &cancellables)
+
+        viewModel.$challengeReport
+            .sink { [weak self] in
+                guard let report = $0 else { return }
+                self?.challengeHomeArea.setupChallengeReport(report: report)
+            }
+            .store(in: &cancellables)
+
+        viewModel.$isEmptyChallenge
+            .sink { [weak self] isEmpty in
+                if isEmpty {
+                    self?.challengeHomeArea.setEmptyChallenge()
+                    self?.pageControl.isHidden = true
+                }
+            }
+            .store(in: &cancellables)
+
+        viewModel.$isEmptyTodayChallenge
+            .sink { [weak self] isEmpty in
+                self?.challengeHomeArea.todayChallengeCollectionView.isHidden = isEmpty
+                self?.pageControl.isHidden = isEmpty
+            }
+            .store(in: &cancellables)
+
+        viewModel.$errorMessage
+            .sink { if let msg = $0 { print("에러 발생: \(msg)") } }
+            .store(in: &cancellables)
+    }
+
     private func setupPageControl() {
-        pageControl.numberOfPages = todayChallenges.count  // 페이지 수 설정
-        pageControl.currentPage = selectedIndex    // 현재 페이지 초기화
+        pageControl.numberOfPages = todayChallenges.count
+        pageControl.currentPage = selectedIndex
         pageControl.currentPageIndicatorTintColor = .primary600
         pageControl.pageIndicatorTintColor = .gray
-        view.addSubview(pageControl)
 
-        setupNotifications()
-        pageControl.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(pageControl)
         pageControl.snp.makeConstraints {
             $0.top.equalTo(challengeHomeArea.todayChallengeCollectionView.snp.bottom).offset(12)
             $0.centerX.equalToSuperview()
-            
         }
-        
+
         challengeHomeArea.challengeReportTitleStack.snp.remakeConstraints {
             $0.top.equalTo(pageControl.snp.bottom).offset(44)
             $0.left.equalToSuperview().offset(24)
         }
-        
     }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
+
     private func setupNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateChallengeList), name: .challengeDidDelete, object: nil)
     }
-    
+
     @objc private func updateChallengeList() {
-        refreshData()
+        viewModel.refresh()
     }
     
     public func refreshData(){
-        getChallengeSummary()
-    }
-    
-    /// 챌린지 홈 조회 API
-    private func getChallengeSummary(){
-        challengeService.fetchChallengeHome(completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                if(data.challengeKeywords.count == 0){
-                    self.challengeHomeArea.setEmptyChallenge()
-                    pageControl.isHidden = true
-                    
-                }else if(data.recommendedChallenges.count == 0){
-                    pageControl.isHidden = true
-                    self.challengeHomeArea.todayChallengeCollectionView.isHidden = true
-                }
-                else{
-                    self.todayChallenges = data.recommendedChallenges
-                    self.challengeHomeArea.showChallenge()
-                    setupPageControl()
-                }
-                
-                self.challengeHomeArea.setupChallengeKeywords(data.challengeKeywords)
-                self.challengeHomeArea.setupChallengeReport(report: data.challengeReport)
-                
-                // 데이터 변경 후 컬렉션뷰를 리로드합니다.
-                self.challengeHomeArea.todayChallengeCollectionView.reloadData()
-                
-            case .failure(let error):
-                print("가져온 에러는 \(error)")
-            }
-        })
+        viewModel.refresh()
     }
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
+// MARK: - UICollectionViewDelegate, DataSource
 extension ChallengeHomeAreaController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.todayChallenges.count
+        return todayChallenges.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayChallengeCollectionViewCell.identifier, for: indexPath) as? TodayChallengeCollectionViewCell else { return UICollectionViewCell() }
-        
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: TodayChallengeCollectionViewCell.identifier,
+            for: indexPath
+        ) as? TodayChallengeCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+
         let challenge = todayChallenges[indexPath.row]
         cell.figure(title: challenge.title, time: challenge.time, completed: challenge.completed)
-        
         return cell
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let challenge = todayChallenges[indexPath.row]
-        let approximateWidthOfNameLabel = collectionView.frame.width * 0.5 // 아이콘, 패딩을 고려한 너비
-        let size = CGSize(width: approximateWidthOfNameLabel, height: CGFloat.greatestFiniteMagnitude)
+        let availableWidth = collectionView.frame.width * 0.5
+        let size = CGSize(width: availableWidth, height: .greatestFiniteMagnitude)
         let attributes = [NSAttributedString.Key.font: UIFont.heading3Bold()]
+        let estimatedFrame = NSString(string: challenge.title).boundingRect(
+            with: size,
+            options: .usesLineFragmentOrigin,
+            attributes: attributes,
+            context: nil
+        )
 
-        let estimatedFrame = NSString(string: challenge.title).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+        let lines = ceil(estimatedFrame.height / UIFont.heading3Bold().lineHeight)
+        let cellHeight = 78 + (lines * UIFont.heading3Bold().lineHeight)
 
-        let lines = ceil(estimatedFrame.height / UIFont.heading3Bold().lineHeight) // 줄 수 계산
-        let additionalHeightPerLine = UIFont.heading3Bold().lineHeight // 추가 높이 설정
-
-        let cellHeight = 78 + (lines * additionalHeightPerLine) // 기본 높이 + 줄 수에 따른 추가 높이
-        
-        self.challengeHomeArea.todayChallengeCollectionView.snp.updateConstraints{
+        challengeHomeArea.todayChallengeCollectionView.snp.updateConstraints {
             $0.height.equalTo(cellHeight)
         }
-        
-        self.view.layoutIfNeeded()
+
+        view.layoutIfNeeded()
         return CGSize(width: collectionView.frame.width, height: cellHeight)
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(todayChallenges[indexPath.row])
         selectedIndex = indexPath.row
         let challenge = todayChallenges[indexPath.row]
-        if(challenge.completed == true){
-            let challengeCompleteVC = ChallengeCompleteViewController()
-            
-            challengeCompleteVC.modalPresentationStyle = .pageSheet
-            
-            if let sheet = challengeCompleteVC.sheetPresentationController {
-                        
-                //지원할 크기 지정
-                if #available(iOS 16.0, *){
-                    sheet.detents = [.large()]
-                }else{
-                    sheet.detents = [.medium(), .large()]
-                }
-                
-                // 시트의 상단 둥근 모서리 설정
-                if #available(iOS 15.0, *) {
-                    sheet.preferredCornerRadius = 40
-                }
-                
-                //크기 변하는거 감지
-                sheet.delegate = self
-               
-                //시트 상단에 그래버 표시 (기본 값은 false)
-                sheet.prefersGrabberVisible = false
-                
-                //처음 크기 지정 (기본 값은 가장 작은 크기)
-                sheet.selectedDetentIdentifier = .large
-            }
-            
-            
-            self.present(challengeCompleteVC, animated: true, completion: nil)
-        }else{
-            let challengeVerifyModalVC = ChallengeVerifyModalController()
-            
-            challengeVerifyModalVC.modalPresentationStyle = .pageSheet
-            challengeVerifyModalVC.delegate = self
 
-            if let sheet = challengeVerifyModalVC.sheetPresentationController {
-                        
-                //지원할 크기 지정
-                if #available(iOS 16.0, *){
-                    sheet.detents = [
-                        .custom{ _ in
-                            self.view.frame.height * 0.45
-                    }]
-                }else{
-                    sheet.detents = [.medium(), .large()]
-                }
-                
-                // 시트의 상단 둥근 모서리 설정
-                if #available(iOS 15.0, *) {
-                    sheet.preferredCornerRadius = 40
-                }
-                
-                //크기 변하는거 감지
-                sheet.delegate = self
-               
-                //시트 상단에 그래버 표시 (기본 값은 false)
-                sheet.prefersGrabberVisible = false
-            }
-            
-            challengeVerifyModalVC.challengeId = challenge.id
-            self.present(challengeVerifyModalVC, animated: true, completion: nil)
+        if challenge.completed {
+            let completeVC = ChallengeCompleteViewController()
+            presentSheet(completeVC, heightRatio: 1.0, useLargeOnly: true)
+        } else {
+            let verifyModalVC = ChallengeVerifyModalController()
+            verifyModalVC.delegate = self
+            verifyModalVC.challengeId = challenge.id
+            presentSheet(verifyModalVC, heightRatio: 0.45)
         }
-        
     }
 }
 
+// MARK: - Sheet Presentation
+extension ChallengeHomeAreaController: UISheetPresentationControllerDelegate {
+    private func presentSheet(_ viewController: UIViewController, heightRatio: CGFloat, useLargeOnly: Bool = false) {
+        viewController.modalPresentationStyle = .pageSheet
+        if let sheet = viewController.sheetPresentationController {
+            if #available(iOS 16.0, *) {
+                sheet.detents = useLargeOnly ? [.large()] : [.custom { _ in self.view.frame.height * heightRatio }]
+            } else {
+                sheet.detents = [.medium(), .large()]
+            }
+
+            if #available(iOS 15.0, *) {
+                sheet.preferredCornerRadius = 40
+            }
+
+            sheet.delegate = self
+            sheet.prefersGrabberVisible = false
+            sheet.selectedDetentIdentifier = .large
+        }
+
+        present(viewController, animated: true, completion: nil)
+    }
+
+    func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
+        print("시트 상태 변경: \(sheetPresentationController.selectedDetentIdentifier == .large ? "large" : "medium")")
+    }
+}
+
+// MARK: - ScrollView Delegate
 extension ChallengeHomeAreaController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let visibleRect = CGRect(origin: challengeHomeArea.todayChallengeCollectionView.contentOffset, size: challengeHomeArea.todayChallengeCollectionView.bounds.size)
-        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-        
-        if let visibleIndexPath = challengeHomeArea.todayChallengeCollectionView.indexPathForItem(at: visiblePoint) {
-            selectedIndex = visibleIndexPath.row
-            pageControl.currentPage = visibleIndexPath.row
-            // 여기서 필요한 작업 수행, 예를 들면 인덱스 저장, UI 업데이트 등
+        let visiblePoint = CGPoint(x: scrollView.contentOffset.x + scrollView.bounds.width / 2, y: scrollView.bounds.height / 2)
+        if let indexPath = challengeHomeArea.todayChallengeCollectionView.indexPathForItem(at: visiblePoint) {
+            selectedIndex = indexPath.row
+            pageControl.currentPage = indexPath.row
         }
     }
 }
 
-extension ChallengeHomeAreaController: UISheetPresentationControllerDelegate {
-    func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
-        //크기 변경 됐을 경우
-        print(sheetPresentationController.selectedDetentIdentifier == .large ? "large" : "medium")
-    }
-}
-
+// MARK: - ChallengeVerifyModalDelegate
 extension ChallengeHomeAreaController: ChallengeVerifyModalDelegate {
     func presentChallengeVerifyModal() {
         let modalVC = ChallengeVerifyModalController()
@@ -235,7 +228,7 @@ extension ChallengeHomeAreaController: ChallengeVerifyModalDelegate {
     }
 
     func didRequestVerification() {
-        let nextVC = ChallengeVerifyViewController()
-        navigationController?.pushViewController(nextVC, animated: true)
+        let verifyVC = ChallengeVerifyViewController()
+        navigationController?.pushViewController(verifyVC, animated: true)
     }
 }
