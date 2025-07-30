@@ -76,3 +76,11 @@ struct ReissueResponse: Decodable {
 struct AccessTokenData: Codable {
     let accessToken: String
 }
+
+struct LoginUnifiedResponse {
+    let signupRequired: Bool
+    let tokens: TokenData?
+    let oauthUserInfo: KakaoUserInfo? // 이름은 Kakao지만 통합 타입으로 쓸 수도 있음
+    let message: String
+    let code: String
+}
