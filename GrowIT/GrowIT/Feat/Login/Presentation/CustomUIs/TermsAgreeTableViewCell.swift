@@ -6,8 +6,6 @@
 //
 
 import UIKit
-import SnapKit
-import Then
 
 class TermsAgreeTableViewCell: UITableViewCell {
     
@@ -19,6 +17,7 @@ class TermsAgreeTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
         selectionStyle = .none
+        
         agreeButton.addTarget(self, action: #selector(didTapAgreeButton), for: .touchUpInside)
     }
     
@@ -34,38 +33,39 @@ class TermsAgreeTableViewCell: UITableViewCell {
     private let mandatoryView = MandatoryOptionalView(backgroundColor: .negative50, text: "필수", textColor: .negative400)
     
     let titleLabel = UILabel().then {
+        let count = 1
+        $0.text = "이용약관(\(count))"
         $0.font = .heading3SemiBold()
         $0.textColor = .gray800
     }
     
+    let contentLabel = UILabel().then {
+        $0.font = .body2Regular()
+        $0.textColor = .gray600
+        $0.numberOfLines = 0
+    }
+
     let detailButton = UIButton().then {
         $0.setImage(UIImage(systemName: "chevron.right"), for: .normal)
         $0.backgroundColor = .clear
         $0.tintColor = .gray200
     }
     
-    /// 하단 간격용 Spacer
-    private let bottomSpacer = UIView().then {
-        $0.backgroundColor = .clear
-    }
-    
     private func setupUI() {
         backgroundColor = .clear
         contentView.backgroundColor = .clear
-        
-        // 내부 요소 배치
         contentView.addSubview(agreeButton)
         agreeButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(12)
-            make.top.equalToSuperview().offset(16)
+            make.centerY.equalToSuperview()
         }
         
         contentView.addSubview(mandatoryView)
         mandatoryView.snp.makeConstraints { make in
             make.leading.equalTo(agreeButton.snp.trailing).offset(12)
-            make.centerY.equalTo(agreeButton)
             make.width.equalTo(37)
             make.height.equalTo(22)
+            make.centerY.equalToSuperview()
         }
         
         contentView.addSubview(titleLabel)
@@ -77,23 +77,17 @@ class TermsAgreeTableViewCell: UITableViewCell {
         contentView.addSubview(detailButton)
         detailButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(12)
-            make.centerY.equalTo(mandatoryView)
-        }
-        
-        contentView.addSubview(bottomSpacer)
-        bottomSpacer.snp.makeConstraints { make in
-            make.top.equalTo(agreeButton.snp.bottom).offset(16)
-            make.height.equalTo(12)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.centerY.equalToSuperview()
         }
     }
     
     func configure(title: String, content: String, isAgreed: Bool) {
         titleLabel.text = title
+        contentLabel.text = content
         agreeButton.setSelectedState(isAgreed)
     }
     
     @objc private func didTapAgreeButton() {
-        onAgreeButtonTapped?()
+        onAgreeButtonTapped?() // 클로저 호출
     }
 }

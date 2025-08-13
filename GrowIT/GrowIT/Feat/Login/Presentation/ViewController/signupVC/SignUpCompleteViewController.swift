@@ -6,22 +6,20 @@
 //
 
 import UIKit
-import Combine
 
-final class SignUpCompleteViewController: UIViewController {
+class SignUpCompleteViewController: UIViewController {
     
+    // MARK: - Properties
     private let signUpCompleteView = SignUpCompleteView()
     private let navigationBarManager = NavigationManager()
-    private let viewModel = SignUpCompleteViewModel()
-    private var cancellables = Set<AnyCancellable>()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        setupBindings()
-        setupActions()
+        setupAction()
     }
     
+    // MARK: - setupView
     private func setupView() {
         self.view = signUpCompleteView
         self.navigationController?.isNavigationBarHidden = false
@@ -40,28 +38,19 @@ final class SignUpCompleteViewController: UIViewController {
         )
     }
     
-    private func setupBindings() {
-        viewModel.actionPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] action in
-                switch action {
-                case .goToGroSetBackground:
-                    let nextVC = GroSetBackgroundViewController()
-                    self?.navigationController?.pushViewController(nextVC, animated: true)
-                }
-            }
-            .store(in: &cancellables)
+    // MARK: - setup Actions
+    private func setupAction() {
+        signUpCompleteView.loginButton.addTarget(self, action: #selector(loginButtonTap), for: .touchUpInside)
     }
     
-    private func setupActions() {
-        signUpCompleteView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
-    }
-    
+    // MARK: - Actions
     @objc private func prevVC() {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc private func loginButtonTapped() {
-        viewModel.onLoginButtonTap()
+    @objc private func loginButtonTap() {
+        let nextVC = GroSetBackgroundViewController()
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
+
 }
