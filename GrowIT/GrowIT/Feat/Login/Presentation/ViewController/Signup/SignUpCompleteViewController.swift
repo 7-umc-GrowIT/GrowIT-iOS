@@ -6,20 +6,22 @@
 //
 
 import UIKit
+import Combine
 
-class SignUpCompleteViewController: UIViewController {
+final class SignUpCompleteViewController: UIViewController {
     
-    // MARK: - Properties
     private let signUpCompleteView = SignUpCompleteView()
     private let navigationBarManager = NavigationManager()
-
+    private let viewModel = SignUpCompleteViewModel()
+    private var cancellables = Set<AnyCancellable>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        setupAction()
+        setupBindings()
+        setupActions()
     }
     
-    // MARK: - setupView
     private func setupView() {
         self.view = signUpCompleteView
         self.navigationController?.isNavigationBarHidden = false
@@ -38,19 +40,28 @@ class SignUpCompleteViewController: UIViewController {
         )
     }
     
-    // MARK: - setup Actions
-    private func setupAction() {
-        signUpCompleteView.loginButton.addTarget(self, action: #selector(loginButtonTap), for: .touchUpInside)
+    private func setupBindings() {
+        viewModel.actionPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] action in
+                switch action {
+                case .goToGroSetBackground:
+                    let nextVC = GroSetBackgroundViewController()
+                    self?.navigationController?.pushViewController(nextVC, animated: true)
+                }
+            }
+            .store(in: &cancellables)
     }
     
-    // MARK: - Actions
+    private func setupActions() {
+        signUpCompleteView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+    }
+    
     @objc private func prevVC() {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc private func loginButtonTap() {
-        let nextVC = GroSetBackgroundViewController()
-        self.navigationController?.pushViewController(nextVC, animated: true)
+    @objc private func loginButtonTapped() {
+        viewModel.onLoginButtonTap()
     }
-
 }

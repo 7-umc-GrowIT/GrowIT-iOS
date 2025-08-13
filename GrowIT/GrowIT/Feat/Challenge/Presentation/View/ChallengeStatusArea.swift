@@ -54,8 +54,38 @@ class ChallengeStatusArea: UIView {
     }).then{
         $0.register(CustomChallengeListCell.self, forCellWithReuseIdentifier: CustomChallengeListCell.identifier)
         $0.backgroundColor = .clear
-        $0.showsVerticalScrollIndicator = false
+        $0.showsVerticalScrollIndicator = true
         $0.isScrollEnabled = true
+    }
+    
+    // 페이징 컨트롤 관련 UI
+    private lazy var pagingStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 8
+        stack.alignment = .center
+        return stack
+    }()
+    
+    // 현재 페이지 (예시용)
+    var currentPage: Int = 1 {
+        didSet {
+            updatePagingUI()
+        }
+    }
+    var totalPage: Int = 5 {
+        didSet {
+            updatePagingUI()
+        }
+    }
+    
+    // 현재 페이지 묶음의 첫 번째 번호 (1, 6, 11, ...)
+    private var pageGroupStart: Int {
+        // 예: currentPage = 7이면 6
+        return ((currentPage - 1) / 5) * 5 + 1
+    }
+    private var pageGroupEnd: Int {
+        return min(pageGroupStart + 4, totalPage)
     }
     
     // MARK: - Func
@@ -98,6 +128,92 @@ class ChallengeStatusArea: UIView {
         
     }
     
+    // 페이지 선택 콜백
+    var onPageSelected: ((Int) -> Void)?
+    
+    // MARK: - Paging UI 생성
+    private func updatePagingUI() {
+        pagingStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        if totalPage < 1 || pageGroupStart > pageGroupEnd {
+            return
+        }
+        
+        let showPrevNext = totalPage > 5
+        
+        // 이전 페이지 그룹 버튼
+        if showPrevNext && pageGroupStart > 1 {
+            let prevButton = makePageButton("〈", isActive: true)
+            prevButton.addTarget(self, action: #selector(prevPageGroupTapped), for: .touchUpInside)
+            pagingStackView.addArrangedSubview(prevButton)
+        }
+        
+        // 5개씩 페이지 번호
+        for i in pageGroupStart...pageGroupEnd {
+            let isCurrent = (i == currentPage)
+            let pageBtn = makePageButton("\(i)", isActive: isCurrent)
+            pageBtn.tag = i
+            pageBtn.addTarget(self, action: #selector(pageTapped(_:)), for: .touchUpInside)
+            pagingStackView.addArrangedSubview(pageBtn)
+        }
+        
+        // 다음 페이지 그룹 버튼
+        if showPrevNext && pageGroupEnd < totalPage {
+            let nextButton = makePageButton("〉", isActive: true)
+            nextButton.addTarget(self, action: #selector(nextPageGroupTapped), for: .touchUpInside)
+            pagingStackView.addArrangedSubview(nextButton)
+        }
+    }
+
+    
+    private func makePageButton(_ title: String, isActive: Bool) -> UIButton {
+        let button = UIButton(type: .system)
+        button.setTitle(title, for: .normal)
+        button.titleLabel?.font = .body2Medium()
+        button.layer.cornerRadius = 8
+
+        // 페이지 번호 버튼
+        if let _ = Int(title) {
+            button.layer.borderWidth = isActive ? 0 : 0
+            button.layer.borderColor = UIColor.clear.cgColor
+            button.backgroundColor = isActive ? UIColor.primary500 : .clear
+            button.setTitleColor(isActive ? .white : .gray300, for: .normal)
+        } else {
+            button.backgroundColor = .gray200
+            button.setTitleColor(.white, for: .normal)
+        }
+
+        button.snp.makeConstraints { $0.width.height.equalTo(24) }
+        return button
+    }
+
+    
+    // MARK: - 페이지 버튼 액션 (예시)
+    @objc private func prevPageGroupTapped() {
+        // 이전 5개 그룹의 첫 페이지로 이동
+        let prevStart = max(pageGroupStart - 5, 1)
+        if currentPage != prevStart {
+            onPageSelected?(prevStart)
+        }
+    }
+
+    @objc private func nextPageGroupTapped() {
+        // 다음 5개 그룹의 첫 페이지로 이동
+        let nextStart = min(pageGroupStart + 5, totalPage)
+        if currentPage != nextStart {
+            onPageSelected?(nextStart)
+        }
+    }
+
+    
+    @objc private func pageTapped(_ sender: UIButton) {
+        let page = sender.tag
+        if page != currentPage {
+            onPageSelected?(page)
+        }
+    }
+    
+    
     // MARK: - addFunc & Constraints
     
     private func addStack(){
@@ -107,7 +223,7 @@ class ChallengeStatusArea: UIView {
     }
     
     private func addComponents(){
-        [challengeStatusBtnGroup, challengeStatusLabelStack, challengeAllList].forEach(self.addSubview)
+        [challengeStatusBtnGroup, challengeStatusLabelStack, challengeAllList, pagingStackView].forEach(self.addSubview)
     }
     
     private func constraints(){
@@ -127,9 +243,15 @@ class ChallengeStatusArea: UIView {
         challengeAllList.snp.makeConstraints{
             $0.top.equalTo(challengeStatusLabelStack.snp.bottom).offset(12)
             $0.horizontalEdges.equalToSuperview().inset(24)
+            
+        }
+        
+        pagingStackView.snp.makeConstraints {
+            $0.top.equalTo(challengeAllList.snp.bottom).offset(60)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
             $0.bottom.equalToSuperview().inset(65 + 100)
         }
-    
     }
     
     override func layoutSubviews() {
