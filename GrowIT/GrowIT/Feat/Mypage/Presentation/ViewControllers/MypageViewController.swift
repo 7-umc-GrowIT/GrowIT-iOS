@@ -37,6 +37,9 @@ class MypageViewController: UIViewController {
 
         setupNavigationBar()
         setupTableView()
+        
+        // 개발 중: 프로필 영역만 노출
+        mypageView.hideForDevelopment()
     }
     
     //MARK: - Setup UI

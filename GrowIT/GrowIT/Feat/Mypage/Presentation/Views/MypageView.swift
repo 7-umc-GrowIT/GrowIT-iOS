@@ -127,5 +127,11 @@ class MypageView: UIView {
         }
     }
     
-   
+    // MARK: - Development Helper
+    func hideForDevelopment() {
+        // 프로필 영역은 그대로 두고, 구독 뷰 이하를 가린다
+        subscrView.isHidden = true
+        myPagetableView.isHidden = true
+        copyrightLabel.isHidden = true
+    }
 }
