@@ -10,8 +10,8 @@ import UIKit
 class SmallTextButton: UIButton {
     init(
         title: String,
-        titleColor: UIColor,
-        font: UIFont
+        titleColor: UIColor = .gray400,
+        font: UIFont = .body2Medium()
     ){
         super.init(frame: .zero)
         self.backgroundColor = .clear

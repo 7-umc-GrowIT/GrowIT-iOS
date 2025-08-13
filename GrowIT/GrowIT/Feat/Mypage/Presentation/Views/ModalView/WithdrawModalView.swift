@@ -24,11 +24,7 @@ class WithdrawModalView: UIView {
     
     public let cancleButton = AppButton(title: "취소")
     
-    public let withDrawButton = SmallTextButton(
-        title: "탈퇴하기",
-        titleColor: .gray400,
-        font: .body2Medium()
-    ).then {
+    public let withDrawButton = SmallTextButton(title: "탈퇴하기").then {
         $0.setUnderline(true)
     }
     

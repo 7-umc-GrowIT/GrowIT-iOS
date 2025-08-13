@@ -18,12 +18,8 @@ class MyAccountView: UIView {
     
     private var tableViewHeightConstraint: NSLayoutConstraint?
     
-    public lazy var logoutButton = SmallTextButton(title: "로그아웃",
-                                                        titleColor: .gray400,
-                                                        font: .body2Medium())
-    public lazy var withdrawButton = SmallTextButton(title: "회원탈퇴",
-                                                        titleColor: .gray400,
-                                                        font: .body2Medium())
+    public lazy var logoutButton = SmallTextButton(title: "로그아웃")
+    public lazy var withdrawButton = SmallTextButton(title: "회원탈퇴")
     //MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
