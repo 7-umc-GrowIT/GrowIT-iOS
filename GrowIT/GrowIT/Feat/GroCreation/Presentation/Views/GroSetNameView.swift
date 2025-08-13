@@ -34,6 +34,7 @@ class GroSetNameView: UIView {
     var nickNameTextField = CustomTextField(frame: .zero, isPasswordField: false).then {
         $0.setTitleLabel("닉네임")
         $0.setPlaceholder("닉네임을 입력해주세요")
+        $0.setHint(message: "2~8자 이내의 닉네임을 작성해 주세요")
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -116,7 +117,7 @@ class GroSetNameView: UIView {
         
         nickNameTextField.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(32)
-            $0.height.equalTo(80)
+            $0.height.equalTo(100) // 80에서 100으로 증가 (힌트/에러 메시지 공간 확보)
             $0.horizontalEdges.equalToSuperview().inset(24)
         }
         
