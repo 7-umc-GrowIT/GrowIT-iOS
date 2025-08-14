@@ -15,7 +15,6 @@ class TextDiaryView: UIView, UITextViewDelegate {
         super.init(frame: frame)
         diaryTextField.delegate = self
         setupUI()
-        // setTodayDate()
     }
     
     required init?(coder: NSCoder) {
@@ -66,7 +65,6 @@ class TextDiaryView: UIView, UITextViewDelegate {
     
     let saveButton = AppButton(title: "내가 입력한 일기 저장하기").then {
         $0.setButtonState(isEnabled: false, enabledColor: .black, disabledColor: .gray100, enabledTitleColor: .white, disabledTitleColor: .gray400)
-        $0.isUserInteractionEnabled = false
     }
     
     // MARK: - Setup TextView
@@ -85,26 +83,25 @@ class TextDiaryView: UIView, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        checkButtonState()
+        // 텍스트 변경은 Controller에서 Combine으로 처리
+        // 여기서는 필요한 UI 업데이트만 수행
     }
     
-    private func checkButtonState() {
-        let isDateSelected = dateLabel.text != "날짜를 선택해 주세요"
-        let isTextValid = !diaryTextField.text.isEmpty && diaryTextField.text != placeholder && diaryTextField.text.count > 100
-        
+    // 외부에서 버튼 상태를 업데이트할 수 있는 메서드 추가
+    func updateSaveButtonState(isEnabled: Bool) {
         saveButton.setButtonState(
-            isEnabled: isDateSelected && isTextValid,
+            isEnabled: isEnabled,
             enabledColor: .black,
             disabledColor: .gray100,
             enabledTitleColor: .white,
             disabledTitleColor: .gray400
         )
         
-        if isDateSelected && isTextValid {
-            saveButton.isUserInteractionEnabled = true
-        } else {
-            saveButton.isUserInteractionEnabled = false
-        }
+        // 버튼의 실제 enabled 상태도 함께 업데이트
+        saveButton.isEnabled = isEnabled
+        saveButton.isUserInteractionEnabled = isEnabled
+        
+        print("Button state updated - isEnabled: \(isEnabled)")
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -130,7 +127,6 @@ class TextDiaryView: UIView, UITextViewDelegate {
         dateLabel.snp.makeConstraints { make in
             make.leading.equalTo(dayLabel)
             make.top.equalTo(dayLabel.snp.bottom).offset(8)
-            // make.width.equalTo(160)
         }
         
         addSubview(dropDownButton)
@@ -161,16 +157,7 @@ class TextDiaryView: UIView, UITextViewDelegate {
         }
     }
     
-//    private func setTodayDate() {
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy년 M월 d일"
-//        formatter.locale = Locale(identifier: "ko_KR")
-//        
-//        dateLabel.text = formatter.string(from: Date())
-//    }
-    
     func updateDateLabel(_ date: String) {
         dateLabel.text = date.formattedDate()
-        checkButtonState()
     }
 }

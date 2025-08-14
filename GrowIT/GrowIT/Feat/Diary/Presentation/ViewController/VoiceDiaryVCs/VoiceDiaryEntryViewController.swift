@@ -6,21 +6,23 @@
 //
 
 import UIKit
+import Combine
 
 class VoiceDiaryEntryViewController: UIViewController {
     
     // MARK: Properties
     let navigationBarManager = NavigationManager()
-    
     let voiceDiaryEntryView = VoiceDiaryEntryView()
     
-    let diaryService = DiaryService()
+    private let viewModel = VoiceDiaryEntryViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupNavigationBar()
         setupActions()
+        bindViewModel()
         navigationController?.navigationBar.isHidden = false
     }
     
@@ -56,35 +58,63 @@ class VoiceDiaryEntryViewController: UIViewController {
         voiceDiaryEntryView.helpLabel.addGestureRecognizer(labelAction)
     }
     
+    //MARK: - ViewModel Binding
+    private func bindViewModel() {
+        viewModel.$shouldNavigateBack
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    self?.navigationController?.popViewController(animated: true)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldNavigateToDateSelect
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    let nextVC = VoiceDiaryDateSelectViewController()
+                    nextVC.hidesBottomBarWhenPushed = true
+                    self?.navigationController?.pushViewController(nextVC, animated: true)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldPresentTip
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldPresent in
+                if shouldPresent {
+                    let nextVC = VoiceDiaryTipViewController()
+                    nextVC.modalPresentationStyle = .pageSheet
+                    
+                    if let sheet = nextVC.sheetPresentationController {
+                        if #available(iOS 16.0, *) {
+                            sheet.detents = [
+                                .custom{ context in
+                                    0.37 * context.maximumDetentValue
+                                }
+                            ]
+                        } else {
+                            sheet.detents = [.medium()]
+                        }
+                        sheet.prefersGrabberVisible = true
+                    }
+                    self?.present(nextVC, animated: true, completion: nil)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
     //MARK: - @objc methods
     @objc func prevVC() {
-        navigationController?.popViewController(animated: true)
+        viewModel.backButtonTapped.send()
     }
     
     @objc func nextVC() {
-        // callPostTextDiary()
-        let nextVC = VoiceDiaryDateSelectViewController()
-        nextVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(nextVC, animated: true)
+        viewModel.recordButtonTapped.send()
     }
     
     @objc func labeledTapped() {
-        let nextVC = VoiceDiaryTipViewController()
-        nextVC.modalPresentationStyle = .pageSheet
-        
-        if let sheet = nextVC.sheetPresentationController {
-            //지원할 크기 지정
-            if #available(iOS 16.0, *) {
-                sheet.detents = [
-                    .custom{ context in
-                        0.37 * context.maximumDetentValue
-                    }
-                ]
-            } else {
-                sheet.detents = [.medium()]
-            }
-            sheet.prefersGrabberVisible = true
-        }
-        present(nextVC, animated: true, completion: nil)
+        viewModel.helpLabelTapped.send()
     }
 }

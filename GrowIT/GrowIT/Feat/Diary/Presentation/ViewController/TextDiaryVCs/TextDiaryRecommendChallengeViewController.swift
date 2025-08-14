@@ -6,21 +6,17 @@
 //
 
 import UIKit
+import Combine
 
 class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErrorDelegate {
     
     //MARK: - Properties
     let textDiaryRecommendChallengeView = TextDiaryRecommendChallengeView()
     let navigationBarManager = NavigationManager()
+    private let viewModel: TextDiaryRecommendChallengeViewModel
+    private var cancellables = Set<AnyCancellable>()
     
-    private var recommendedChallenges: [RecommendedChallenge] = []
-    private var emotionKeywords: [EmotionKeyword] = []
-    
-    private var buttonCount: Int = 0
     let diaryId: Int
-    
-    let diaryService = DiaryService()
-    let challengeService = ChallengeService()
     
     private var challengeViews: [ChallengeItemView] {
         return textDiaryRecommendChallengeView.challengeStackView.challengeViews
@@ -28,6 +24,7 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
     
     init(diaryId: Int) {
         self.diaryId = diaryId
+        self.viewModel = TextDiaryRecommendChallengeViewModel(diaryId: diaryId)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -41,7 +38,8 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
         setupUI()
         setupNavigationBar()
         setupActions()
-        fetchDiaryAnalyze(diaryId: diaryId)
+        bindViewModel()
+        viewModel.delegate = self
     }
     
     //MARK: - Setup Navigation Bar
@@ -74,11 +72,98 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
         challengeViews.forEach { challengeView in
             challengeView.button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
         }
-        textDiaryRecommendChallengeView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        textDiaryRecommendChallengeView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
+    }
+    
+    //MARK: - Bind ViewModel
+    private func bindViewModel() {
+        viewModel.$shouldShowErrorModal
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldShow in
+                if shouldShow {
+                    self?.showErrorModal()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldNavigateToEnd
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    let nextVC = TextDiaryEndViewController()
+                    nextVC.hidesBottomBarWhenPushed = true
+                    self?.navigationController?.pushViewController(nextVC, animated: true)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldShowToast
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldShow in
+                if shouldShow {
+                    CustomToast(containerWidth: 314).show(
+                        image: UIImage(named: "toast_Icon") ?? UIImage(),
+                        message: self?.viewModel.toastMessage ?? "",
+                        font: .heading3SemiBold()
+                    )
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$isSaveButtonEnabled
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isEnabled in
+                self?.textDiaryRecommendChallengeView.saveButton.setButtonState(
+                    isEnabled: isEnabled,
+                    enabledColor: .black,
+                    disabledColor: .gray100,
+                    enabledTitleColor: .white,
+                    disabledTitleColor: .gray400
+                )
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$recommendedChallenges
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] challenges in
+                self?.textDiaryRecommendChallengeView.updateChallenges(challenges)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$emotionKeywords
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] keywords in
+                self?.textDiaryRecommendChallengeView.updateEmo(emotionKeywords: keywords)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$challengeButtonStates
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] states in
+                self?.updateChallengeButtonStates(states)
+            }
+            .store(in: &cancellables)
     }
     
     //MARK: - @objc methods
     @objc func prevVC() {
+        viewModel.backButtonTapped.send()
+    }
+    
+    @objc func saveButtonTapped() {
+        viewModel.saveButtonTapped.send()
+    }
+    
+    @objc func buttonTapped(_ sender: CircleCheckButton) {
+        guard let index = challengeViews.firstIndex(where: { $0.button == sender }) else { return }
+        viewModel.challengeButtonTapped.send(index)
+    }
+    
+    private func showErrorModal() {
         let prevVC = TextDiaryErrorViewController()
         prevVC.delegate = self
         prevVC.diaryId = diaryId
@@ -87,78 +172,24 @@ class TextDiaryRecommendChallengeViewController: UIViewController, VoiceDiaryErr
         presentPageSheet(viewController: navController, detentFraction: 0.37)
     }
     
-    @objc func nextVC() {
-        let selectedChallenges = getSelectedChallenges()
-        
-        if selectedChallenges.isEmpty {
-            CustomToast(containerWidth: 314).show(image: UIImage(named: "toast_Icon") ?? UIImage(),
-                       message: "한 개 이상의 챌린지를 선택해 주세요",
-                       font: .heading3SemiBold())
-            return
-        }
-        
-        challengeService.postSelectedChallenge(data: selectedChallenges) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
-                print("챌린지 선택 성공: \(response)")
-                let nextVC = TextDiaryEndViewController()
-                nextVC.hidesBottomBarWhenPushed = true
-                self.navigationController?.pushViewController(nextVC, animated: true)
-            case .failure(let error):
-                print("Error: \(error)")
+    private func updateChallengeButtonStates(_ states: [Bool]) {
+        for (index, state) in states.enumerated() {
+            if index < challengeViews.count {
+                let challengeView = challengeViews[index]
+                if state != challengeView.button.isSelectedState() {
+                    challengeView.button.toggleState()
+                }
             }
         }
     }
     
-    @objc func buttonTapped(_ sender: CircleCheckButton) {
-        if sender.isSelectedState() {
-            buttonCount += 1
-        } else {
-            buttonCount -= 1
-        }
-        let buttonState = buttonCount > 0
-        
-        textDiaryRecommendChallengeView.saveButton.setButtonState(
-            isEnabled: buttonState,
-            enabledColor: .black,
-            disabledColor: .gray100,
-            enabledTitleColor: .white,
-            disabledTitleColor: .gray400
-        )
-    }
-    
+//    func didTapExitButton() {
+//        navigationController?.popToRootViewController(animated: true)
+//    }
+}
+
+extension TextDiaryRecommendChallengeViewController: TextDiaryRecommendChallengeViewModelDelegate {
     func didTapExitButton() {
         navigationController?.popToRootViewController(animated: true)
-    }
-    
-    // MARK: API func
-    private func fetchDiaryAnalyze(diaryId: Int) {
-        diaryService.postVoiceDiaryAnalyze(
-            diaryId: diaryId,
-            completion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    print(data)
-                    DispatchQueue.main.async {
-                        self.textDiaryRecommendChallengeView.updateEmo(emotionKeywords: data.emotionKeywords)
-                        self.recommendedChallenges = data.recommendedChallenges
-                        self.emotionKeywords = data.emotionKeywords
-                        self.textDiaryRecommendChallengeView.updateChallenges(self.recommendedChallenges)
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            })
-    }
-    
-    func getSelectedChallenges() -> [ChallengeSelectRequestDTO] {
-        let date = UserDefaults.standard.string(forKey: "TextDate") ?? ""
-        return challengeViews.enumerated().compactMap { index, challengeView in
-            guard index < recommendedChallenges.count, challengeView.button.isSelectedState() else { return nil }
-            let challenge = recommendedChallenges[index]
-            return ChallengeSelectRequestDTO(challengeIds: [challenge.id], dtype: challenge.type, date: date)
-        }
     }
 }

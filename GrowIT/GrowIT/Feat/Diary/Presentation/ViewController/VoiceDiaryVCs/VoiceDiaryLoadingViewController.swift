@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 class VoiceDiaryLoadingViewController: UIViewController {
 
@@ -14,13 +15,16 @@ class VoiceDiaryLoadingViewController: UIViewController {
     let navigationBarManager = NavigationManager()
     
     private var diaryContent: String?
-    
     weak var delegate: VoiceDiaryRecordDelegate?
+    
+    private let viewModel = VoiceDiaryLoadingViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupNavigationBar()
+        bindViewModel()
     }
     
     // MARK: Setup Navigation Bar
@@ -47,17 +51,31 @@ class VoiceDiaryLoadingViewController: UIViewController {
         }
     }
     
+    //MARK: - ViewModel Binding
+    private func bindViewModel() {
+        viewModel.$shouldNavigateToSummary
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    let nextVC = VoiceDiarySummaryViewController(
+                        diaryContent: self?.viewModel.diaryContent ?? "",
+                        diaryId: self?.viewModel.diaryId ?? 0,
+                        date: self?.viewModel.date ?? ""
+                    )
+                    nextVC.hidesBottomBarWhenPushed = true
+                    self?.navigationController?.pushViewController(nextVC, animated: true)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
     //MARK: - @objc methods
     @objc func prevVC() {
-        // navigationController?.popViewController(animated: true)
+        viewModel.backButtonTapped.send()
     }
 
     func navigateToNextScreen(with content: String, diaryId: Int, date: String) {
         self.diaryContent = content
-        
-        let nextVC = VoiceDiarySummaryViewController(diaryContent: diaryContent ?? "", diaryId: diaryId, date: date)
-        nextVC.hidesBottomBarWhenPushed = true
-        
-        navigationController?.pushViewController(nextVC, animated: true)
+        viewModel.navigationDataReceived.send((content, diaryId, date))
     }
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 import AVFoundation
+import Combine
 
 protocol VoiceDiaryRecordDelegate: AnyObject {
     func didFinishRecording(diaryContent: String)
@@ -17,18 +18,19 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     // MARK: Properties
     let voiceDiaryRecordView = VoiceDiaryRecordView()
     let navigationBarManager = NavigationManager()
-    private var speechAPIProvider = SpeechAPIProvider()
     private var audioRecorder: AVAudioRecorder?
     private var audioPlayer: AVAudioPlayer?
-    private var isRecording = false // 녹음 상태 관리
+    private var isRecording = false
     
-    private let diaryService = DiaryService()
+    private let viewModel = VoiceDiaryRecordViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupActions()
         setupNavigationBar()
+        setupBindings()
         observeRemainingTime()
         requestMicrophonePermission()
     }
@@ -37,15 +39,161 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
         super.viewWillAppear(animated)
     }
     
+    private func setupBindings() {
+        viewModel.$shouldPresentRecordError
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldPresent in
+                if shouldPresent {
+                    self?.presentRecordError()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldNavigateToLoading
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    self?.navigateToLoading()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldShowTimeWarning
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldShow in
+                if shouldShow {
+                    self?.showTimeWarning()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldShowMinimumTimeToast
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldShow in
+                if shouldShow {
+                    self?.showMinimumTimeToast()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldStartRecording
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldStart in
+                if shouldStart {
+                    self?.startRecording()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldStopRecording
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldStop in
+                if shouldStop {
+                    self?.stopRecording()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldShowTipView
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldShow in
+                if shouldShow {
+                    self?.voiceDiaryRecordView.tipView2.isHidden = false
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldProcessAudio
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldProcess in
+                if shouldProcess, let audioURL = self?.viewModel.audioFileURL {
+                    self?.viewModel.processAudioFile(audioFilePath: audioURL)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$responseText
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] responseText in
+                if !responseText.isEmpty {
+                    self?.handleTTSResponse(text: responseText)
+                }
+            }
+            .store(in: &cancellables)
+        
+        // 로딩 상태 바인딩 추가
+        viewModel.$isLoading
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isLoading in
+                if isLoading {
+                    // 로딩 인디케이터 표시 (필요한 경우)
+                    print("API 호출 중...")
+                } else {
+                    // 로딩 완료
+                    print("API 호출 완료")
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
     private func observeRemainingTime() {
         voiceDiaryRecordView.onRemainingTimeChanged = { [weak self] remainingTime in
             guard let self = self else { return }
-            if remainingTime == 30 {
-                CustomToast(containerWidth: 239).show(
-                    image: UIImage(named: "warningIcon") ?? UIImage(),
-                    message: "30초 후 대화가 종료돼요",
-                    font: .heading3SemiBold()
-                )
+            self.viewModel.remainingTimeChanged.send(remainingTime)
+        }
+    }
+    
+    private func presentRecordError() {
+        let prevVC = VoiceDiaryRecordErrorViewController()
+        prevVC.delegate = self
+        let navController = UINavigationController(rootViewController: prevVC)
+        navController.modalPresentationStyle = .fullScreen
+        
+        presentPageSheet(viewController: navController, detentFraction: 0.37)
+    }
+    
+    private func navigateToLoading() {
+        // diaryId가 유효한지 확인
+        guard viewModel.diaryId > 0 else {
+            print("Error: diaryId가 유효하지 않습니다. diaryId: \(viewModel.diaryId)")
+            return
+        }
+        
+        let nextVC = VoiceDiaryLoadingViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(nextVC, animated: true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            guard let self = self else { return }
+            print("Navigating with diaryId: \(self.viewModel.diaryId)")
+            nextVC.navigateToNextScreen(
+                with: self.viewModel.diaryContent,
+                diaryId: self.viewModel.diaryId,
+                date: self.viewModel.selectedDate
+            )
+        }
+    }
+    
+    private func showTimeWarning() {
+        CustomToast(containerWidth: 239).show(
+            image: UIImage(named: "warningIcon") ?? UIImage(),
+            message: "30초 후 대화가 종료돼요",
+            font: .heading3SemiBold()
+        )
+    }
+    
+    private func showMinimumTimeToast() {
+        CustomToast(containerWidth: 225).show(
+            image: UIImage(named: "warningIcon") ?? UIImage(),
+            message: "1분 이상 대화해 주세요",
+            font: .heading3SemiBold()
+        )
+    }
+    
+    private func handleTTSResponse(text: String) {
+        viewModel.synthesizeSpeech(text: text) { [weak self] audioData in
+            if let data = audioData {
+                self?.playAudio(data: data)
             }
         }
     }
@@ -84,43 +232,20 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     
     // MARK: @objc methods
     @objc func prevVC() {
-        let prevVC = VoiceDiaryRecordErrorViewController()
-        prevVC.delegate = self
-        let navController = UINavigationController(rootViewController: prevVC)
-        navController.modalPresentationStyle = .fullScreen
-        
-        presentPageSheet(viewController: navController, detentFraction: 0.37)
+        viewModel.backButtonTapped.send()
     }
     
     @objc func nextVC() {
         let remainingTime = voiceDiaryRecordView.remainingTime
-        if remainingTime > 120 {
-            CustomToast(containerWidth: 225).show(
-                image: UIImage(named: "warningIcon") ?? UIImage(),
-                message: "1분 이상 대화해 주세요",
-                font: .heading3SemiBold()
-            )
-        } else {
-            stopRecording()
-            let nextVC = VoiceDiaryLoadingViewController()
-            nextVC.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(nextVC, animated: true)
-            
-            callPostVoiceDiaryDate { content, diaryId, date in
-                DispatchQueue.main.async {
-                    nextVC.navigateToNextScreen(with: content, diaryId: diaryId, date: date)
-                }
-            }
-        }
+        viewModel.endButtonTapped.send(remainingTime)
     }
     
     @objc func beginRecord() {
-        startRecording()
-        voiceDiaryRecordView.tipView2.isHidden = false
+        viewModel.recordButtonTapped.send()
     }
     
     @objc func stopRecord() {
-        stopRecording()
+        viewModel.stopRecordButtonTapped.send()
     }
     
     func didTapExitButton() {
@@ -165,32 +290,9 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         if flag {
             print("녹음 성공")
-            processAudioFile(audioFilePath: recorder.url)
+            viewModel.audioRecordingFinished.send(recorder.url)
         } else {
             print("녹음 실패. 다시 시도해주세요.")
-        }
-    }
-    
-    private func processAudioFile(audioFilePath: URL) {
-        guard let audioData = try? Data(contentsOf: audioFilePath) else {
-            print("오디오 파일을 읽을 수 없습니다.")
-            return
-        }
-        
-        let audioBase64 = audioData.base64EncodedString()
-        print("Base64 인코딩된 오디오 데이터 준비 완료")
-        // 여기에서 Google Speech-to-Text API 호출 로직 추가
-        speechAPIProvider.recognize(audioContent: audioBase64) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let transcript):
-                    print("변환된 텍스트: \(transcript)")
-                    self?.callPostVoiceDiary(userVoice: transcript)
-                case .failure(let error):
-                    print("변환 실패: \(error.localizedDescription)")
-                    print("API 호출 실패: \(error.localizedDescription)")
-                }
-            }
         }
     }
     
@@ -208,19 +310,6 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
     }
     
     // MARK: Setup TTS
-    private func synthesizeSpeech(text: String) {
-        speechAPIProvider.synthesizeSpeech(text: text) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let audioData):
-                    self?.playAudio(data: audioData)
-                case .failure(let error):
-                    print("TTS 변환 실패: \(error.localizedDescription)")
-                }
-            }
-        }
-    }
-    
     private func playAudio(data: Data) {
         do {
             audioPlayer = try AVAudioPlayer(data: data)
@@ -228,41 +317,6 @@ class VoiceDiaryRecordViewController: UIViewController, VoiceDiaryErrorDelegate,
         } catch {
             print("음성 파일 재생 실패: \(error.localizedDescription)")
         }
-    }
-    
-    // MARK: Setup APIs
-    private func callPostVoiceDiary(userVoice: String) {
-        diaryService.postVoiceDiary(
-            data: DiaryVoiceRequestDTO(chat: userVoice),
-            completion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    self.synthesizeSpeech(text: data.chat)
-                case .failure(let error):
-                    print("Error: \(error)")
-                }
-            })
-    }
-    
-    private func callPostVoiceDiaryDate(completion: @escaping (String, Int, String) -> Void) {
-        let date = UserDefaults.standard.string(forKey: "VoiceDate") ?? ""
-        diaryService.postVoiceDiaryDate(
-            data: DiaryVoiceDateRequestDTO(
-                date: date),
-            completion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case.success(let data):
-                    print("Success!!!!!!! \(data)")
-                    DispatchQueue.main.async {
-                        completion(data.content, data.diaryId, date)
-                    }
-                case.failure(let error):
-                    print("Error: \(error)")
-                    self.navigationController?.popToRootViewController(animated: true)
-                }
-            })
     }
     
 }

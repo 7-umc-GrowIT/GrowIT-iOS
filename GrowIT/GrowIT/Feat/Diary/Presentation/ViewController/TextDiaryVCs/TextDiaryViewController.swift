@@ -7,13 +7,15 @@
 
 import UIKit
 import EzPopup
+import Combine
 
 class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegate {
     
     //MARK: - Properties
     let navigationBarManager = NavigationManager()
     let textDiaryView = TextDiaryView()
-    let diaryService = DiaryService()
+    private let viewModel = TextDiaryViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     let calVC = JDiaryCalendarController(isDropDown: true)
     
@@ -22,6 +24,7 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
         setupUI()
         setupNavigationBar()
         setupActions()
+        bindViewModel()
         navigationController?.navigationBar.isHidden = false
     }
     
@@ -52,36 +55,124 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
     
     //MARK: - Setup Button actions
     private func setupActions() {
-        textDiaryView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
-        textDiaryView.dropDownButton.addTarget(self, action: #selector(calenderVC), for: .touchUpInside)
+        textDiaryView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
+        textDiaryView.dropDownButton.addTarget(self, action: #selector(calendarButtonTapped), for: .touchUpInside)
+        
+        // TextView 변경 감지를 Combine으로 통합
+        NotificationCenter.default.publisher(
+            for: UITextView.textDidChangeNotification,
+            object: textDiaryView.diaryTextField
+        )
+        .compactMap { ($0.object as? UITextView)?.text }
+        .sink { [weak self] text in
+            self?.viewModel.diaryTextChanged.send(text)
+            self?.updateButtonState() // 버튼 상태 즉시 업데이트
+        }
+        .store(in: &cancellables)
+    }
+    
+    // 버튼 상태 업데이트 메서드
+    private func updateButtonState() {
+        let isDateSelected = textDiaryView.dateLabel.text != "날짜를 선택해 주세요"
+        let diaryText = textDiaryView.diaryTextField.text ?? ""
+        let isTextValid = !diaryText.isEmpty &&
+                         diaryText != "일기 내용을 입력하세요" &&
+                         diaryText.trimmingCharacters(in: .whitespacesAndNewlines).count >= 100
+        
+        let isButtonEnabled = isDateSelected && isTextValid
+        
+        // View에서 버튼 상태 업데이트
+        textDiaryView.updateSaveButtonState(isEnabled: isButtonEnabled)
+        
+        // ViewModel에 상태 전달
+        viewModel.saveButtonEnabledChanged.send(isButtonEnabled)
+    }
+    
+    //MARK: - Bind ViewModel
+    private func bindViewModel() {
+        viewModel.$shouldNavigateBack
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    self?.navigationController?.popViewController(animated: true)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldShowToast
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldShow in
+                if shouldShow {
+                    CustomToast(containerWidth: 232).show(
+                        image: UIImage(named: "toast_Icon") ?? UIImage(),
+                        message: self?.viewModel.toastMessage ?? "",
+                        font: .heading3SemiBold()
+                    )
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldShowCalendar
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldShow in
+                if shouldShow {
+                    self?.showCalendar()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldNavigateToLoading
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    self?.navigateToLoading()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$selectedDate
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] date in
+                if !date.isEmpty {
+                    self?.textDiaryView.updateDateLabel(date)
+                    self?.updateButtonState() // 날짜 선택 후 버튼 상태 업데이트
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$diaryIdForNavigation
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .sink { [weak self] diaryId in
+                self?.navigateToNextScreen(with: diaryId)
+            }
+            .store(in: &cancellables)
     }
     
     //MARK: - @objc methods
     @objc func prevVC() {
-        navigationController?.popViewController(animated: true)
+        viewModel.backButtonTapped.send()
     }
     
-    @objc func nextVC() {
-        print(textDiaryView.saveButton.isEnabled)
-        if textDiaryView.saveButton.isEnabled == false {
-            CustomToast(containerWidth: 232).show(image: UIImage(named: "toast_Icon") ?? UIImage(), message: "일기를 더 작성해 주세요", font: .heading3SemiBold())
-        } else {
-            let userDiary = textDiaryView.diaryTextField.text ?? ""
-            let date = textDiaryView.dateLabel.text ?? ""
-            
-            let nextVC = TextDiaryLoadingViewController()
-            nextVC.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(nextVC, animated: true)
-            
-            callPostTextDiary(userDiary: userDiary, date: date) { diaryId in
-                DispatchQueue.main.async {
-                    nextVC.navigateToNextScreen(with: diaryId)
-                }
-            }
-        }
+    @objc func saveButtonTapped() {
+        let diaryText = textDiaryView.diaryTextField.text == "일기 내용을 입력하세요" ? "" : (textDiaryView.diaryTextField.text ?? "")
+        let selectedDate = textDiaryView.dateLabel.text ?? ""
+        
+        // 직접 처리하여 확실하게 저장되도록 함
+        viewModel.processSaveAction(
+            diaryText: diaryText,
+            date: selectedDate,
+            isSaveButtonEnabled: textDiaryView.saveButton.isEnabled
+        )
     }
     
-    @objc func calenderVC(_ sender: UIButton) {
+    @objc func calendarButtonTapped(_ sender: UIButton) {
+        viewModel.calendarButtonTapped.send(sender)
+    }
+    
+    private func showCalendar() {
         let calVC = JDiaryCalendarController(isDropDown: true)
         calVC.configureTheme(isDarkMode: false)
         calVC.delegate = self
@@ -90,48 +181,23 @@ class TextDiaryViewController: UIViewController, JDiaryCalendarControllerDelegat
         present(popupVC, animated: true)
     }
     
-    func didSelectDate(_ date: String) {
-        textDiaryView.updateDateLabel(date)
-        
-        if let presentedVC = self.presentedViewController {
-            presentedVC.dismiss(animated: true)
+    private func navigateToLoading() {
+        let nextVC = TextDiaryLoadingViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    private func navigateToNextScreen(with diaryId: Int) {
+        if let loadingVC = navigationController?.topViewController as? TextDiaryLoadingViewController {
+            loadingVC.navigateToNextScreen(with: diaryId)
         }
     }
     
-    // MARK: Setup APIs
-    func callPostTextDiary(userDiary: String, date: String, completion: @escaping (Int) -> Void) {
-        let convertedDate = convertDateFormat(from: date)
-        UserDefaults.standard.set(convertedDate, forKey: "TextDate")
-        diaryService.postTextDiary(
-            data: DiaryRequestDTO(
-                content: userDiary,
-                date: convertedDate ?? ""),
-            completion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case.success(let data):
-                    DispatchQueue.main.async {
-                        completion(data.diaryId)
-                    }
-                case.failure(let error):
-                    print("Error")
-                }
-            }
-        )
-    }
-    
-    func convertDateFormat(from originalDate: String) -> String? {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy년 M월 d일"
-        inputFormatter.locale = Locale(identifier: "ko_KR")
+    func didSelectDate(_ date: String) {
+        viewModel.dateSelected.send(date)
         
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "yyyy-MM-dd"
-
-        if let date = inputFormatter.date(from: originalDate) {
-            return outputFormatter.string(from: date)
-        } else {
-            return nil
+        if let presentedVC = self.presentedViewController {
+            presentedVC.dismiss(animated: true)
         }
     }
 }

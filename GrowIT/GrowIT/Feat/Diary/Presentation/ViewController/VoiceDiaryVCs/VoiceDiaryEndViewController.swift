@@ -6,12 +6,16 @@
 //
 
 import UIKit
+import Combine
 
 class VoiceDiaryEndViewController: UIViewController {
 
     //MARK: - Properties
-    let voiceDiaryEndView =  VoiceDiaryEndView()
+    let voiceDiaryEndView = VoiceDiaryEndView()
     let navigationBarManager = NavigationManager()
+    
+    private let viewModel = VoiceDiaryEndViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +23,7 @@ class VoiceDiaryEndViewController: UIViewController {
         setupUI()
         setupActions()
         setupNavigationBar()
+        bindViewModel()
     }
     
     //MARK: - Setup Navigation Bar
@@ -51,15 +56,25 @@ class VoiceDiaryEndViewController: UIViewController {
         voiceDiaryEndView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
+    //MARK: - ViewModel Binding
+    private func bindViewModel() {
+        viewModel.$shouldNavigateToTabBar
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    let nextVC = CustomTabBarController(initialIndex: 2)
+                    self?.navigationController?.pushViewController(nextVC, animated: false)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
     //MARK: - @objc methods
     @objc func prevVC() {
-        // navigationController?.popViewController(animated: true)
+        viewModel.backButtonTapped.send()
     }
     
     @objc func nextVC() {
-        let nextVC = CustomTabBarController(initialIndex: 2)
-        navigationController?.pushViewController(nextVC, animated: false)
+        viewModel.nextButtonTapped.send()
     }
-
-    
 }

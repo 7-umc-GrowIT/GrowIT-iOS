@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 class VoiceDiaryFixViewController: UIViewController {
     
@@ -14,10 +15,11 @@ class VoiceDiaryFixViewController: UIViewController {
     let voiceDiaryFixView = VoiceDiaryFixView()
     
     var diaryId = 0
-    let diaryService = DiaryService()
-    
     var recommendedChallenges: [RecommendedChallenge] = []
     var emotionKeywords: [EmotionKeyword] = []
+    
+    private var viewModel: VoiceDiaryFixViewModel!
+    private var cancellables = Set<AnyCancellable>()
     
     init(text: String) {
         self.text = text
@@ -30,9 +32,20 @@ class VoiceDiaryFixViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViewModel()
         setupUI()
         setupDelegate()
         setupActions()
+        setupBindings()
+    }
+    
+    private func setupViewModel() {
+        viewModel = VoiceDiaryFixViewModel(
+            originalText: text,
+            diaryId: diaryId,
+            recommendedChallenges: recommendedChallenges,
+            emotionKeywords: emotionKeywords
+        )
     }
     
     // MARK: Setup UI
@@ -56,18 +69,64 @@ class VoiceDiaryFixViewController: UIViewController {
         voiceDiaryFixView.textView.delegate = self
     }
     
+    // MARK: Setup Bindings
+    private func setupBindings() {
+        viewModel.$shouldDismiss
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldDismiss in
+                if shouldDismiss {
+                    self?.dismiss(animated: true, completion: nil)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldNavigateToRecommendChallenge
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    self?.navigateToRecommendChallenge()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$isTextTooShort
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isTooShort in
+                self?.voiceDiaryFixView.lessThanHundred(isEnabled: isTooShort)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$isFixButtonEnabled
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isEnabled in
+                self?.voiceDiaryFixView.fixButton.setButtonState(
+                    isEnabled: isEnabled,
+                    enabledColor: .primary400,
+                    disabledColor: .gray700,
+                    enabledTitleColor: .black,
+                    disabledTitleColor: .gray400
+                )
+            }
+            .store(in: &cancellables)
+    }
+    
     // MARK: @objc methods
     @objc func prevVC() {
-        dismiss(animated: true, completion: nil)
+        viewModel.cancelButtonTapped.send()
     }
     
     @objc func nextVC() {
+        viewModel.fixButtonTapped.send()
+    }
+    
+    // MARK: - Private Navigation Methods
+    private func navigateToRecommendChallenge() {
         if let presentingVC = presentingViewController as? UINavigationController {
             dismiss(animated: true) {
                 let nextVC = VoiceDiaryRecommendChallengeViewController()
-                nextVC.diaryId = self.diaryId
-                nextVC.recommendedChallenges = self.recommendedChallenges
-                nextVC.emotionKeywords = self.emotionKeywords
+                nextVC.diaryId = self.viewModel.getDiaryId()
+                nextVC.recommendedChallenges = self.viewModel.getRecommendedChallenges()
+                nextVC.emotionKeywords = self.viewModel.getEmotionKeywords()
                 presentingVC.pushViewController(nextVC, animated: true)
             }
         }
@@ -76,19 +135,6 @@ class VoiceDiaryFixViewController: UIViewController {
 
 extension VoiceDiaryFixViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        let textLength = textView.text.count
-        if textLength < 100 {
-            voiceDiaryFixView.lessThanHundred(isEnabled: true)
-            voiceDiaryFixView.fixButton.setButtonState(isEnabled: false, enabledColor: .primary400, disabledColor: .gray700, enabledTitleColor: .black, disabledTitleColor: .gray400)
-        } else {
-            voiceDiaryFixView.lessThanHundred(isEnabled: false)
-            let changedState = textView.text == self.text ? false : true
-            voiceDiaryFixView.fixButton.setButtonState(
-                isEnabled: changedState,
-                enabledColor: .primary400,
-                disabledColor: .gray700,
-                enabledTitleColor: .black,
-                disabledTitleColor: .gray400)
-        }
+        viewModel.textChanged.send(textView.text)
     }
 }

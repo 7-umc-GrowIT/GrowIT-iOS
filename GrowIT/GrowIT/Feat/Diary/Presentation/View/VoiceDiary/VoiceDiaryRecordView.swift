@@ -74,9 +74,10 @@ class VoiceDiaryRecordView: UIView {
         }
     }
     
-    private func stopTimer() {
+    func stopTimer() {
         timer?.invalidate()
         timer = nil
+        onRemainingTimeChanged = nil
     }
     
     private func updateTimerLabel(minutes: Int, seconds: Int) {

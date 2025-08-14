@@ -6,14 +6,17 @@
 //
 
 import UIKit
+import Combine
 
 class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarControllerDelegate {
     
     // MARK: Properties
-    let  voiceDiaryDateSelectView = VoiceDiaryDateSelectView()
+    let voiceDiaryDateSelectView = VoiceDiaryDateSelectView()
     let navigationBarManager = NavigationManager()
-    
     let calVC = JDiaryCalendarController(isDropDown: true)
+    
+    private let viewModel = VoiceDiaryDateSelectViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +25,7 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
         setupNavigationBar()
         setupActions()
         setupDelegate()
+        bindViewModel()
     }
     
     // MARK: Setup Navigation Bar
@@ -94,38 +98,85 @@ class VoiceDiaryDateSelectViewController: UIViewController, JDiaryCalendarContro
     }
     
     
+    // MARK: ViewModel Binding
+    private func bindViewModel() {
+        viewModel.$shouldNavigateBack
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    self?.navigationController?.popViewController(animated: true)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldNavigateToRecord
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    let nextVC = VoiceDiaryRecordViewController()
+                    nextVC.hidesBottomBarWhenPushed = true
+                    self?.navigationController?.pushViewController(nextVC, animated: true)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldPresentTip
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldPresent in
+                if shouldPresent {
+                    let nextVC = VoiceDiaryTipViewController()
+                    nextVC.modalPresentationStyle = .pageSheet
+                    self?.presentPageSheet(viewController: nextVC, detentFraction: 0.37)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldToggleCalendar
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldToggle in
+                if shouldToggle {
+                    let isVisible = self?.viewModel.getCalendarVisibility() ?? false
+                    self?.calVC.view.isHidden = !isVisible
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$selectedDate
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] date in
+                if !date.isEmpty {
+                    self?.voiceDiaryDateSelectView.updateDateLabel(date)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$isDateValid
+            .combineLatest(viewModel.$shouldShowWarning)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isValid, shouldShowWarning in
+                self?.updateDateSelectionUI(isValid: isValid)
+            }
+            .store(in: &cancellables)
+    }
+    
     // MARK: @objc methods
     @objc func prevVC() {
-        navigationController?.popViewController(animated: true)
+        viewModel.backButtonTapped.send()
     }
     
     @objc func nextVC() {
-        if voiceDiaryDateSelectView.dateSelectLabel.text == "일기 날짜를 선택해 주세요" {
-            updateDateSelectionUI(isValid: false)
-        } else {
-            let nextVC = VoiceDiaryRecordViewController()
-            nextVC.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(nextVC, animated: true)
-        }
-        
+        viewModel.startButtonTapped.send()
     }
     
     @objc func labelTapped() {
-        let nextVC = VoiceDiaryTipViewController()
-        nextVC.modalPresentationStyle = .pageSheet
-        
-        presentPageSheet(viewController: nextVC, detentFraction: 0.37)
+        viewModel.helpLabelTapped.send()
     }
     
     @objc func toggleTapped() {
-        calVC.view.isHidden.toggle()
+        viewModel.toggleTapped.send()
     }
     
     func didSelectDate(_ date: String) {
-        voiceDiaryDateSelectView.updateDateLabel(date)
-        UserDefaults.standard.set(date, forKey: "VoiceDate")
-        calVC.view.isHidden = true
-        
-        updateDateSelectionUI(isValid: true)
+        viewModel.dateSelected.send(date)
     }
 }

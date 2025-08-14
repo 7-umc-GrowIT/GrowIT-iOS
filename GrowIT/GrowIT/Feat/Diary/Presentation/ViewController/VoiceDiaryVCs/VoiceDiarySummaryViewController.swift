@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate {
     
@@ -16,16 +17,15 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
     let diaryId: Int
     let date: String
     
-    private var recommendedChallenges: [RecommendedChallenge] = []
-    private var emotionKeywords: [EmotionKeyword] = []
-    
-    let diaryService = DiaryService()
+    private var viewModel: VoiceDiarySummaryViewModel!
+    private var cancellables = Set<AnyCancellable>()
     
     init(diaryContent: String, diaryId: Int, date: String) {
         self.diaryContent = diaryContent
         self.diaryId = diaryId
         self.date = date
         super.init(nibName: nil, bundle: nil)
+        self.viewModel = VoiceDiarySummaryViewModel(diaryId: diaryId, diaryContent: diaryContent)
     }
     
     required init?(coder: NSCoder) {
@@ -34,10 +34,7 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        DispatchQueue.main.async {
-            self.fetchDiaryAnalyze()
-        }
-        
+        viewModel.viewWillAppear.send()
     }
     
     override func viewDidLoad() {
@@ -45,6 +42,7 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
         setupNavigationBar()
         setupUI()
         setupActions()
+        setupBindings()
         
         voiceDiarySummaryView.configure(text: diaryContent)
         voiceDiarySummaryView.updateDate(with: date)
@@ -82,8 +80,58 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
         voiceDiarySummaryView.descriptionLabel.addGestureRecognizer(labelAction)
     }
     
+    // MARK: Setup Bindings
+    private func setupBindings() {
+        viewModel.$shouldPresentSummaryError
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldPresent in
+                if shouldPresent {
+                    self?.presentSummaryError()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldNavigateToRecommendChallenge
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldNavigate in
+                if shouldNavigate {
+                    self?.navigateToRecommendChallenge()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$shouldPresentFix
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldPresent in
+                if shouldPresent {
+                    self?.presentFix()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$emotionKeywords
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] keywords in
+                self?.voiceDiarySummaryView.updateEmo(emotionKeywords: keywords)
+            }
+            .store(in: &cancellables)
+    }
+    
     //MARK: - @objc methods
     @objc func prevVC() {
+        viewModel.backButtonTapped.send()
+    }
+    
+    @objc func nextVC() {
+        viewModel.saveButtonTapped.send()
+    }
+    
+    @objc func labelTapped() {
+        viewModel.descriptionLabelTapped.send()
+    }
+    
+    // MARK: - Private Navigation Methods
+    private func presentSummaryError() {
         let prevVC = VoiceDiarySummaryErrorViewController()
         prevVC.delegate = self
         prevVC.diaryId = diaryId
@@ -92,20 +140,20 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
         presentPageSheet(viewController: navController, detentFraction: 0.37)
     }
     
-    @objc func nextVC() {
+    private func navigateToRecommendChallenge() {
         let nextVC = VoiceDiaryRecommendChallengeViewController()
         nextVC.diaryId = diaryId
-        nextVC.recommendedChallenges = recommendedChallenges
-        nextVC.emotionKeywords = emotionKeywords
+        nextVC.recommendedChallenges = viewModel.recommendedChallenges
+        nextVC.emotionKeywords = viewModel.emotionKeywords
         nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
-    @objc func labelTapped() {
+    private func presentFix() {
         let nextVC = VoiceDiaryFixViewController(text: diaryContent)
         nextVC.diaryId = diaryId
-        nextVC.emotionKeywords = emotionKeywords
-        nextVC.recommendedChallenges = recommendedChallenges
+        nextVC.emotionKeywords = viewModel.emotionKeywords
+        nextVC.recommendedChallenges = viewModel.recommendedChallenges
         let navController = UINavigationController(rootViewController: nextVC)
         navController.modalPresentationStyle = .fullScreen
         presentPageSheet(viewController: navController, detentFraction: 0.6)
@@ -113,25 +161,5 @@ class VoiceDiarySummaryViewController: UIViewController, VoiceDiaryErrorDelegate
     
     func didTapExitButton() {
         navigationController?.popToRootViewController(animated: true)
-    }
-    
-    // MARK: Setup APIs
-    private func fetchDiaryAnalyze() {
-        diaryService.postVoiceDiaryAnalyze(
-            diaryId: diaryId,
-            completion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    print(data)
-                    DispatchQueue.main.async {
-                        self.voiceDiarySummaryView.updateEmo(emotionKeywords: data.emotionKeywords)
-                        self.recommendedChallenges = data.recommendedChallenges
-                        self.emotionKeywords = data.emotionKeywords
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            })
     }
 }
